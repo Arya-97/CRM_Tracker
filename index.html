@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRM System - Full Version</title>
+    <title>CRM Collection Tracker</title>
     <style>
         * {
             margin: 0;
@@ -13,28 +13,108 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f2f5;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
         
-        /* Header */
-        .header {
+        /* Login Screen */
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .login-card h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .login-card p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .login-btn {
+            width: 100%;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .error-msg {
+            background: #fee;
+            color: #c00;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 13px;
+            display: none;
+        }
+        
+        /* Main App */
+        .header {
+            background: white;
             padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
         .logo h2 {
             font-size: 20px;
+            color: #333;
         }
         
         .logo p {
             font-size: 12px;
-            opacity: 0.8;
+            color: #666;
         }
         
         .user-info {
@@ -43,28 +123,30 @@
             gap: 15px;
         }
         
-        .logout-btn {
-            background: rgba(255,255,255,0.2);
-            border: none;
+        .user-badge {
+            background: #667eea;
             color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        
+        .logout-btn {
+            background: #f56565;
+            color: white;
+            border: none;
             padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s;
         }
         
-        .logout-btn:hover {
-            background: rgba(255,255,255,0.3);
-        }
-        
-        /* Main Container */
         .container {
             max-width: 1600px;
             margin: 0 auto;
             padding: 20px;
         }
         
-        /* Stats Cards */
+        /* Stats */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -76,8 +158,8 @@
             background: white;
             padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
         .stat-value {
@@ -88,7 +170,7 @@
         
         .stat-label {
             color: #666;
-            font-size: 14px;
+            font-size: 13px;
             margin-top: 5px;
         }
         
@@ -124,8 +206,7 @@
             padding: 8px 12px;
             border: 1px solid #ddd;
             border-radius: 8px;
-            font-size: 14px;
-            font-family: inherit;
+            font-size: 13px;
         }
         
         button {
@@ -135,25 +216,11 @@
             padding: 8px 20px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-        
-        button:hover {
-            background: #5a67d8;
-            transform: translateY(-1px);
+            font-size: 13px;
         }
         
         .btn-secondary {
             background: #48bb78;
-        }
-        
-        .btn-secondary:hover {
-            background: #38a169;
-        }
-        
-        .btn-danger {
-            background: #f56565;
         }
         
         /* Table */
@@ -167,6 +234,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 13px;
         }
         
         th, td {
@@ -178,15 +246,18 @@
         th {
             background: #f7fafc;
             font-weight: 600;
-            font-size: 12px;
-            text-transform: uppercase;
-            color: #666;
             position: sticky;
             top: 0;
         }
         
         tr:hover {
             background: #f7fafc;
+        }
+        
+        .edit-btn {
+            background: #4299e1;
+            padding: 5px 12px;
+            font-size: 11px;
         }
         
         /* Edit Panel */
@@ -221,9 +292,9 @@
             background: none;
             color: #666;
             font-size: 24px;
-            padding: 0;
             width: 30px;
             height: 30px;
+            padding: 0;
         }
         
         .form-group {
@@ -241,11 +312,8 @@
         .form-group select, .form-group input, .form-group textarea {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
         }
         
-        /* Loading */
         .loading {
             text-align: center;
             padding: 40px;
@@ -266,7 +334,6 @@
             100% { transform: rotate(360deg); }
         }
         
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 20px;
@@ -285,13 +352,8 @@
         }
         
         @media (max-width: 768px) {
-            .filters-bar {
-                flex-direction: column;
-            }
-            .edit-panel {
-                width: 100%;
-                right: -100%;
-            }
+            .filters-bar { flex-direction: column; }
+            .edit-panel { width: 100%; right: -100%; }
         }
     </style>
 </head>
@@ -300,24 +362,22 @@
 
     <script>
         // ==================== CONFIGURATION ====================
-        // REPLACE THIS WITH YOUR ACTUAL SHEET ID
+        // REPLACE WITH YOUR GOOGLE SHEET ID
         const SPREADSHEET_ID = '1KZxUavEe9n-V4AdMZopaWiDGqwo1V260tK_XwcVzxpU'; // ← CHANGE THIS
         
-        // Authorized users - Add all your agents here
-        const AUTHORIZED_USERS = {
-            'vishwaradya.1@pw.live': 'admin',  // Your email - CHANGE THIS
-            // Add more agents here:
-            // 'agent1@company.com': 'agent',
-            // 'agent2@company.com': 'agent',
+        // USERS DATABASE - Add all your agents here
+        const USERS = {
+            // Admin
+            'admin': { password: 'admin123', name: 'Administrator', role: 'admin' },
+            // Agents - Add your agents here
+            'vishwaradya': { password: 'vish123', name: 'Vishwa Radya', role: 'agent' },
+            'agent1': { password: 'agent123', name: 'Agent One', role: 'agent' },
+            'agent2': { password: 'agent123', name: 'Agent Two', role: 'agent' },
+            // Add more agents as needed
+            // 'agent3': { password: 'agent123', name: 'Agent Three', role: 'agent' },
         };
         
-        // Sheet tab names
-        const SHEET_TABS = {
-            MAIN: 'Main Tracker',
-            AUDIT: 'Audit Log'
-        };
-        
-        // ==================== GLOBAL STATE ====================
+        // Global state
         let currentUser = null;
         let allData = [];
         let filteredData = [];
@@ -325,67 +385,84 @@
         
         // ==================== INITIALIZATION ====================
         function init() {
-            // Check if already logged in
             const savedUser = localStorage.getItem('crm_user');
             if (savedUser) {
-                const user = JSON.parse(savedUser);
-                const loginTime = new Date(user.loginTime);
-                const now = new Date();
-                const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
-                
-                if (hoursDiff < 24) {
-                    currentUser = user;
-                    showMainApp();
-                    return;
-                }
+                currentUser = JSON.parse(savedUser);
+                showMainApp();
+            } else {
+                showLoginScreen();
             }
-            showLoginScreen();
         }
         
         // ==================== LOGIN SCREEN ====================
         function showLoginScreen() {
             document.getElementById('app').innerHTML = `
-                <div style="min-height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                    <div style="background: white; padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
-                        <h2 style="color: #333; margin-bottom: 10px;">🔐 CRM System</h2>
-                        <p style="color: #666; margin-bottom: 30px;">Sign in with your authorized email</p>
+                <div class="login-screen">
+                    <div class="login-card">
+                        <h2>🔐 CRM Collection Tracker</h2>
+                        <p>Login with your credentials</p>
                         
-                        <input type="email" id="login-email" placeholder="Enter your email address" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; font-size: 14px;">
-                        <button onclick="login()" style="width: 100%; background: #667eea; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 16px; cursor: pointer;">Continue with Email</button>
+                        <div class="input-group">
+                            <label>Username</label>
+                            <input type="text" id="username" placeholder="Enter your username">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Password</label>
+                            <input type="password" id="password" placeholder="Enter your password">
+                        </div>
+                        
+                        <button class="login-btn" onclick="doLogin()">Login</button>
+                        
+                        <div id="login-error" class="error-msg"></div>
                         
                         <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
-                            <p style="font-size: 12px; color: #999;">👥 Authorized Agents Only</p>
-                            <p style="font-size: 11px; color: #999;">Contact admin to get access</p>
+                            <p style="font-size: 11px; color: #999;">Demo credentials: admin / admin123</p>
                         </div>
                     </div>
                 </div>
             `;
+            
+            // Enter key to login
+            document.getElementById('password')?.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') doLogin();
+            });
         }
         
-        function login() {
-            const email = document.getElementById('login-email').value.trim().toLowerCase();
+        function doLogin() {
+            const username = document.getElementById('username').value.trim().toLowerCase();
+            const password = document.getElementById('password').value;
             
-            if (!email) {
-                showToast('Please enter your email', 'error');
+            if (!username || !password) {
+                showLoginError('Please enter username and password');
                 return;
             }
             
-            const role = AUTHORIZED_USERS[email];
+            const user = USERS[username];
             
-            if (!role) {
-                showToast(`❌ Access Denied: ${email} is not authorized. Contact admin.`, 'error');
+            if (!user || user.password !== password) {
+                showLoginError('Invalid username or password');
                 return;
             }
             
             currentUser = {
-                email: email,
-                name: email.split('@')[0],
-                role: role,
+                username: username,
+                name: user.name,
+                role: user.role,
                 loginTime: new Date().toISOString()
             };
             
             localStorage.setItem('crm_user', JSON.stringify(currentUser));
             showMainApp();
+        }
+        
+        function showLoginError(msg) {
+            const errorDiv = document.getElementById('login-error');
+            errorDiv.textContent = msg;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 3000);
         }
         
         // ==================== MAIN APP ====================
@@ -397,13 +474,15 @@
                         <p>Student Management System</p>
                     </div>
                     <div class="user-info">
-                        <span>👤 ${currentUser.name} (${currentUser.role.toUpperCase()})</span>
+                        <span class="user-badge">👤 ${currentUser.name} (${currentUser.role.toUpperCase()})</span>
                         <button class="logout-btn" onclick="logout()">Logout</button>
                     </div>
                 </div>
                 
                 <div class="container">
-                    <div class="stats-grid" id="stats"></div>
+                    <div class="stats-grid" id="stats">
+                        <div class="stat-card"><div class="stat-value">—</div><div class="stat-label">Loading...</div></div>
+                    </div>
                     
                     <div class="filters-bar">
                         <div class="filter-group">
@@ -429,7 +508,7 @@
                             </select>
                         </div>
                         <div class="filter-group">
-                            <label>Today's Disposition</label>
+                            <label>Disposition</label>
                             <select id="filter-disposition" onchange="applyFilters()">
                                 <option value="">All</option>
                                 <option>Interested</option>
@@ -445,11 +524,11 @@
                         </div>
                         <div class="filter-group">
                             <label>&nbsp;</label>
-                            <button onclick="clearFilters()">Clear All</button>
+                            <button onclick="clearFilters()">Clear</button>
                         </div>
                         <div class="filter-group">
                             <label>&nbsp;</label>
-                            <button class="btn-secondary" onclick="refreshData()">🔄 Refresh</button>
+                            <button class="btn-secondary" onclick="loadSheetData()">🔄 Refresh</button>
                         </div>
                     </div>
                     
@@ -474,7 +553,6 @@
             `;
             
             await loadSheetData();
-            await loadFilters();
         }
         
         // ==================== LOAD DATA FROM GOOGLE SHEET ====================
@@ -482,10 +560,12 @@
             if (!SPREADSHEET_ID || SPREADSHEET_ID === 'YOUR_SHEET_ID_HERE') {
                 document.getElementById('table-content').innerHTML = `
                     <div style="padding: 40px; text-align: center;">
-                        <p>⚠️ Please configure your Sheet ID</p>
+                        <p>⚠️ Please configure your Google Sheet ID</p>
                         <p style="font-size: 12px; color: #666; margin-top: 10px;">
-                            Find <code>const SPREADSHEET_ID = 'YOUR_SHEET_ID_HERE';</code> in the code<br>
-                            Replace with your Google Sheet ID from the URL
+                            Open your Google Sheet → Copy ID from URL → Replace in code
+                        </p>
+                        <p style="font-size: 12px; color: #666; margin-top: 5px;">
+                            Also make sure sheet is shared: Share → "Anyone with link can view"
                         </p>
                     </div>
                 `;
@@ -493,13 +573,58 @@
             }
             
             try {
-                // Using Google Sheets CSV export (works without API key)
-                const csvUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/export?format=csv&gid=0`;
-                const response = await fetch(csvUrl);
-                const csvText = await response.text();
+                // Try multiple methods to load data
+                let csvText = null;
+                
+                // Method 1: CSV export (most reliable)
+                try {
+                    const csvUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/export?format=csv&gid=0`;
+                    const response = await fetch(csvUrl);
+                    if (response.ok) {
+                        csvText = await response.text();
+                    }
+                } catch (e) {
+                    console.log('CSV method failed, trying JSON...');
+                }
+                
+                // Method 2: JSON export
+                if (!csvText) {
+                    try {
+                        const jsonUrl = `https://spreadsheets.google.com/feeds/list/${SPREADSHEET_ID}/od6/public/values?alt=json`;
+                        const response = await fetch(jsonUrl);
+                        if (response.ok) {
+                            const jsonData = await response.json();
+                            // Convert JSON to CSV-like format
+                            const entries = jsonData.feed.entry || [];
+                            if (entries.length > 0) {
+                                const headers = Object.keys(entries[0]).filter(k => k.startsWith('gsx$')).map(k => k.replace('gsx$', ''));
+                                let csvRows = [headers.join(',')];
+                                entries.forEach(entry => {
+                                    const row = headers.map(h => {
+                                        let val = entry[`gsx$${h}`]?.$t || '';
+                                        val = val.replace(/,/g, ' ');
+                                        return `"${val}"`;
+                                    }).join(',');
+                                    csvRows.push(row);
+                                });
+                                csvText = csvRows.join('\n');
+                            }
+                        }
+                    } catch (e) {
+                        console.log('JSON method failed');
+                    }
+                }
+                
+                if (!csvText) {
+                    throw new Error('Could not load data. Make sure sheet is shared publicly.');
+                }
                 
                 // Parse CSV
                 const rows = csvText.split('\n').filter(row => row.trim());
+                if (rows.length < 2) {
+                    throw new Error('No data found in sheet');
+                }
+                
                 const headers = rows[0].split(',').map(h => h.replace(/"/g, '').trim());
                 
                 allData = [];
@@ -509,24 +634,34 @@
                     headers.forEach((h, idx) => {
                         record[h] = values[idx] || '';
                     });
-                    if (record.regno) {
+                    if (record.regno || record.student_name) {
                         allData.push(record);
                     }
                 }
                 
-                console.log(`Loaded ${allData.length} records`);
+                console.log(`✅ Loaded ${allData.length} records`);
+                showToast(`Loaded ${allData.length} records successfully!`, 'success');
+                
+                // Load filters and render
+                await loadFilters();
                 applyFilters();
                 
             } catch (error) {
                 console.error('Load error:', error);
                 document.getElementById('table-content').innerHTML = `
                     <div style="padding: 40px; text-align: center;">
-                        <p>❌ Error loading data: ${error.message}</p>
+                        <p>❌ Error: ${error.message}</p>
+                        <p style="font-size: 12px; color: #666; margin-top: 15px;">
+                            <b>How to fix:</b><br>
+                            1. Open your Google Sheet<br>
+                            2. Click "Share" button<br>
+                            3. Change to "Anyone with the link"<br>
+                            4. Select "Viewer" permission<br>
+                            5. Copy the Sheet ID from URL<br>
+                            6. Update SPREADSHEET_ID in the code
+                        </p>
                         <p style="font-size: 12px; color: #666; margin-top: 10px;">
-                            Make sure your Google Sheet is shared publicly:<br>
-                            1. Open your sheet<br>
-                            2. Click Share<br>
-                            3. Change to "Anyone with link can view"
+                            Current Sheet ID: ${SPREADSHEET_ID}
                         </p>
                     </div>
                 `;
@@ -539,16 +674,20 @@
             const centers = [...new Set(allData.map(r => r.center).filter(Boolean))];
             
             const regionSelect = document.getElementById('filter-region');
-            regionSelect.innerHTML = '<option value="">All Regions</option>';
-            regions.forEach(r => {
-                regionSelect.innerHTML += `<option value="${r}">${r}</option>`;
-            });
+            if (regionSelect) {
+                regionSelect.innerHTML = '<option value="">All Regions</option>';
+                regions.forEach(r => {
+                    regionSelect.innerHTML += `<option value="${r}">${r}</option>`;
+                });
+            }
             
             const centerSelect = document.getElementById('filter-center');
-            centerSelect.innerHTML = '<option value="">All Centers</option>';
-            centers.forEach(c => {
-                centerSelect.innerHTML += `<option value="${c}">${c}</option>`;
-            });
+            if (centerSelect) {
+                centerSelect.innerHTML = '<option value="">All Centers</option>';
+                centers.forEach(c => {
+                    centerSelect.innerHTML += `<option value="${c}">${c}</option>`;
+                });
+            }
         }
         
         function applyFilters() {
@@ -563,7 +702,11 @@
                 if (center && record.center !== center) return false;
                 if (formStatus && record.form_status !== formStatus) return false;
                 if (disposition && record["Today's disposition"] !== disposition) return false;
-                if (search && !record.regno?.toLowerCase().includes(search) && !record.student_name?.toLowerCase().includes(search)) return false;
+                if (search) {
+                    const regnoMatch = record.regno?.toLowerCase().includes(search);
+                    const nameMatch = record.student_name?.toLowerCase().includes(search);
+                    if (!regnoMatch && !nameMatch) return false;
+                }
                 return true;
             });
             
@@ -572,17 +715,14 @@
         }
         
         function clearFilters() {
-            document.getElementById('filter-region').value = '';
-            document.getElementById('filter-center').value = '';
-            document.getElementById('filter-status').value = '';
-            document.getElementById('filter-disposition').value = '';
-            document.getElementById('filter-search').value = '';
+            const selects = ['filter-region', 'filter-center', 'filter-status', 'filter-disposition'];
+            selects.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            const search = document.getElementById('filter-search');
+            if (search) search.value = '';
             applyFilters();
-        }
-        
-        function refreshData() {
-            loadSheetData();
-            showToast('Refreshing data...', 'info');
         }
         
         // ==================== RENDER ====================
@@ -593,10 +733,10 @@
             const interested = filteredData.filter(r => r["Today's disposition"] === 'Interested').length;
             
             document.getElementById('stats').innerHTML = `
-                <div class="stat-card"><div class="stat-value">${total}</div><div class="stat-label">Total Records</div></div>
-                <div class="stat-card"><div class="stat-value">${connected}</div><div class="stat-label">Connected</div></div>
-                <div class="stat-card"><div class="stat-value">${dialled}</div><div class="stat-label">Dialled</div></div>
-                <div class="stat-card"><div class="stat-value">${interested}</div><div class="stat-label">Interested Today</div></div>
+                <div class="stat-card"><div class="stat-value">${total.toLocaleString()}</div><div class="stat-label">Total Records</div></div>
+                <div class="stat-card"><div class="stat-value">${connected.toLocaleString()}</div><div class="stat-label">Connected</div></div>
+                <div class="stat-card"><div class="stat-value">${dialled.toLocaleString()}</div><div class="stat-label">Dialled</div></div>
+                <div class="stat-card"><div class="stat-value">${interested.toLocaleString()}</div><div class="stat-label">Interested Today</div></div>
             `;
         }
         
@@ -621,8 +761,8 @@
             `;
             
             recordsToShow.forEach(record => {
-                const connectedClass = record['Connected status'] === 'Connected' ? '🟢' : '🔴';
-                const dialledClass = record['Dailed status'] === 'Dialled' ? '✅' : '⏳';
+                const connectedIcon = record['Connected status'] === 'Connected' ? '🟢' : '🔴';
+                const dialledIcon = record['Dailed status'] === 'Dialled' ? '✅' : '⏳';
                 
                 html += `
                     <tr>
@@ -631,10 +771,10 @@
                         <td>${record.center || '-'}</td>
                         <td>${record.region || '-'}</td>
                         <td>${record.newpayment_checks || '-'}</td>
-                        <td>${connectedClass} ${record['Connected status'] || '-'}</td>
-                        <td>${dialledClass} ${record['Dailed status'] || '-'}</td>
+                        <td>${connectedIcon} ${record['Connected status'] || '-'}</td>
+                        <td>${dialledIcon} ${record['Dailed status'] || '-'}</td>
                         <td>
-                            <select onchange="quickUpdate('${record.regno}', 'Today\'s disposition', this.value)" style="padding: 5px;">
+                            <select onchange="quickUpdate('${record.regno}', 'Today\'s disposition', this.value)">
                                 <option ${record["Today's disposition"] === 'Interested' ? 'selected' : ''}>Interested</option>
                                 <option ${record["Today's disposition"] === 'Not Interested' ? 'selected' : ''}>Not Interested</option>
                                 <option ${record["Today's disposition"] === 'Follow Up' ? 'selected' : ''}>Follow Up</option>
@@ -643,7 +783,7 @@
                             </select>
                         </td>
                         <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis;">${record['Other Remarks'] || '-'}</td>
-                        <td><button onclick="openEditPanel('${record.regno}')" style="padding: 5px 10px; font-size: 12px;">✏️ Edit</button></td>
+                        <td><button class="edit-btn" onclick="openEditPanel('${record.regno}')">✏️ Edit</button></td>
                     </tr>
                 `;
             });
@@ -651,7 +791,7 @@
             html += `
                     </tbody>
                 </table>
-                ${filteredData.length > 500 ? `<p style="padding: 15px; text-align: center; color: #666;">Showing 500 of ${filteredData.length} records. Use filters to narrow down.</p>` : ''}
+                ${filteredData.length > 500 ? `<p style="padding: 15px; text-align: center; color: #666;">Showing 500 of ${filteredData.length.toLocaleString()} records. Use filters to narrow down.</p>` : ''}
             `;
             
             document.getElementById('table-content').innerHTML = html;
@@ -723,12 +863,12 @@
         }
         
         function quickUpdate(regno, field, value) {
-            // For demo - in production, this would save to Google Sheet
             const record = allData.find(r => r.regno === regno);
             if (record) {
                 record[field] = value;
                 showToast(`Updated ${regno}: ${field} = ${value}`, 'success');
                 renderTable();
+                renderStats();
             }
         }
         
@@ -743,15 +883,12 @@
                 'Other Remarks': document.getElementById('edit-remarks').value
             };
             
-            // Update local data
             Object.assign(currentEditRecord, updates);
             
             showToast(`✅ Updated ${currentEditRecord.regno} successfully!`, 'success');
             closeEditPanel();
             renderTable();
-            
-            // In production, you would also save to Google Sheet using Sheets API
-            console.log('Would save to sheet:', currentEditRecord);
+            renderStats();
         }
         
         // ==================== UTILITIES ====================
