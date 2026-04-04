@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRM System</title>
+    <title>CRM System - Full Version</title>
     <style>
         * {
             margin: 0;
@@ -13,306 +13,765 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+        }
+        
+        /* Header */
+        .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            color: white;
+            padding: 15px 30px;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
         }
         
-        .login-card {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
+        .logo h2 {
+            font-size: 20px;
         }
         
-        h2 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 28px;
+        .logo p {
+            font-size: 12px;
+            opacity: 0.8;
         }
         
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
         
-        .google-btn {
-            background: white;
-            color: #333;
-            border: 1px solid #ddd;
-            padding: 12px 24px;
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
             border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
             cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.3s ease;
-            width: 100%;
-            justify-content: center;
+            transition: all 0.3s;
         }
         
-        .google-btn:hover {
-            background: #f8f9fa;
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        /* Filters */
+        .filters-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-end;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .filter-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #5a67d8;
             transform: translateY(-1px);
         }
         
-        .google-icon {
-            width: 20px;
-            height: 20px;
+        .btn-secondary {
+            background: #48bb78;
         }
         
-        .error {
-            background: #fee;
-            color: #c00;
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 20px;
+        .btn-secondary:hover {
+            background: #38a169;
+        }
+        
+        .btn-danger {
+            background: #f56565;
+        }
+        
+        /* Table */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            overflow-x: auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background: #f7fafc;
+            font-weight: 600;
             font-size: 12px;
-            display: none;
+            text-transform: uppercase;
+            color: #666;
+            position: sticky;
+            top: 0;
         }
         
-        .info {
-            background: #e3f2fd;
-            color: #1976d2;
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 20px;
+        tr:hover {
+            background: #f7fafc;
+        }
+        
+        /* Edit Panel */
+        .edit-panel {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 400px;
+            height: 100%;
+            background: white;
+            box-shadow: -2px 0 20px rgba(0,0,0,0.2);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .edit-panel.open {
+            right: 0;
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .close-panel {
+            background: none;
+            color: #666;
+            font-size: 24px;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
             font-size: 12px;
+            color: #666;
         }
         
-        input {
+        .form-group select, .form-group input, .form-group textarea {
             width: 100%;
             padding: 10px;
-            margin: 10px 0;
             border: 1px solid #ddd;
             border-radius: 8px;
-            font-size: 14px;
         }
         
-        .manual-login {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
         }
         
-        .manual-login h4 {
-            font-size: 12px;
-            color: #999;
-            margin-bottom: 10px;
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #48bb78;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 1100;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .filters-bar {
+                flex-direction: column;
+            }
+            .edit-panel {
+                width: 100%;
+                right: -100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="login-card">
-        <h2>🔐 CRM System</h2>
-        <div class="subtitle">Sign in with your Google account</div>
-        
-        <!-- Manual Email Input (Fallback) -->
-        <div class="manual-login">
-            <h4>👥 Authorized Agents Only</h4>
-            <input type="email" id="agent-email" placeholder="Enter your email address">
-            <button class="google-btn" onclick="manualLogin()" style="background: #4CAF50; color: white; border: none; margin-top: 10px;">
-                Continue with Email
-            </button>
-        </div>
-        
-        <div id="error-message" class="error"></div>
-        <div class="info">
-            ℹ️ Authorized agents can login. Contact admin to add your email.
-        </div>
-    </div>
+    <div id="app"></div>
 
     <script>
-        // Your Google Sheet ID (configure this)
-        const SPREADSHEET_ID = '1KZxUavEe9n-V4AdMZopaWiDGqwo1V260tK_XwcVzxpU'; // CHANGE THIS
+        // ==================== CONFIGURATION ====================
+        // REPLACE THIS WITH YOUR ACTUAL SHEET ID
+        const SPREADSHEET_ID = '1KZxUavEe9n-V4AdMZopaWiDGqwo1V260tK_XwcVzxpU'; // ← CHANGE THIS
         
-        // Authorized users (you can also load from Google Sheet)
-        // Add your email here for testing
+        // Authorized users - Add all your agents here
         const AUTHORIZED_USERS = {
-            'vishwaradya.1@pw.live': 'admin',
-            'agent1@gmail.com': 'agent',
-            'agent2@gmail.com': 'agent'
+            'vishwaradya.1@pw.live': 'admin',  // Your email - CHANGE THIS
+            // Add more agents here:
+            // 'agent1@company.com': 'agent',
+            // 'agent2@company.com': 'agent',
         };
         
-        function showError(message) {
-            const errorDiv = document.getElementById('error-message');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-            setTimeout(() => {
-                errorDiv.style.display = 'none';
-            }, 5000);
+        // Sheet tab names
+        const SHEET_TABS = {
+            MAIN: 'Main Tracker',
+            AUDIT: 'Audit Log'
+        };
+        
+        // ==================== GLOBAL STATE ====================
+        let currentUser = null;
+        let allData = [];
+        let filteredData = [];
+        let currentEditRecord = null;
+        
+        // ==================== INITIALIZATION ====================
+        function init() {
+            // Check if already logged in
+            const savedUser = localStorage.getItem('crm_user');
+            if (savedUser) {
+                const user = JSON.parse(savedUser);
+                const loginTime = new Date(user.loginTime);
+                const now = new Date();
+                const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
+                
+                if (hoursDiff < 24) {
+                    currentUser = user;
+                    showMainApp();
+                    return;
+                }
+            }
+            showLoginScreen();
         }
         
-        function manualLogin() {
-            const email = document.getElementById('agent-email').value.trim().toLowerCase();
+        // ==================== LOGIN SCREEN ====================
+        function showLoginScreen() {
+            document.getElementById('app').innerHTML = `
+                <div style="min-height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div style="background: white; padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+                        <h2 style="color: #333; margin-bottom: 10px;">🔐 CRM System</h2>
+                        <p style="color: #666; margin-bottom: 30px;">Sign in with your authorized email</p>
+                        
+                        <input type="email" id="login-email" placeholder="Enter your email address" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; font-size: 14px;">
+                        <button onclick="login()" style="width: 100%; background: #667eea; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 16px; cursor: pointer;">Continue with Email</button>
+                        
+                        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+                            <p style="font-size: 12px; color: #999;">👥 Authorized Agents Only</p>
+                            <p style="font-size: 11px; color: #999;">Contact admin to get access</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function login() {
+            const email = document.getElementById('login-email').value.trim().toLowerCase();
             
             if (!email) {
-                showError('Please enter your email address');
+                showToast('Please enter your email', 'error');
                 return;
             }
             
-            // Check if email is authorized
             const role = AUTHORIZED_USERS[email];
             
             if (!role) {
-                showError(`❌ Access Denied: ${email} is not authorized. Contact admin to add your email.`);
+                showToast(`❌ Access Denied: ${email} is not authorized. Contact admin.`, 'error');
                 return;
             }
             
-            // Login successful
-            const userName = email.split('@')[0];
-            loginSuccess(email, userName, role);
-        }
-        
-        function loginSuccess(email, name, role) {
-            // Store user info
-            const user = {
+            currentUser = {
                 email: email,
-                name: name,
+                name: email.split('@')[0],
                 role: role,
                 loginTime: new Date().toISOString()
             };
             
-            localStorage.setItem('crm_user', JSON.stringify(user));
-            
-            // Show success and redirect to main app
-            document.body.innerHTML = `
-                <div style="background: white; padding: 40px; border-radius: 20px; text-align: center; max-width: 500px; margin: 50px auto;">
-                    <h2>✅ Login Successful!</h2>
-                    <p>Welcome, ${name}!</p>
-                    <p>Role: ${role.toUpperCase()}</p>
-                    <button onclick="loadMainApp()" style="background: #4CAF50; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; margin-top: 20px;">
-                        Launch CRM Dashboard →
-                    </button>
-                </div>
-            `;
+            localStorage.setItem('crm_user', JSON.stringify(currentUser));
+            showMainApp();
         }
         
-        function loadMainApp() {
-            const user = JSON.parse(localStorage.getItem('crm_user'));
-            
-            if (!user) {
-                location.reload();
-                return;
-            }
-            
-            // Load the full CRM interface
-            document.body.innerHTML = `
-                <div style="padding: 20px;">
-                    <div style="background: #1a1f3a; color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <strong>📊 CRM System</strong> | ${user.name} (${user.role})
+        // ==================== MAIN APP ====================
+        async function showMainApp() {
+            document.getElementById('app').innerHTML = `
+                <div class="header">
+                    <div class="logo">
+                        <h2>📊 CRM Collection Tracker</h2>
+                        <p>Student Management System</p>
+                    </div>
+                    <div class="user-info">
+                        <span>👤 ${currentUser.name} (${currentUser.role.toUpperCase()})</span>
+                        <button class="logout-btn" onclick="logout()">Logout</button>
+                    </div>
+                </div>
+                
+                <div class="container">
+                    <div class="stats-grid" id="stats"></div>
+                    
+                    <div class="filters-bar">
+                        <div class="filter-group">
+                            <label>Region</label>
+                            <select id="filter-region" onchange="applyFilters()">
+                                <option value="">All Regions</option>
+                            </select>
                         </div>
-                        <button onclick="logout()" style="background: #f44336; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">Logout</button>
+                        <div class="filter-group">
+                            <label>Center</label>
+                            <select id="filter-center" onchange="applyFilters()">
+                                <option value="">All Centers</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Form Status</label>
+                            <select id="filter-status" onchange="applyFilters()">
+                                <option value="">All</option>
+                                <option>Stage 1</option>
+                                <option>Stage 2</option>
+                                <option>Stage 3</option>
+                                <option>Completed</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Today's Disposition</label>
+                            <select id="filter-disposition" onchange="applyFilters()">
+                                <option value="">All</option>
+                                <option>Interested</option>
+                                <option>Not Interested</option>
+                                <option>Follow Up</option>
+                                <option>RNR</option>
+                                <option>Enrolled</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Search</label>
+                            <input type="text" id="filter-search" placeholder="Reg No / Name" oninput="applyFilters()">
+                        </div>
+                        <div class="filter-group">
+                            <label>&nbsp;</label>
+                            <button onclick="clearFilters()">Clear All</button>
+                        </div>
+                        <div class="filter-group">
+                            <label>&nbsp;</label>
+                            <button class="btn-secondary" onclick="refreshData()">🔄 Refresh</button>
+                        </div>
                     </div>
                     
-                    <div style="background: white; padding: 20px; border-radius: 10px;">
-                        <h3>Welcome to CRM Dashboard</h3>
-                        <p>Your data will load from Google Sheets here.</p>
-                        <div id="data-container" style="margin-top: 20px;">
-                            <p>Loading data from Google Sheet...</p>
+                    <div class="table-container">
+                        <div id="table-content">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                <p>Loading data from Google Sheet...</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+                
+                <div class="edit-panel" id="edit-panel">
+                    <div class="panel-header">
+                        <h3>✏️ Edit Record</h3>
+                        <button class="close-panel" onclick="closeEditPanel()">×</button>
+                    </div>
+                    <div id="edit-form"></div>
+                    <button onclick="saveEdit()" style="width: 100%; margin-top: 20px;">💾 Save Changes</button>
+                </div>
             `;
             
-            loadSheetData();
+            await loadSheetData();
+            await loadFilters();
         }
         
+        // ==================== LOAD DATA FROM GOOGLE SHEET ====================
         async function loadSheetData() {
-            const container = document.getElementById('data-container');
-            
             if (!SPREADSHEET_ID || SPREADSHEET_ID === 'YOUR_SHEET_ID_HERE') {
-                container.innerHTML = `
-                    <div style="background: #fff3cd; padding: 15px; border-radius: 8px;">
-                        <p>⚠️ Please configure your Sheet ID in the code.</p>
-                        <p>Find this line in the HTML: <code>const SPREADSHEET_ID = 'YOUR_SHEET_ID_HERE';</code></p>
-                        <p>Replace with your Google Sheet ID from the URL.</p>
+                document.getElementById('table-content').innerHTML = `
+                    <div style="padding: 40px; text-align: center;">
+                        <p>⚠️ Please configure your Sheet ID</p>
+                        <p style="font-size: 12px; color: #666; margin-top: 10px;">
+                            Find <code>const SPREADSHEET_ID = 'YOUR_SHEET_ID_HERE';</code> in the code<br>
+                            Replace with your Google Sheet ID from the URL
+                        </p>
                     </div>
                 `;
                 return;
             }
             
             try {
-                // Using Google Sheets API (simplified)
-                const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/Main%20Tracker!A1:M20`, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
+                // Using Google Sheets CSV export (works without API key)
+                const csvUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/export?format=csv&gid=0`;
+                const response = await fetch(csvUrl);
+                const csvText = await response.text();
                 
-                if (response.ok) {
-                    const data = await response.json();
-                    const rows = data.values || [];
-                    
-                    if (rows.length > 0) {
-                        const headers = rows[0];
-                        const records = rows.slice(1);
-                        
-                        container.innerHTML = `
-                            <div style="overflow-x: auto;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <thead>
-                                        <tr style="background: #f0f0f0;">
-                                            ${headers.map(h => `<th style="padding: 10px; border: 1px solid #ddd; text-align: left;">${h}</th>`).join('')}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        ${records.map(row => `
-                                            <tr>
-                                                ${row.map(cell => `<td style="padding: 10px; border: 1px solid #ddd;">${cell || '-'}</td>`).join('')}
-                                            </tr>
-                                        `).join('')}
-                                    </tbody>
-                                </table>
-                                <p style="margin-top: 10px; color: #666;">Showing ${records.length} of ${records.length} records</p>
-                            </div>
-                        `;
-                    } else {
-                        container.innerHTML = '<p>No data found in sheet.</p>';
+                // Parse CSV
+                const rows = csvText.split('\n').filter(row => row.trim());
+                const headers = rows[0].split(',').map(h => h.replace(/"/g, '').trim());
+                
+                allData = [];
+                for (let i = 1; i < rows.length; i++) {
+                    const values = rows[i].split(',').map(v => v.replace(/"/g, '').trim());
+                    const record = {};
+                    headers.forEach((h, idx) => {
+                        record[h] = values[idx] || '';
+                    });
+                    if (record.regno) {
+                        allData.push(record);
                     }
-                } else {
-                    throw new Error('Failed to load sheet');
                 }
+                
+                console.log(`Loaded ${allData.length} records`);
+                applyFilters();
+                
             } catch (error) {
-                container.innerHTML = `
-                    <div style="background: #fee; padding: 15px; border-radius: 8px;">
-                        <p>❌ Error loading sheet: ${error.message}</p>
-                        <p>Make sure your sheet is shared publicly or with "Anyone with link can view".</p>
+                console.error('Load error:', error);
+                document.getElementById('table-content').innerHTML = `
+                    <div style="padding: 40px; text-align: center;">
+                        <p>❌ Error loading data: ${error.message}</p>
+                        <p style="font-size: 12px; color: #666; margin-top: 10px;">
+                            Make sure your Google Sheet is shared publicly:<br>
+                            1. Open your sheet<br>
+                            2. Click Share<br>
+                            3. Change to "Anyone with link can view"
+                        </p>
                     </div>
                 `;
             }
         }
         
-        function logout() {
-            localStorage.removeItem('crm_user');
-            location.reload();
+        // ==================== FILTERS ====================
+        async function loadFilters() {
+            const regions = [...new Set(allData.map(r => r.region).filter(Boolean))];
+            const centers = [...new Set(allData.map(r => r.center).filter(Boolean))];
+            
+            const regionSelect = document.getElementById('filter-region');
+            regionSelect.innerHTML = '<option value="">All Regions</option>';
+            regions.forEach(r => {
+                regionSelect.innerHTML += `<option value="${r}">${r}</option>`;
+            });
+            
+            const centerSelect = document.getElementById('filter-center');
+            centerSelect.innerHTML = '<option value="">All Centers</option>';
+            centers.forEach(c => {
+                centerSelect.innerHTML += `<option value="${c}">${c}</option>`;
+            });
         }
         
-        // Check if already logged in
-        const savedUser = localStorage.getItem('crm_user');
-        if (savedUser) {
-            const user = JSON.parse(savedUser);
-            // Check if session is still valid (less than 24 hours)
-            const loginTime = new Date(user.loginTime);
-            const now = new Date();
-            const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
+        function applyFilters() {
+            const region = document.getElementById('filter-region')?.value || '';
+            const center = document.getElementById('filter-center')?.value || '';
+            const formStatus = document.getElementById('filter-status')?.value || '';
+            const disposition = document.getElementById('filter-disposition')?.value || '';
+            const search = document.getElementById('filter-search')?.value.toLowerCase() || '';
             
-            if (hoursDiff < 24) {
-                loadMainApp();
-            } else {
-                localStorage.removeItem('crm_user');
+            filteredData = allData.filter(record => {
+                if (region && record.region !== region) return false;
+                if (center && record.center !== center) return false;
+                if (formStatus && record.form_status !== formStatus) return false;
+                if (disposition && record["Today's disposition"] !== disposition) return false;
+                if (search && !record.regno?.toLowerCase().includes(search) && !record.student_name?.toLowerCase().includes(search)) return false;
+                return true;
+            });
+            
+            renderStats();
+            renderTable();
+        }
+        
+        function clearFilters() {
+            document.getElementById('filter-region').value = '';
+            document.getElementById('filter-center').value = '';
+            document.getElementById('filter-status').value = '';
+            document.getElementById('filter-disposition').value = '';
+            document.getElementById('filter-search').value = '';
+            applyFilters();
+        }
+        
+        function refreshData() {
+            loadSheetData();
+            showToast('Refreshing data...', 'info');
+        }
+        
+        // ==================== RENDER ====================
+        function renderStats() {
+            const total = filteredData.length;
+            const connected = filteredData.filter(r => r['Connected status'] === 'Connected').length;
+            const dialled = filteredData.filter(r => r['Dailed status'] === 'Dialled').length;
+            const interested = filteredData.filter(r => r["Today's disposition"] === 'Interested').length;
+            
+            document.getElementById('stats').innerHTML = `
+                <div class="stat-card"><div class="stat-value">${total}</div><div class="stat-label">Total Records</div></div>
+                <div class="stat-card"><div class="stat-value">${connected}</div><div class="stat-label">Connected</div></div>
+                <div class="stat-card"><div class="stat-value">${dialled}</div><div class="stat-label">Dialled</div></div>
+                <div class="stat-card"><div class="stat-value">${interested}</div><div class="stat-label">Interested Today</div></div>
+            `;
+        }
+        
+        function renderTable() {
+            const recordsToShow = filteredData.slice(0, 500);
+            
+            if (recordsToShow.length === 0) {
+                document.getElementById('table-content').innerHTML = '<div style="padding: 40px; text-align: center;">No records found</div>';
+                return;
+            }
+            
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Reg No</th><th>Student Name</th><th>Center</th><th>Region</th>
+                            <th>Payment</th><th>Connected</th><th>Dialled</th>
+                            <th>Today's Disposition</th><th>Remarks</th><th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            recordsToShow.forEach(record => {
+                const connectedClass = record['Connected status'] === 'Connected' ? '🟢' : '🔴';
+                const dialledClass = record['Dailed status'] === 'Dialled' ? '✅' : '⏳';
+                
+                html += `
+                    <tr>
+                        <td><strong>${record.regno || '-'}</strong></td>
+                        <td>${record.student_name || '-'}</td>
+                        <td>${record.center || '-'}</td>
+                        <td>${record.region || '-'}</td>
+                        <td>${record.newpayment_checks || '-'}</td>
+                        <td>${connectedClass} ${record['Connected status'] || '-'}</td>
+                        <td>${dialledClass} ${record['Dailed status'] || '-'}</td>
+                        <td>
+                            <select onchange="quickUpdate('${record.regno}', 'Today\'s disposition', this.value)" style="padding: 5px;">
+                                <option ${record["Today's disposition"] === 'Interested' ? 'selected' : ''}>Interested</option>
+                                <option ${record["Today's disposition"] === 'Not Interested' ? 'selected' : ''}>Not Interested</option>
+                                <option ${record["Today's disposition"] === 'Follow Up' ? 'selected' : ''}>Follow Up</option>
+                                <option ${record["Today's disposition"] === 'RNR' ? 'selected' : ''}>RNR</option>
+                                <option ${record["Today's disposition"] === 'Enrolled' ? 'selected' : ''}>Enrolled</option>
+                            </select>
+                        </td>
+                        <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis;">${record['Other Remarks'] || '-'}</td>
+                        <td><button onclick="openEditPanel('${record.regno}')" style="padding: 5px 10px; font-size: 12px;">✏️ Edit</button></td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                    </tbody>
+                </table>
+                ${filteredData.length > 500 ? `<p style="padding: 15px; text-align: center; color: #666;">Showing 500 of ${filteredData.length} records. Use filters to narrow down.</p>` : ''}
+            `;
+            
+            document.getElementById('table-content').innerHTML = html;
+        }
+        
+        // ==================== EDIT FUNCTIONS ====================
+        function openEditPanel(regno) {
+            const record = allData.find(r => r.regno === regno);
+            if (!record) return;
+            
+            currentEditRecord = record;
+            
+            document.getElementById('edit-form').innerHTML = `
+                <div class="form-group">
+                    <label>Reg No</label>
+                    <input type="text" value="${record.regno || ''}" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Student Name</label>
+                    <input type="text" value="${record.student_name || ''}" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Connected Status</label>
+                    <select id="edit-connected">
+                        <option ${record['Connected status'] === 'Connected' ? 'selected' : ''}>Connected</option>
+                        <option ${record['Connected status'] === 'Not Connected' ? 'selected' : ''}>Not Connected</option>
+                        <option ${record['Connected status'] === 'Busy' ? 'selected' : ''}>Busy</option>
+                        <option ${record['Connected status'] === 'No Answer' ? 'selected' : ''}>No Answer</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Dialled Status</label>
+                    <select id="edit-dialled">
+                        <option ${record['Dailed status'] === 'Dialled' ? 'selected' : ''}>Dialled</option>
+                        <option ${record['Dailed status'] === 'Not Dialled' ? 'selected' : ''}>Not Dialled</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Today's Disposition</label>
+                    <select id="edit-disposition">
+                        <option ${record["Today's disposition"] === 'Interested' ? 'selected' : ''}>Interested</option>
+                        <option ${record["Today's disposition"] === 'Not Interested' ? 'selected' : ''}>Not Interested</option>
+                        <option ${record["Today's disposition"] === 'Follow Up' ? 'selected' : ''}>Follow Up</option>
+                        <option ${record["Today's disposition"] === 'RNR' ? 'selected' : ''}>RNR</option>
+                        <option ${record["Today's disposition"] === 'Enrolled' ? 'selected' : ''}>Enrolled</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Form Status</label>
+                    <select id="edit-formstatus">
+                        <option ${record.form_status === 'Stage 1' ? 'selected' : ''}>Stage 1</option>
+                        <option ${record.form_status === 'Stage 2' ? 'selected' : ''}>Stage 2</option>
+                        <option ${record.form_status === 'Stage 3' ? 'selected' : ''}>Stage 3</option>
+                        <option ${record.form_status === 'Completed' ? 'selected' : ''}>Completed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Other Remarks</label>
+                    <textarea id="edit-remarks" rows="3">${record['Other Remarks'] || ''}</textarea>
+                </div>
+            `;
+            
+            document.getElementById('edit-panel').classList.add('open');
+        }
+        
+        function closeEditPanel() {
+            document.getElementById('edit-panel').classList.remove('open');
+            currentEditRecord = null;
+        }
+        
+        function quickUpdate(regno, field, value) {
+            // For demo - in production, this would save to Google Sheet
+            const record = allData.find(r => r.regno === regno);
+            if (record) {
+                record[field] = value;
+                showToast(`Updated ${regno}: ${field} = ${value}`, 'success');
+                renderTable();
             }
         }
+        
+        function saveEdit() {
+            if (!currentEditRecord) return;
+            
+            const updates = {
+                'Connected status': document.getElementById('edit-connected').value,
+                'Dailed status': document.getElementById('edit-dialled').value,
+                "Today's disposition": document.getElementById('edit-disposition').value,
+                'form_status': document.getElementById('edit-formstatus').value,
+                'Other Remarks': document.getElementById('edit-remarks').value
+            };
+            
+            // Update local data
+            Object.assign(currentEditRecord, updates);
+            
+            showToast(`✅ Updated ${currentEditRecord.regno} successfully!`, 'success');
+            closeEditPanel();
+            renderTable();
+            
+            // In production, you would also save to Google Sheet using Sheets API
+            console.log('Would save to sheet:', currentEditRecord);
+        }
+        
+        // ==================== UTILITIES ====================
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.style.background = type === 'error' ? '#f56565' : '#48bb78';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        
+        function logout() {
+            localStorage.removeItem('crm_user');
+            currentUser = null;
+            showLoginScreen();
+        }
+        
+        // Start the app
+        init();
     </script>
 </body>
 </html>
