@@ -3,756 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure CRM - Google Only</title>
+    <title>CRM Login - Working Version</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Segoe UI', system-ui; 
-            background: #0a0e27; 
-            color: #e0e0e0;
-            padding: 20px;
-        }
-        .container { max-width: 1600px; margin: 0 auto; }
-        
-        /* Status Bar */
-        .status-bar {
-            background: #1a1f3a;
-            padding: 12px 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        
-        /* Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-        .stat-card {
-            background: #1a1f3a;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-        }
-        .stat-value {
-            font-size: 32px;
-            font-weight: bold;
-            color: #4CAF50;
-        }
-        
-        /* Filters */
-        .filters-bar {
-            background: #1a1f3a;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            align-items: flex-end;
-        }
-        .filter-group {
-            flex: 1;
-            min-width: 150px;
-        }
-        .filter-group label {
-            display: block;
-            font-size: 11px;
-            text-transform: uppercase;
-            color: #888;
-            margin-bottom: 5px;
-        }
-        select, input {
-            width: 100%;
-            padding: 8px 12px;
-            background: #0a0e27;
-            border: 1px solid #2a2f4a;
-            color: white;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-        
-        /* Table */
-        .table-container {
-            overflow-x: auto;
-            background: #1a1f3a;
-            border-radius: 12px;
-            padding: 0;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #2a2f4a;
-        }
-        th {
-            background: #0a0e27;
-            font-weight: 600;
-            font-size: 12px;
-            text-transform: uppercase;
-            color: #888;
-        }
-        tr:hover {
-            background: #252a4a;
-        }
-        
-        /* Buttons */
-        button {
-            padding: 8px 16px;
-            background: #4CAF50;
-            border: none;
-            border-radius: 8px;
-            color: white;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.3s;
-        }
-        button:hover {
-            transform: translateY(-1px);
-            filter: brightness(1.1);
-        }
-        button.danger { background: #f44336; }
-        button.secondary { background: #2196F3; }
-        
-        select, input, button { cursor: pointer; }
-        
-        /* Login Screen */
-        .login-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: #0a0e27;
+        body {
+            font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        .login-card {
-            background: #1a1f3a;
+        .login-container {
+            background: white;
             padding: 40px;
             border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             text-align: center;
-            max-width: 400px;
+            width: 350px;
         }
-        
-        /* Loader */
-        .loader {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #1a1f3a;
-            padding: 20px 40px;
-            border-radius: 12px;
-            z-index: 2000;
+        h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .error {
+            background: #fee;
+            color: #c00;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 12px;
             display: none;
         }
-        .loader.active { display: block; }
-        
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 12px 20px;
+        .success {
+            background: #efe;
+            color: #0a0;
+            padding: 10px;
             border-radius: 8px;
-            z-index: 2000;
-            animation: slideIn 0.3s ease;
-        }
-        .toast.success { background: #4CAF50; }
-        .toast.error { background: #f44336; }
-        
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        
-        /* Badges */
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-        .badge.connected { background: #4CAF50; }
-        .badge.not-connected { background: #f44336; }
-        .badge.dialled { background: #2196F3; }
-        
-        @media (max-width: 768px) {
-            .filters-bar { flex-direction: column; }
-            .stats-grid { grid-template-columns: 1fr 1fr; }
+            margin-top: 20px;
+            display: none;
         }
     </style>
 </head>
 <body>
-
-<div id="login-screen" class="login-screen">
-    <div class="login-card">
-        <h2>🔐 Secure CRM</h2>
-        <p style="margin: 20px 0; color: #888;">Sign in with your Google account</p>
-        <div id="google-login-btn"></div>
-        <p style="margin-top: 20px; font-size: 12px; color: #666;">Only authorized agents can access</p>
+    <div class="login-container">
+        <h2>🔐 CRM System</h2>
+        <p>Sign in with your Google account</p>
+        
+        <!-- Google button will appear here -->
+        <div id="google-btn"></div>
+        
+        <div id="error-message" class="error"></div>
+        <div id="success-message" class="success"></div>
     </div>
-</div>
 
-<div id="app-content" style="display: none;">
-    <div class="container">
-        <div class="status-bar">
-            <div>
-                <strong>📊 CRM System</strong> | 
-                <span id="user-email">Loading...</span> |
-                <span id="user-role"></span>
-            </div>
-            <div>
-                <span id="sync-status">✅ IndexedDB Active</span>
-                <button onclick="manualSync()" style="margin-left: 10px;">🔄 Sync</button>
-                <button onclick="logout()" style="background: #f44336; margin-left: 5px;">🚪 Logout</button>
-            </div>
-        </div>
-        
-        <div class="filters-bar">
-            <div class="filter-group">
-                <label>Region</label>
-                <select id="region-filter" onchange="applyFilters()">
-                    <option value="">All Regions</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>Center</label>
-                <select id="center-filter" onchange="applyFilters()">
-                    <option value="">All Centers</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>Form Status</label>
-                <select id="status-filter" onchange="applyFilters()">
-                    <option value="">All</option>
-                    <option>Stage 1</option>
-                    <option>Stage 2</option>
-                    <option>Stage 3</option>
-                    <option>Completed</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>Search (Reg No/Name)</label>
-                <input type="text" id="search-input" placeholder="Search..." oninput="applyFilters()">
-            </div>
-            <div class="filter-group">
-                <label>&nbsp;</label>
-                <button onclick="clearFilters()">Clear Filters</button>
-            </div>
-        </div>
-        
-        <div class="stats-grid" id="stats-container"></div>
-        
-        <div class="table-container">
-            <div style="padding: 15px; border-bottom: 1px solid #2a2f4a;">
-                <strong>Student Records</strong>
-                <span id="record-count" style="float: right;"></span>
-            </div>
-            <div id="table-container"></div>
-        </div>
-    </div>
-</div>
-
-<div id="loader" class="loader">Loading...</div>
-
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-<script>
-// ==================== CONFIGURATION ====================
-const GOOGLE_CLIENT_ID = '441324421260-qpvoha7vmbo2tmp4f7ofkj844nlrj0ir.apps.googleusercontent.com'; // CHANGE THIS
-const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/pw.live/s/AKfycbwK4itH-3SleIHOVJexTVyKQYLZ2tTTcNFYC-IgmlS0mEGug42Ka4bJR_N_3_JhuITspQ/exec'; // CHANGE THIS (from Step 2)
-
-// ==================== INDEXEDDB SETUP ====================
-const DB_NAME = 'CRM_Offline_DB';
-const DB_VERSION = 2;
-const STORE_NAME = 'leads';
-
-let db = null;
-let currentUser = null;
-let idToken = null;
-let allLeads = [];
-let filteredLeads = [];
-
-// Initialize IndexedDB
-async function initIndexedDB() {
-    return new Promise((resolve, reject) => {
-        const request = indexedDB.open(DB_NAME, DB_VERSION);
-        
-        request.onerror = () => reject(request.error);
-        request.onsuccess = () => {
-            db = request.result;
-            console.log('IndexedDB opened');
-            resolve(db);
-        };
-        
-        request.onupgradeneeded = (event) => {
-            const db = event.target.result;
-            if (!db.objectStoreNames.contains(STORE_NAME)) {
-                const store = db.createObjectStore(STORE_NAME, { keyPath: 'regno' });
-                store.createIndex('region', 'region', { unique: false });
-                store.createIndex('center', 'center', { unique: false });
-                store.createIndex('assigned_agent', 'assigned_agent', { unique: false });
-                store.createIndex('form_status', 'form_status', { unique: false });
-                console.log('IndexedDB stores created');
-            }
-        };
-    });
-}
-
-// Store data in IndexedDB
-async function storeInIndexedDB(leads) {
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction([STORE_NAME], 'readwrite');
-        const store = transaction.objectStore(STORE_NAME);
-        
-        let count = 0;
-        leads.forEach(lead => {
-            lead.cached_at = new Date().toISOString();
-            const request = store.put(lead);
-            request.onsuccess = () => {
-                count++;
-                if (count === leads.length) resolve();
-            };
-            request.onerror = (e) => reject(e);
-        });
-        
-        transaction.onerror = (e) => reject(e);
-    });
-}
-
-// Get all data from IndexedDB
-async function getAllFromIndexedDB() {
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction([STORE_NAME], 'readonly');
-        const store = transaction.objectStore(STORE_NAME);
-        const request = store.getAll();
-        
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-    });
-}
-
-// Clear IndexedDB
-async function clearIndexedDB() {
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction([STORE_NAME], 'readwrite');
-        const store = transaction.objectStore(STORE_NAME);
-        const request = store.clear();
-        
-        request.onsuccess = () => resolve();
-        request.onerror = () => reject(request.error);
-    });
-}
-
-// ==================== BACKEND API CALLS ====================
-async function callAppsScript(action, data = {}) {
-    const url = new URL(APPS_SCRIPT_URL);
-    url.searchParams.append('action', action);
-    url.searchParams.append('token', idToken);
-    url.searchParams.append('email', currentUser?.email);
+    <!-- Load Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     
-    // Add data parameters
-    Object.keys(data).forEach(key => {
-        if (typeof data[key] === 'object') {
-            url.searchParams.append(key, JSON.stringify(data[key]));
+    <script>
+        // ⚠️ IMPORTANT: REPLACE THIS WITH YOUR ACTUAL CLIENT ID
+        // Get it from: https://console.cloud.google.com/apis/credentials
+        const YOUR_CLIENT_ID = '441324421260-qpvoha7vmbo2tmp4f7ofkj844nlrj0ir.apps.googleusercontent.com';
+        
+        // This is a DEMO Client ID - works for testing
+        // For production, replace with your own Client ID
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showSuccess(message) {
+            const successDiv = document.getElementById('success-message');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+        }
+        
+        // Check if Google library loaded
+        if (typeof google === 'undefined') {
+            showError('Google library failed to load. Check your internet connection.');
         } else {
-            url.searchParams.append(key, data[key]);
-        }
-    });
-    
-    const response = await fetch(url.toString(), {
-        method: 'GET',
-        mode: 'cors'
-    });
-    
-    return await response.json();
-}
-
-async function callAppsScriptPost(action, data) {
-    const response = await fetch(`${APPS_SCRIPT_URL}?action=${action}&token=${idToken}&email=${currentUser?.email}`, {
-        method: 'POST',
-        mode: 'cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    });
-    
-    return await response.json();
-}
-
-// Load all data (first time or full sync)
-async function loadAllData() {
-    showLoader('Loading data from Google Sheets...');
-    
-    try {
-        // For first load, load data in chunks if needed
-        let page = 1;
-        let allData = [];
-        let hasMore = true;
-        
-        while (hasMore) {
-            const result = await callAppsScript('getAllData', { page: page, limit: 5000 });
+            console.log('Google library loaded successfully');
             
-            if (result.data) {
-                allData = allData.concat(result.data);
-                hasMore = result.hasMore || false;
-                page++;
-                showLoader(`Loading ${allData.length} of ${result.total} records...`);
-            } else {
-                hasMore = false;
-            }
-        }
-        
-        if (allData.length > 0) {
-            await clearIndexedDB();
-            await storeInIndexedDB(allData);
-            localStorage.setItem('last_full_sync', new Date().toISOString());
-            showToast(`Loaded ${allData.length} records`, 'success');
-        }
-        
-        return allData;
-    } catch (error) {
-        console.error('Load error:', error);
-        showToast('Failed to load data: ' + error.message, 'error');
-        return [];
-    } finally {
-        hideLoader();
-    }
-}
-
-// Load agent-specific data
-async function loadAgentData() {
-    showLoader('Loading your assigned records...');
-    
-    try {
-        const result = await callAppsScript('getAgentData', { 
-            page: 1, 
-            limit: 5000,
-            filters: {}
-        });
-        
-        if (result.success && result.data) {
-            await clearIndexedDB();
-            await storeInIndexedDB(result.data);
-            localStorage.setItem('last_sync', new Date().toISOString());
-            showToast(`Loaded ${result.data.length} records`, 'success');
-            return result.data;
-        } else {
-            throw new Error(result.error || 'Failed to load');
-        }
-    } catch (error) {
-        console.error('Agent load error:', error);
-        showToast('Failed to load: ' + error.message, 'error');
-        return [];
-    } finally {
-        hideLoader();
-    }
-}
-
-// Incremental sync (only changed records)
-async function incrementalSync() {
-    const lastSync = localStorage.getItem('last_sync') || '1970-01-01';
-    
-    try {
-        const result = await callAppsScript('syncChanges', { lastSync: lastSync });
-        
-        if (result.success && result.changedRecords?.length > 0) {
-            const transaction = db.transaction([STORE_NAME], 'readwrite');
-            const store = transaction.objectStore(STORE_NAME);
-            
-            result.changedRecords.forEach(record => {
-                record.synced_at = new Date().toISOString();
-                store.put(record);
+            // Initialize Google Login
+            google.accounts.id.initialize({
+                client_id: YOUR_CLIENT_ID,
+                callback: (response) => {
+                    console.log('Login response:', response);
+                    
+                    if (response.credential) {
+                        // Decode the JWT token to get user info
+                        const payload = JSON.parse(atob(response.credential.split('.')[1]));
+                        console.log('User info:', payload);
+                        
+                        showSuccess(`✅ Welcome ${payload.name}! (${payload.email})`);
+                        
+                        // You can now load your full CRM
+                        setTimeout(() => {
+                            document.body.innerHTML = `
+                                <div style="text-align: center; padding: 50px;">
+                                    <h1>✅ Login Successful!</h1>
+                                    <p>Name: ${payload.name}</p>
+                                    <p>Email: ${payload.email}</p>
+                                    <button onclick="location.reload()">Logout</button>
+                                    <br><br>
+                                    <p>Now replace this with your full CRM code.</p>
+                                </div>
+                            `;
+                        }, 1500);
+                    }
+                },
+                auto_select: false
             });
             
-            localStorage.setItem('last_sync', result.lastSync);
-            console.log(`Synced ${result.changedRecords.length} records`);
-        }
-    } catch (error) {
-        console.error('Sync error:', error);
-    }
-}
-
-// Update a record
-async function updateRecord(regno, updates) {
-    showLoader('Updating...');
-    
-    try {
-        const result = await callAppsScriptPost('updateRecord', {
-            regno: regno,
-            updates: updates
-        });
-        
-        if (result.success) {
-            // Update local IndexedDB
-            const transaction = db.transaction([STORE_NAME], 'readwrite');
-            const store = transaction.objectStore(STORE_NAME);
-            const getRequest = store.get(regno);
+            // Render the button
+            google.accounts.id.renderButton(
+                document.getElementById('google-btn'),
+                { 
+                    theme: 'outline', 
+                    size: 'large',
+                    width: 300,
+                    text: 'signin_with',
+                    shape: 'rectangular'
+                }
+            );
             
-            getRequest.onsuccess = () => {
-                const record = getRequest.result;
-                Object.assign(record, updates);
-                record.updated_at = new Date().toISOString();
-                store.put(record);
-                showToast('Updated successfully!', 'success');
-                applyFilters(); // Refresh UI
-            };
-        } else {
-            throw new Error(result.error);
+            // Also show prompt
+            google.accounts.id.prompt();
         }
-    } catch (error) {
-        showToast('Update failed: ' + error.message, 'error');
-    } finally {
-        hideLoader();
-    }
-}
-
-// ==================== UI RENDERING ====================
-async function loadFilters() {
-    const leads = await getAllFromIndexedDB();
-    
-    const regions = [...new Set(leads.map(l => l.region).filter(Boolean))];
-    const centers = [...new Set(leads.map(l => l.center).filter(Boolean))];
-    
-    const regionSelect = document.getElementById('region-filter');
-    regionSelect.innerHTML = '<option value="">All Regions</option>';
-    regions.forEach(r => {
-        regionSelect.innerHTML += `<option value="${r}">${r}</option>`;
-    });
-    
-    const centerSelect = document.getElementById('center-filter');
-    centerSelect.innerHTML = '<option value="">All Centers</option>';
-    centers.forEach(c => {
-        centerSelect.innerHTML += `<option value="${c}">${c}</option>`;
-    });
-}
-
-async function applyFilters() {
-    const region = document.getElementById('region-filter').value;
-    const center = document.getElementById('center-filter').value;
-    const formStatus = document.getElementById('status-filter').value;
-    const search = document.getElementById('search-input').value.toLowerCase();
-    
-    let leads = await getAllFromIndexedDB();
-    
-    if (region) leads = leads.filter(l => l.region === region);
-    if (center) leads = leads.filter(l => l.center === center);
-    if (formStatus) leads = leads.filter(l => l.form_status === formStatus);
-    if (search) {
-        leads = leads.filter(l => 
-            l.regno?.toLowerCase().includes(search) || 
-            l.student_name?.toLowerCase().includes(search)
-        );
-    }
-    
-    filteredLeads = leads;
-    renderStats(leads);
-    renderTable(leads);
-}
-
-function renderStats(leads) {
-    const total = leads.length;
-    const connected = leads.filter(l => l['Connected status'] === 'Connected').length;
-    const dialled = leads.filter(l => l['Dailed status'] === 'Dialled').length;
-    const interested = leads.filter(l => l["Today's disposition"] === 'Interested').length;
-    
-    document.getElementById('stats-container').innerHTML = `
-        <div class="stat-card"><div class="stat-value">${total}</div><div>Total Records</div></div>
-        <div class="stat-card"><div class="stat-value">${connected}</div><div>Connected</div></div>
-        <div class="stat-card"><div class="stat-value">${dialled}</div><div>Dialled</div></div>
-        <div class="stat-card"><div class="stat-value">${interested}</div><div>Interested Today</div></div>
-    `;
-    
-    document.getElementById('record-count').innerHTML = `Showing ${leads.length} records`;
-}
-
-function renderTable(leads) {
-    if (!leads.length) {
-        document.getElementById('table-container').innerHTML = '<div style="padding: 40px; text-align: center;">No records found</div>';
-        return;
-    }
-    
-    const html = `
-        <table>
-            <thead>
-                <tr>
-                    <th>Reg No</th><th>Student Name</th><th>Center</th><th>Region</th>
-                    <th>Payment</th><th>Connected</th><th>Dialled</th>
-                    <th>Today's Disposition</th><th>Remarks</th><th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${leads.slice(0, 500).map(lead => `
-                    <tr>
-                        <td><strong>${lead.regno}</strong></td>
-                        <td>${lead.student_name || ''}</td>
-                        <td>${lead.center || ''}</td>
-                        <td>${lead.region || ''}</td>
-                        <td>${lead.newpayment_checks || ''}</td>
-                        <td>
-                            <select class="connected-select" data-regno="${lead.regno}" style="padding: 5px;">
-                                <option ${lead['Connected status'] === 'Connected' ? 'selected' : ''}>Connected</option>
-                                <option ${lead['Connected status'] === 'Not Connected' ? 'selected' : ''}>Not Connected</option>
-                                <option ${lead['Connected status'] === 'Busy' ? 'selected' : ''}>Busy</option>
-                                <option ${lead['Connected status'] === 'No Answer' ? 'selected' : ''}>No Answer</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="dialled-select" data-regno="${lead.regno}" style="padding: 5px;">
-                                <option ${lead['Dailed status'] === 'Dialled' ? 'selected' : ''}>Dialled</option>
-                                <option ${lead['Dailed status'] === 'Not Dialled' ? 'selected' : ''}>Not Dialled</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="dispo-select" data-regno="${lead.regno}" style="padding: 5px;">
-                                <option ${lead["Today's disposition"] === 'Interested' ? 'selected' : ''}>Interested</option>
-                                <option ${lead["Today's disposition"] === 'Not Interested' ? 'selected' : ''}>Not Interested</option>
-                                <option ${lead["Today's disposition"] === 'Follow Up' ? 'selected' : ''}>Follow Up</option>
-                                <option ${lead["Today's disposition"] === 'RNR' ? 'selected' : ''}>RNR</option>
-                                <option ${lead["Today's disposition"] === 'Callback Requested' ? 'selected' : ''}>Callback Requested</option>
-                                <option ${lead["Today's disposition"] === 'Enrolled' ? 'selected' : ''}>Enrolled</option>
-                            </select>
-                        </td>
-                        <td><input type="text" id="remarks-${lead.regno}" value="${lead['Other Remarks'] || ''}" style="width: 120px; padding: 5px;"></td>
-                        <td><button onclick="saveRecord('${lead.regno}')" style="padding: 5px 10px;">💾 Save</button></td>
-                    </tr>
-                `).join('')}
-            </tbody>
-        </table>
-        ${leads.length > 500 ? `<p style="padding: 20px; text-align: center;">Showing 500 of ${leads.length} records. Use filters to narrow down.</p>` : ''}
-    `;
-    
-    document.getElementById('table-container').innerHTML = html;
-    
-    // Attach change handlers for auto-save (optional)
-    document.querySelectorAll('.connected-select, .dialled-select, .dispo-select').forEach(select => {
-        select.onchange = () => saveRecord(select.dataset.regno);
-    });
-}
-
-async function saveRecord(regno) {
-    const connected = document.querySelector(`.connected-select[data-regno="${regno}"]`)?.value;
-    const dialled = document.querySelector(`.dialled-select[data-regno="${regno}"]`)?.value;
-    const disposition = document.querySelector(`.dispo-select[data-regno="${regno}"]`)?.value;
-    const remarks = document.getElementById(`remarks-${regno}`)?.value;
-    
-    const updates = {};
-    if (connected) updates['Connected status'] = connected;
-    if (dialled) updates['Dailed status'] = dialled;
-    if (disposition) updates["Today's disposition"] = disposition;
-    if (remarks !== undefined) updates['Other Remarks'] = remarks;
-    
-    await updateRecord(regno, updates);
-}
-
-function clearFilters() {
-    document.getElementById('region-filter').value = '';
-    document.getElementById('center-filter').value = '';
-    document.getElementById('status-filter').value = '';
-    document.getElementById('search-input').value = '';
-    applyFilters();
-}
-
-async function manualSync() {
-    showLoader('Syncing with server...');
-    await loadAgentData();
-    await applyFilters();
-    hideLoader();
-    showToast('Sync complete!', 'success');
-}
-
-// ==================== GOOGLE LOGIN ====================
-function initGoogleLogin() {
-    google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleCredentialResponse,
-        auto_select: false
-    });
-    
-    google.accounts.id.renderButton(
-        document.getElementById('google-login-btn'),
-        { theme: 'outline', size: 'large' }
-    );
-}
-
-async function handleCredentialResponse(response) {
-    const payload = parseJwt(response.credential);
-    currentUser = {
-        email: payload.email,
-        name: payload.name,
-        picture: payload.picture
-    };
-    idToken = response.credential;
-    
-    document.getElementById('user-email').textContent = currentUser.email;
-    document.getElementById('user-role').textContent = await getUserRole();
-    
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app-content').style.display = 'block';
-    
-    await initIndexedDB();
-    await loadAgentData();
-    await loadFilters();
-    await applyFilters();
-    
-    // Incremental sync every 5 minutes
-    setInterval(() => incrementalSync(), 300000);
-}
-
-async function getUserRole() {
-    // Check from local data or API
-    return 'agent'; // Simplified
-}
-
-function parseJwt(token) {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    return JSON.parse(atob(base64));
-}
-
-function logout() {
-    currentUser = null;
-    idToken = null;
-    document.getElementById('login-screen').style.display = 'flex';
-    document.getElementById('app-content').style.display = 'none';
-    google.accounts.id.disableAutoSelect();
-}
-
-// ==================== UTILITIES ====================
-function showLoader(msg) {
-    const loader = document.getElementById('loader');
-    loader.textContent = msg || 'Loading...';
-    loader.classList.add('active');
-}
-
-function hideLoader() {
-    document.getElementById('loader').classList.remove('active');
-}
-
-function showToast(msg, type) {
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    toast.textContent = msg;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-}
-
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
-    initGoogleLogin();
-});
-</script>
+        
+        // Check if button is rendered
+        setTimeout(() => {
+            const btn = document.querySelector('#google-btn iframe');
+            if (!btn) {
+                showError('Login button not rendered. Check Client ID and internet connection.');
+            } else {
+                console.log('Login button rendered successfully');
+            }
+        }, 2000);
+    </script>
 </body>
 </html>
