@@ -33,13 +33,11 @@ body.light .b-green{background:rgba(22,163,74,.1);color:#16a34a}
 body.light .b-yellow{background:rgba(180,83,9,.1);color:#b45309}
 body.light .b-red{background:rgba(220,38,38,.1);color:#dc2626}
 body.light .b-orange{background:rgba(194,65,12,.1);color:#c2410c}
-
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;overflow-x:hidden;transition:background .2s,color .2s}
 code,pre{font-family:'JetBrains Mono',monospace}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
-
 /* AUTH */
 #auth-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:900;background-image:radial-gradient(ellipse 70% 50% at 80% 10%,rgba(74,158,255,.06) 0%,transparent 60%),radial-gradient(ellipse 50% 70% at 10% 90%,rgba(124,111,255,.05) 0%,transparent 60%)}
 .auth-card{width:460px;background:var(--s1);border:1px solid var(--b2);border-radius:16px;padding:44px 48px;box-shadow:var(--sh);animation:fadeUp .5s ease both}
@@ -62,10 +60,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .admin-toggle:hover{color:var(--blue)}
 .auth-err{margin-top:12px;padding:10px 14px;background:rgba(242,92,92,.08);border:1px solid rgba(242,92,92,.2);border-radius:8px;font-size:13px;color:var(--red);display:none}
 .auth-err.show{display:block}
-
 /* APP */
 #app{display:none;flex-direction:column;min-height:100vh;position:relative;z-index:1}
-
 /* SIDEBAR */
 .sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:var(--s1);border-right:1px solid var(--b1);display:flex;flex-direction:column;z-index:100;transition:background var(--tr),border-color var(--tr)}
 .sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:10px}
@@ -88,7 +84,6 @@ body.light .nav-item.active{background:rgba(37,99,235,.1)}
 .user-role{font-size:10px;color:var(--ink3);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
 .logout-btn{margin-top:6px;width:100%;background:transparent;border:1px solid var(--b1);border-radius:7px;color:var(--ink3);font-family:'Outfit',sans-serif;font-size:12px;padding:6px;cursor:pointer;transition:all var(--tr)}
 .logout-btn:hover{border-color:var(--red);color:var(--red)}
-
 /* MAIN */
 .main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:54px;background:rgba(11,12,16,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--b1);position:sticky;top:0;z-index:50;transition:background var(--tr)}
@@ -99,7 +94,6 @@ body.light .nav-item.active{background:rgba(37,99,235,.1)}
 .icon-btn.spinning .si{animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .content{padding:20px 24px;flex:1}
-
 /* FILTERS */
 .filter-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:14px 16px;margin-bottom:16px}
 .fg{display:flex;flex-direction:column;gap:4px}
@@ -108,7 +102,6 @@ body.light .nav-item.active{background:rgba(37,99,235,.1)}
 .fs:focus,.fi:focus{border-color:var(--blue)}
 .fi{cursor:text;min-width:200px}
 .filter-actions{display:flex;gap:6px;align-items:flex-end;margin-left:auto}
-
 /* BUTTONS */
 .btn{border:none;border-radius:8px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;padding:8px 16px;cursor:pointer;transition:all var(--tr);display:inline-flex;align-items:center;gap:6px}
 .btn-primary{background:var(--blue);color:#fff}
@@ -120,7 +113,6 @@ body.light .nav-item.active{background:rgba(37,99,235,.1)}
 .btn-success:hover{background:rgba(34,209,122,.18)}
 .btn-danger{background:rgba(242,92,92,.08);color:var(--red);border:1px solid rgba(242,92,92,.2)}
 .btn-danger:hover{background:rgba(242,92,92,.15)}
-
 /* STATS */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
 .stat{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:14px 16px;position:relative;overflow:hidden}
@@ -129,7 +121,6 @@ body.light .nav-item.active{background:rgba(37,99,235,.1)}
 .stat-v{font-size:28px;font-weight:800;font-family:'JetBrains Mono',monospace}
 .stat.c-blue .stat-v{color:var(--blue)}.stat.c-green .stat-v{color:var(--green)}.stat.c-yellow .stat-v{color:var(--yellow)}.stat.c-violet .stat-v{color:var(--violet)}
 .stat-l{font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:.6px;margin-top:2px}
-
 /* TABLE */
 .table-wrap{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);overflow:hidden}
 .tw-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--b1)}
@@ -149,7 +140,6 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
 .empty{text-align:center;padding:60px 20px;color:var(--ink3)}
 .empty-icon{font-size:40px;margin-bottom:12px}
 .empty-t{font-size:14px;font-weight:500}
-
 /* BADGES */
 .badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:600;font-family:'Outfit',sans-serif;white-space:nowrap}
 .b-blue{background:rgba(74,158,255,.12);color:var(--blue)}
@@ -159,7 +149,6 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
 .b-orange{background:rgba(255,138,61,.12);color:var(--orange)}
 .b-violet{background:rgba(124,111,255,.12);color:var(--violet)}
 .b-gray{background:rgba(78,88,112,.15);color:var(--ink2)}
-
 /* PANEL */
 .panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;opacity:0;pointer-events:none;transition:opacity var(--tr)}
 .panel-overlay.open{opacity:1;pointer-events:all}
@@ -185,7 +174,7 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
 .et{resize:vertical;min-height:68px}
 .yest-box{background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:11px 13px;display:flex;align-items:center;gap:10px}
 .yest-label{font-size:11px;color:var(--ink3);font-weight:500}
-
+.ro-field{background:var(--s2);border:1px solid var(--b1);color:var(--ink);border-radius:8px;padding:9px 12px;font-family:'JetBrains Mono',monospace;font-size:12px}
 /* AUDIT */
 .audit-item{background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:12px 14px;margin-bottom:8px}
 .audit-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
@@ -197,7 +186,6 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
 .audit-from{color:var(--red);text-decoration:line-through;font-family:'JetBrains Mono',monospace;font-size:11px}
 .audit-arr{color:var(--ink3)}
 .audit-to{color:var(--green);font-family:'JetBrains Mono',monospace;font-size:11px}
-
 /* SETTINGS */
 .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .s-card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:18px}
@@ -212,31 +200,26 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
 .add-input{flex:1;background:var(--s2);border:1px solid var(--b1);color:var(--ink);border-radius:7px;font-family:'Outfit',sans-serif;font-size:12px;padding:7px 10px;outline:none}
 .add-input:focus{border-color:var(--blue)}
 .add-select{background:var(--s2);border:1px solid var(--b1);color:var(--ink);border-radius:7px;font-family:'Outfit',sans-serif;font-size:12px;padding:7px 8px;outline:none}
-
 /* LOADER */
 .loader-ov{position:fixed;inset:0;background:rgba(11,12,16,.75);display:none;align-items:center;justify-content:center;z-index:800}
 .loader-ov.on{display:flex}
 .loader-box{background:var(--s1);border:1px solid var(--b2);border-radius:12px;padding:28px 40px;text-align:center}
 .spinner{width:38px;height:38px;border:3px solid var(--b2);border-top-color:var(--blue);border-radius:50%;animation:spin .65s linear infinite;margin:0 auto 14px}
 .loader-msg{font-size:13px;color:var(--ink2)}
-
 /* TOAST */
 .toast{position:fixed;bottom:20px;right:20px;background:var(--s1);border:1px solid var(--b2);border-radius:10px;padding:11px 16px;font-size:13px;color:var(--ink);box-shadow:var(--sh);z-index:999;transform:translateY(60px);opacity:0;transition:all .25s ease;max-width:300px;display:flex;align-items:center;gap:8px}
 .toast.on{transform:none;opacity:1}
 .toast.ok{border-color:rgba(34,209,122,.4)}
 .toast.err{border-color:rgba(242,92,92,.4)}
 .toast.info{border-color:rgba(74,158,255,.3)}
-
 .warn-banner{background:rgba(245,183,49,.07);border:1px solid rgba(245,183,49,.2);border-radius:var(--r);padding:12px 16px;margin-bottom:16px;font-size:13px;color:var(--yellow);display:none;align-items:center;gap:10px}
 .warn-banner.show{display:flex}
 .warn-banner a{color:var(--blue)}
 .page-head{margin-bottom:18px;display:flex;align-items:center;justify-content:space-between}
 .page-h{font-size:19px;font-weight:800;color:var(--ink)}
 .page-s{font-size:13px;color:var(--ink3);margin-top:2px}
-
 #setup-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:999;align-items:center;justify-content:center;padding:20px}
 .setup-box{background:var(--s1);border:1px solid var(--b2);border-radius:14px;padding:32px;max-width:600px;width:100%;max-height:85vh;overflow-y:auto}
-
 @media(max-width:900px){
   .sidebar{width:60px}
   .logo-text,.logo-sub,.nav-item span:not(.nav-icon),.nav-section-label,.user-name,.user-role,.logout-btn{display:none}
@@ -249,7 +232,6 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
 </style>
 </head>
 <body>
-
 <!-- AUTH -->
 <div id="auth-screen">
   <div class="auth-card">
@@ -276,7 +258,6 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
     <div class="auth-err" id="auth-err"></div>
   </div>
 </div>
-
 <!-- SETUP MODAL -->
 <div id="setup-modal">
   <div class="setup-box">
@@ -287,7 +268,6 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
     <div id="setup-content" style="font-size:13px;color:var(--ink2);line-height:1.9"></div>
   </div>
 </div>
-
 <!-- APP -->
 <div id="app">
   <div class="sidebar">
@@ -304,7 +284,6 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
       <button class="logout-btn" onclick="doLogout()">Sign out</button>
     </div>
   </div>
-
   <div class="main">
     <div class="topbar">
       <div class="page-title" id="page-title">📊 Tracker</div>
@@ -314,37 +293,31 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
       </div>
     </div>
     <div class="content">
-
       <!-- TRACKER -->
       <div id="page-tracker">
         <div class="warn-banner" id="warn-banner">⚠️ <span>Config missing. <a href="#" onclick="doLogout()">Go back →</a></span></div>
         <div class="filter-bar">
           <div class="fg"><span class="fl">Region</span><select class="fs" id="f-region" onchange="applyFilters()"><option value="">All Regions</option></select></div>
           <div class="fg"><span class="fl">Payment</span><select class="fs" id="f-payment" onchange="applyFilters()"><option value="">All</option></select></div>
-          <div class="fg"><span class="fl">Connected</span><select class="fs" id="f-connected" onchange="applyFilters()"><option value="">All</option><option>Connected</option><option>Not Connected</option><option>Busy</option><option>No Answer</option><option>Switched Off</option></select></div>
-          <div class="fg"><span class="fl">Dialled</span><select class="fs" id="f-dialled" onchange="applyFilters()"><option value="">All</option><option>Dialled</option><option>Not Dialled</option></select></div>
-          <div class="fg"><span class="fl">Form Status</span><select class="fs" id="f-form" onchange="applyFilters()"><option value="">All</option><option>Stage 1</option><option>Stage 2</option><option>Stage 3</option><option>Completed</option></select></div>
-          <div class="fg"><span class="fl">Today Disposition</span><select class="fs" id="f-disp" onchange="applyFilters()"><option value="">All</option><option>Interested</option><option>Not Interested</option><option>Follow Up</option><option>RNR</option><option>Callback Requested</option><option>Enrolled</option><option>Drop</option></select></div>
           <div class="fg"><span class="fl">Search</span><input class="fi" id="f-search" placeholder="Reg No / Student Name..." oninput="applyFilters()"/></div>
           <div class="filter-actions"><button class="btn btn-ghost btn-sm" onclick="clearFilters()">Clear</button></div>
         </div>
         <div class="stats">
           <div class="stat c-blue"><div class="stat-v" id="s-total">—</div><div class="stat-l">Total Records</div></div>
           <div class="stat c-green"><div class="stat-v" id="s-conn">—</div><div class="stat-l">Connected Today</div></div>
-          <div class="stat c-yellow"><div class="stat-v" id="s-dialled">—</div><div class="stat-l">Dialled</div></div>
+          <div class="stat c-yellow"><div class="stat-v" id="s-ptp">—</div><div class="stat-l">PTP Created</div></div>
           <div class="stat c-violet"><div class="stat-v" id="s-showing">—</div><div class="stat-l">Showing</div></div>
         </div>
         <div class="table-wrap">
           <div class="tw-head"><div class="tw-title">Student Records</div><div class="tw-meta" id="tw-meta">Loading…</div></div>
           <div class="tbl-outer">
             <table>
-              <thead><tr><th>Reg No</th><th>Student Name</th><th>Center</th><th>Region</th><th>Payment</th><th>Fees Amt</th><th>Fees Paid</th><th>Form</th><th>Connected</th><th>Dialled</th><th>Yesterday Disp.</th><th>Today Disp.</th><th>Remarks</th><th></th></tr></thead>
+              <thead><tr><th>Reg No</th><th>Student Name</th><th>Center</th><th>Region</th><th>Payment</th><th>Total Paid</th><th>PTP</th><th>Connected</th><th>Dialled</th><th>Yesterday Disp.</th><th>Today Disp.</th><th></th></tr></thead>
               <tbody id="tbl-body"></tbody>
             </table>
           </div>
         </div>
       </div>
-
       <!-- AUDIT -->
       <div id="page-audit" style="display:none">
         <div class="page-head">
@@ -353,7 +326,6 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
         </div>
         <div id="audit-list"></div>
       </div>
-
       <!-- SETTINGS -->
       <div id="page-settings" style="display:none">
         <div class="page-head"><div><div class="page-h">Settings</div><div class="page-s">User management & configuration</div></div></div>
@@ -376,11 +348,9 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
-
 <!-- PANEL -->
 <div class="panel-overlay" id="panel-ov" onclick="closePanel()"></div>
 <div class="panel" id="panel">
@@ -389,17 +359,13 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
     <button class="panel-close" onclick="closePanel()">×</button>
   </div>
   <div class="panel-body">
-    <div class="p-section"><div class="p-section-t">📋 Student Info</div><div class="info-grid" id="p-info"></div></div>
+    <div class="p-section"><div class="p-section-t">📋 Student Info (Read Only)</div><div class="info-grid" id="p-info"></div></div>
     <div class="p-section">
-      <div class="p-section-t">📅 Yesterday's Disposition <span style="font-size:9px;color:var(--ink3);font-weight:400">(auto-carried, read-only)</span></div>
-      <div class="yest-box"><div id="p-yest">—</div><span class="yest-label">Kal ka status</span></div>
-    </div>
-    <div class="p-section">
-      <div class="p-section-t">✏️ Update Fields</div>
+      <div class="p-section-t">✏️ Editable Fields Only</div>
+      <div class="ef"><label class="el">PTP</label><input class="es" id="e-ptp" placeholder="Enter PTP date or details"/></div>
       <div class="ef"><label class="el">Connected Status</label><select class="es" id="e-connected"><option value="">— Select —</option><option>Connected</option><option>Not Connected</option><option>Busy</option><option>No Answer</option><option>Switched Off</option><option>Invalid Number</option></select></div>
       <div class="ef"><label class="el">Dialled Status</label><select class="es" id="e-dialled"><option value="">— Select —</option><option>Dialled</option><option>Not Dialled</option></select></div>
       <div class="ef"><label class="el">Today's Disposition</label><select class="es" id="e-today"><option value="">— Select —</option><option>Interested</option><option>Not Interested</option><option>Follow Up</option><option>RNR</option><option>Callback Requested</option><option>Enrolled</option><option>Drop</option><option>Wrong Number</option><option>Future Prospect</option></select></div>
-      <div class="ef"><label class="el">Form Status</label><select class="es" id="e-form"><option value="">— Select —</option><option>Stage 1</option><option>Stage 2</option><option>Stage 3</option><option>Completed</option></select></div>
       <div class="ef"><label class="el">Other Remarks</label><textarea class="et" id="e-remarks" placeholder="Notes, callback time, etc..."></textarea></div>
     </div>
     <div class="p-section"><div class="p-section-t">🕐 This Record's History</div><div id="p-history"></div></div>
@@ -409,10 +375,8 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
     <button class="btn btn-ghost" onclick="closePanel()">Cancel</button>
   </div>
 </div>
-
 <div class="loader-ov" id="loader"><div class="loader-box"><div class="spinner"></div><div class="loader-msg" id="loader-msg">Loading…</div></div></div>
 <div class="toast" id="toast"></div>
-
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
 // ── THEME: apply before render to avoid flash ──
@@ -420,39 +384,30 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
   const t=localStorage.getItem('crm_theme')||'dark';
   if(t==='light') document.body.classList.add('light');
 })();
-
 function toggleTheme(){
   const light=document.body.classList.toggle('light');
   localStorage.setItem('crm_theme',light?'light':'dark');
   document.getElementById('theme-btn').textContent=light?'☀️ Light':'🌙 Dark';
 }
-// Update button label after DOM ready
 document.addEventListener('DOMContentLoaded',()=>{
   const t=localStorage.getItem('crm_theme')||'dark';
   document.getElementById('theme-btn').textContent=t==='light'?'☀️ Light':'🌙 Dark';
 });
-
 // ── CONFIG ──
-// Use localStorage getters/setters so values are always fresh
 const CFG={
   get clientId(){return localStorage.getItem('crm_client_id')||'';},
   get sheetId() {return localStorage.getItem('crm_sheet_id') ||'';},
   set clientId(v){localStorage.setItem('crm_client_id',v);},
   set sheetId(v) {localStorage.setItem('crm_sheet_id',v);},
 };
-
-// Pre-fill config inputs on DOMContentLoaded
-// (this is what agents benefit from — values already in localStorage from admin setup)
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('client-id-input').value=CFG.clientId;
   document.getElementById('sheet-id-input').value=CFG.sheetId;
-  // Auto-show config panel if not yet set up
   if(!CFG.clientId||!CFG.sheetId){
     document.getElementById('config-section').classList.add('visible');
     document.getElementById('admin-toggle').textContent='▲ Hide config';
   }
 });
-
 function toggleConfigPanel(){
   const s=document.getElementById('config-section');
   const t=document.getElementById('admin-toggle');
@@ -463,21 +418,24 @@ function toggleConfigPanel(){
     document.getElementById('sheet-id-input').value=CFG.sheetId;
   }
 }
-
 // ── SHEET CONFIG ──
 const SH={main:'Main Tracker',audit:'Audit Log',users:'Users'};
-const COL={regno:0,student_name:1,center:2,region:3,newpayment_checks:4,fees_amt:5,fees_paid:6,form_status:7,connected_status:8,dialled_status:9,yesterday_disposition:10,todays_disposition:11,other_remarks:12};
-const NUM_COLS=13;
-const MAIN_HEADERS=['regno','student_name','center','region','newpayment_checks','fees_amt','fees_paid','form_status','Connected status','Dailed status','Yesterday disposition',"Today's disposition",'Other Remarks'];
-
+const COL={
+  regno:0,student_name:1,center:2,region:3,newpayment_checks:4,fees_amt:5,
+  fees_paid:6,form_status:7,emi1_paid_date:8,emi2_paid_date:9,emi3_paid_date:10,
+  emi4_paid_date:11,total_paid_date:12,attendance_15days:13,last_punch_date:14,
+  ptp:15,connected_status:16,dialled_status:17,yesterday_disposition:18,
+  todays_disposition:19,other_remarks:20
+};
+const NUM_COLS=21;
+const MAIN_HEADERS=['Reg No','Student Name','Center','Region','Payment Check','Fees Amt','Fees Paid','Form Status','1st EMI Paid Date','2nd EMI Paid Date','3rd EMI Paid Date','4th EMI Paid Date','Total Paid Date','% 15 Days Attendance','Last Punch Date','PTP','Connected Status','Dialled Status','Yesterday Disposition','Today\'s Disposition','Other Remarks'];
+// Editable fields only
+const EDITABLE_FIELDS=['ptp','connected_status','dialled_status','todays_disposition','other_remarks'];
 // ── STATE ──
 let accessToken=null,currentUser=null;
 let allData=[],filteredData=[],auditLog=[],users=[];
 let selectedIdx=null;
-
 // ── AUTH ──
-// KEY FIX: read from input fields (which are pre-filled from localStorage)
-// so agents who never open the config panel still have values
 function startGoogleAuth(){
   const cid=document.getElementById('client-id-input').value.trim();
   const sid=document.getElementById('sheet-id-input').value.trim();
@@ -494,7 +452,6 @@ function startGoogleAuth(){
     error_callback:e=>showAuthErr('OAuth error: '+(e.message||JSON.stringify(e))),
   }).requestAccessToken();
 }
-
 async function onTokenReceived(resp){
   if(resp.error){showAuthErr(resp.error);return;}
   accessToken=resp.access_token;
@@ -506,7 +463,6 @@ async function onTokenReceived(resp){
     const found=users.find(u=>u.email.toLowerCase()===uInfo.email.toLowerCase());
     if(!found){
       if(users.length===0){
-        // First ever user → auto admin
         await sheetsAppend(SH.users,[[uInfo.email,'admin','system',nowStr()]]);
         await loadUsers();
         currentUser={...uInfo,role:'admin'};
@@ -522,7 +478,6 @@ async function onTokenReceived(resp){
     }
   }catch(e){hideLoader();showAuthErr('Error: '+e.message);}
 }
-
 function boot(){
   hideLoader();
   document.getElementById('auth-screen').style.display='none';
@@ -540,14 +495,12 @@ function boot(){
   if(!CFG.clientId||!CFG.sheetId) document.getElementById('warn-banner').classList.add('show');
   loadAll();
 }
-
 function doLogout(){
   accessToken=null;currentUser=null;
   document.getElementById('app').style.display='none';
   document.getElementById('auth-screen').style.display='flex';
   document.getElementById('auth-err').classList.remove('show');
 }
-
 // ── SHEETS API ──
 const API='https://sheets.googleapis.com/v4/spreadsheets';
 function gFetch(url,opts={}){return fetch(url,{...opts,headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json',...(opts.headers||{})}});}
@@ -556,7 +509,6 @@ async function sheetsUpdate(range,values){const r=await gFetch(`${API}/${CFG.she
 async function sheetsAppend(sheet,values){const r=await gFetch(`${API}/${CFG.sheetId}/values/${encodeURIComponent(sheet+'!A1')}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,{method:'POST',body:JSON.stringify({majorDimension:'ROWS',values})});if(!r.ok){const e=await r.json();throw new Error(e.error?.message||'Append error');}return r.json();}
 async function sheetsBatch(reqs){const r=await gFetch(`${API}/${CFG.sheetId}:batchUpdate`,{method:'POST',body:JSON.stringify({requests:reqs})});if(!r.ok){const e=await r.json();throw new Error(e.error?.message||'Batch error');}return r.json();}
 async function getSheetInfo(){const r=await gFetch(`${API}/${CFG.sheetId}`);if(!r.ok) throw new Error('Cannot read sheet. Check Sheet ID.');return r.json();}
-
 async function ensureSheets(){
   const info=await getSheetInfo();
   const existing=info.sheets.map(s=>s.properties.title);
@@ -568,7 +520,6 @@ async function ensureSheets(){
     if(toCreate.includes(SH.users)) await sheetsUpdate(`${SH.users}!A1`,[['email','role','added_by','added_on']]);
   }
 }
-
 // ── LOAD ──
 async function loadAll(){
   const btn=document.getElementById('sync-btn');
@@ -581,7 +532,7 @@ async function loadAll(){
   btn.classList.remove('spinning');
 }
 async function loadMainData(){
-  const res=await sheetsGet(`${SH.main}!A1:M2000`);
+  const res=await sheetsGet(`${SH.main}!A1:U2000`);
   const rows=res.values||[];
   if(rows.length<=1){allData=[];return;}
   allData=rows.slice(1).map((row,i)=>{
@@ -604,18 +555,16 @@ async function loadUsers(){
   if(rows.length<=1){users=[];return;}
   users=rows.slice(1).map(r=>({email:r[0]||'',role:r[1]||'agent',added_by:r[2]||'',added_on:r[3]||''})).filter(u=>u.email);
 }
-
 // ── WRITE ──
 async function writeRowToSheet(rowIndex,record,changes){
   const row=Array(NUM_COLS).fill('');
   Object.entries(COL).forEach(([k,ci])=>row[ci]=record[k]||'');
-  await sheetsUpdate(`${SH.main}!A${rowIndex}:M${rowIndex}`,[row]);
+  await sheetsUpdate(`${SH.main}!A${rowIndex}:U${rowIndex}`,[row]);
   if(changes.length){
     const now=nowStr();
     await sheetsAppend(SH.audit,changes.map(c=>[now,currentUser.email,currentUser.name||currentUser.email,record.regno,record.student_name,c.field,c.old,c.new]));
   }
 }
-
 // ── FILTERS ──
 function buildFilters(){
   fillSel('f-region',unique(allData.map(r=>r.region)),'All Regions');
@@ -623,39 +572,45 @@ function buildFilters(){
 }
 function fillSel(id,opts,lbl){const el=document.getElementById(id);const cur=el.value;el.innerHTML=`<option value="">${lbl}</option>`+opts.filter(Boolean).map(o=>`<option value="${o}">${o}</option>`).join('');if(cur)el.value=cur;}
 function applyFilters(){
-  const region=v('f-region'),payment=v('f-payment'),connected=v('f-connected'),dialled=v('f-dialled'),form=v('f-form'),disp=v('f-disp'),search=v('f-search').toLowerCase();
-  filteredData=allData.filter(r=>(!region||r.region===region)&&(!payment||r.newpayment_checks===payment)&&(!connected||r.connected_status===connected)&&(!dialled||r.dialled_status===dialled)&&(!form||r.form_status===form)&&(!disp||r.todays_disposition===disp)&&(!search||r.regno.toLowerCase().includes(search)||r.student_name.toLowerCase().includes(search)));
+  const region=v('f-region'),payment=v('f-payment'),search=v('f-search').toLowerCase();
+  filteredData=allData.filter(r=>(!region||r.region===region)&&(!payment||r.newpayment_checks===payment)&&(!search||r.regno.toLowerCase().includes(search)||r.student_name.toLowerCase().includes(search)));
   renderTable();updateStats();
 }
-function clearFilters(){['f-region','f-payment','f-connected','f-dialled','f-form','f-disp'].forEach(id=>document.getElementById(id).value='');document.getElementById('f-search').value='';applyFilters();}
+function clearFilters(){['f-region','f-payment'].forEach(id=>document.getElementById(id).value='');document.getElementById('f-search').value='';applyFilters();}
 function updateStats(){
   document.getElementById('s-total').textContent=allData.length;
   document.getElementById('s-conn').textContent=allData.filter(r=>r.connected_status==='Connected').length;
-  document.getElementById('s-dialled').textContent=allData.filter(r=>r.dialled_status==='Dialled').length;
+  document.getElementById('s-ptp').textContent=allData.filter(r=>r.ptp).length;
   document.getElementById('s-showing').textContent=filteredData.length;
   document.getElementById('tw-meta').textContent=`${filteredData.length} / ${allData.length} records`;
 }
 function renderTable(){
   const body=document.getElementById('tbl-body');
-  if(!filteredData.length){body.innerHTML=`<tr><td colspan="14"><div class="empty"><div class="empty-icon">🔍</div><div class="empty-t">No records match filters</div></div></td></tr>`;return;}
-  body.innerHTML=filteredData.map(r=>{const idx=allData.indexOf(r);return`<tr onclick="openPanel(${idx})" class="${selectedIdx===idx?'selected':''}"><td class="regno-cell">${r.regno}</td><td class="name-cell">${r.student_name}</td><td style="max-width:150px;overflow:hidden;text-overflow:ellipsis">${r.center}</td><td>${bBadge(r.region,'blue')}</td><td>${payBadge(r.newpayment_checks)}</td><td>₹${r.fees_amt}</td><td>₹${r.fees_paid}</td><td>${formBadge(r.form_status)}</td><td>${connBadge(r.connected_status)}</td><td>${dialBadge(r.dialled_status)}</td><td>${dispBadge(r.yesterday_disposition)}</td><td>${dispBadge(r.todays_disposition)}</td><td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;color:var(--ink3)">${r.other_remarks||'—'}</td><td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openPanel(${idx})">Edit</button></td></tr>`;}).join('');
+  if(!filteredData.length){body.innerHTML=`<tr><td colspan="12"><div class="empty"><div class="empty-icon">🔍</div><div class="empty-t">No records match filters</div></div></td></tr>`;return;}
+  body.innerHTML=filteredData.map(r=>{const idx=allData.indexOf(r);return`<tr onclick="openPanel(${idx})" class="${selectedIdx===idx?'selected':''}"><td class="regno-cell">${r.regno}</td><td class="name-cell">${r.student_name}</td><td style="max-width:120px;overflow:hidden;text-overflow:ellipsis">${r.center}</td><td>${bBadge(r.region,'blue')}</td><td>${payBadge(r.newpayment_checks)}</td><td>${r.total_paid_date||'—'}</td><td>${r.ptp?bBadge('✓ Yes','green'):bBadge('No','red')}</td><td>${connBadge(r.connected_status)}</td><td>${dialBadge(r.dialled_status)}</td><td>${dispBadge(r.yesterday_disposition)}</td><td>${dispBadge(r.todays_disposition)}</td><td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openPanel(${idx})">Edit</button></td></tr>`;}).join('');
 }
-
 const bBadge=(val,c)=>val?`<span class="badge b-${c}">${val}</span>`:`<span style="color:var(--ink3)">—</span>`;
 function payBadge(v){const m={'Full Paid':'green','50% Paid':'yellow','Token Paid':'blue','Less than Token':'orange'};return bBadge(v,m[v]||'gray');}
 function connBadge(v){const m={'Connected':'green','Not Connected':'red','Busy':'yellow','No Answer':'orange','Switched Off':'red','Invalid Number':'red'};return bBadge(v,m[v]||'gray');}
 function dialBadge(v){return bBadge(v,v==='Dialled'?'green':'gray');}
-function formBadge(v){const m={'Stage 1':'blue','Stage 2':'yellow','Stage 3':'orange','Completed':'green'};return bBadge(v,m[v]||'gray');}
 function dispBadge(v){const m={'Interested':'green','Enrolled':'green','Not Interested':'red','Drop':'red','Follow Up':'yellow','Callback Requested':'yellow','RNR':'orange','Wrong Number':'red','Future Prospect':'violet'};return bBadge(v,m[v]||'gray');}
-
 // ── PANEL ──
 function openPanel(idx){
   selectedIdx=idx;const r=allData[idx];
   document.getElementById('p-name').textContent=r.student_name;
   document.getElementById('p-regno').textContent='#'+r.regno;
-  document.getElementById('p-info').innerHTML=`<div class="info-cell"><div class="info-k">Center</div><div class="info-v">${r.center}</div></div><div class="info-cell"><div class="info-k">Region</div><div class="info-v">${r.region}</div></div><div class="info-cell"><div class="info-k">Payment Check</div><div class="info-v">${r.newpayment_checks||'—'}</div></div><div class="info-cell"><div class="info-k">Fees Amount</div><div class="info-v">₹${r.fees_amt}</div></div><div class="info-cell"><div class="info-k">Fees Paid</div><div class="info-v">₹${r.fees_paid}</div></div><div class="info-cell"><div class="info-k">Form Status</div><div class="info-v">${formBadge(r.form_status)}</div></div>`;
-  document.getElementById('p-yest').innerHTML=r.yesterday_disposition?dispBadge(r.yesterday_disposition):'<span style="color:var(--ink3);font-size:12px">No yesterday data</span>';
-  sVal('e-connected',r.connected_status);sVal('e-dialled',r.dialled_status);sVal('e-today',r.todays_disposition);sVal('e-form',r.form_status);
+  document.getElementById('p-info').innerHTML=`
+    <div class="info-cell"><div class="info-k">Center</div><div class="info-v">${r.center}</div></div>
+    <div class="info-cell"><div class="info-k">Region</div><div class="info-v">${r.region}</div></div>
+    <div class="info-cell"><div class="info-k">Payment</div><div class="info-v">${r.newpayment_checks||'—'}</div></div>
+    <div class="info-cell"><div class="info-k">Total Paid Date</div><div class="info-v">${r.total_paid_date||'—'}</div></div>
+    <div class="info-cell"><div class="info-k">Attendance</div><div class="info-v">${r.attendance_15days||'—'}</div></div>
+    <div class="info-cell"><div class="info-k">Last Punch</div><div class="info-v">${r.last_punch_date||'—'}</div></div>
+  `;
+  sVal('e-ptp',r.ptp);
+  sVal('e-connected',r.connected_status);
+  sVal('e-dialled',r.dialled_status);
+  sVal('e-today',r.todays_disposition);
   document.getElementById('e-remarks').value=r.other_remarks||'';
   const hist=auditLog.filter(a=>a.regno===r.regno);
   document.getElementById('p-history').innerHTML=!hist.length?'<div style="font-size:12px;color:var(--ink3);padding:8px 0">No history yet</div>':hist.slice(0,10).map(a=>`<div class="audit-item"><div class="audit-head"><span class="audit-who">📧 ${a.agent_name||a.agent_email}</span><span class="audit-when">${a.timestamp}</span></div><div class="audit-row"><span class="audit-field">${a.field}:</span><span class="audit-from">${a.old_value||'(empty)'}</span><span class="audit-arr">→</span><span class="audit-to">${a.new_value}</span></div></div>`).join('');
@@ -664,13 +619,12 @@ function openPanel(idx){
   renderTable();
 }
 function closePanel(){document.getElementById('panel-ov').classList.remove('open');document.getElementById('panel').classList.remove('open');selectedIdx=null;}
-
 // ── SAVE ──
 async function saveChanges(){
   if(selectedIdx===null) return;
   const r=allData[selectedIdx];
-  const newVals={connected_status:v('e-connected'),dialled_status:v('e-dialled'),todays_disposition:v('e-today'),form_status:v('e-form'),other_remarks:document.getElementById('e-remarks').value.trim()};
-  const labels={connected_status:'Connected Status',dialled_status:'Dialled Status',todays_disposition:"Today's Disposition",form_status:'Form Status',other_remarks:'Other Remarks'};
+  const newVals={ptp:document.getElementById('e-ptp').value.trim(),connected_status:v('e-connected'),dialled_status:v('e-dialled'),todays_disposition:v('e-today'),other_remarks:document.getElementById('e-remarks').value.trim()};
+  const labels={ptp:'PTP',connected_status:'Connected Status',dialled_status:'Dialled Status',todays_disposition:"Today's Disposition",other_remarks:'Other Remarks'};
   const changes=Object.keys(newVals).filter(k=>(r[k]||'')!==(newVals[k]||'')).map(k=>({key:k,field:labels[k],old:r[k]||'',new:newVals[k]}));
   if(!changes.length){showToast('No changes to save','info');return;}
   const updated={...r};
@@ -693,7 +647,6 @@ async function saveChanges(){
   }catch(e){hideLoader();showToast('❌ Save failed: '+e.message,'err');}
   btn.textContent='💾 Save to Sheet';btn.disabled=false;
 }
-
 // ── AUDIT ──
 function renderAudit(){
   const fu=v('audit-filter-user');
@@ -702,7 +655,6 @@ function renderAudit(){
   if(!data.length){el.innerHTML='<div class="empty"><div class="empty-icon">📭</div><div class="empty-t">No audit entries yet</div></div>';return;}
   el.innerHTML=data.slice(0,200).map(a=>`<div class="audit-item"><div class="audit-head"><span class="audit-who">📧 ${a.agent_name||a.agent_email}</span><span class="audit-when">${a.timestamp}</span></div><div class="audit-regno">Reg: ${a.regno} — ${a.student_name}</div><div class="audit-row"><span class="audit-field">${a.field}:</span><span class="audit-from">${a.old_value||'(empty)'}</span><span class="audit-arr">→</span><span class="audit-to">${a.new_value}</span></div></div>`).join('');
 }
-
 // ── USERS ──
 function renderUsersList(){
   const el=document.getElementById('users-list');if(!el)return;
@@ -735,7 +687,6 @@ function saveConfig(){
   CFG.sheetId=document.getElementById('s-sheet-id').value.trim();
   showToast('Saved! Reloading…','ok');setTimeout(()=>location.reload(),1200);
 }
-
 // ── NAV ──
 function showPage(name,btn){
   ['tracker','audit','settings'].forEach(p=>document.getElementById('page-'+p).style.display=p===name?'':'none');
@@ -745,7 +696,6 @@ function showPage(name,btn){
   if(name==='audit')renderAudit();
   if(name==='settings')renderUsersList();
 }
-
 // ── SETUP MODAL ──
 function showSetupModal(){
   document.getElementById('setup-modal').style.display='flex';
@@ -774,7 +724,6 @@ function showSetupModal(){
     (Config is already saved in browser from admin setup)<br/>
     Or share the URL with Client ID + Sheet ID pre-filled via localStorage`;
 }
-
 // ── UTILS ──
 function v(id){return document.getElementById(id)?.value||'';}
 function sVal(id,val){const el=document.getElementById(id);if(el)el.value=val||'';}
