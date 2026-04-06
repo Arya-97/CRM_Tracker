@@ -15,7 +15,6 @@
   --green:#22d17a;--yellow:#f5b731;--red:#f25c5c;--orange:#ff8a3d;
   --r:10px;--sh:0 4px 32px rgba(0,0,0,.5);--tr:.18s ease;
 }
-/* ── LIGHT THEME — applied via body.light class ── */
 body.light {
   --bg:#f0f2f8;--s1:#ffffff;--s2:#f4f6fc;--s3:#eaecf4;
   --b1:#dde1ee;--b2:#cdd3e5;--b3:#bbc3d8;
@@ -40,7 +39,7 @@ code,pre{font-family:'JetBrains Mono',monospace}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
 /* AUTH */
 #auth-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:900;background-image:radial-gradient(ellipse 70% 50% at 80% 10%,rgba(74,158,255,.06) 0%,transparent 60%),radial-gradient(ellipse 50% 70% at 10% 90%,rgba(124,111,255,.05) 0%,transparent 60%)}
-.auth-card{width:460px;background:var(--s1);border:1px solid var(--b2);border-radius:16px;padding:44px 48px;box-shadow:var(--sh);animation:fadeUp .5s ease both}
+.auth-card{width:420px;background:var(--s1);border:1px solid var(--b2);border-radius:16px;padding:44px 48px;box-shadow:var(--sh);animation:fadeUp .5s ease both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 .auth-eyebrow{font-size:11px;font-weight:600;color:var(--blue);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
 .auth-title{font-size:28px;font-weight:800;color:var(--ink);line-height:1.2;margin-bottom:8px}
@@ -49,15 +48,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .google-btn:hover{background:var(--s3);border-color:var(--b3);transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.15)}
 .google-btn:active{transform:none}
 .google-icon{width:20px;height:20px;flex-shrink:0}
-.config-section{margin-top:24px;padding-top:20px;border-top:1px solid var(--b1);display:none}
-.config-section.visible{display:block}
-.config-label{font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;display:block}
-.config-input{width:100%;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:12px;padding:9px 12px;outline:none;transition:border-color var(--tr);margin-bottom:10px}
-.config-input:focus{border-color:var(--blue)}
-.config-hint{font-size:11px;color:var(--ink3);line-height:1.6;margin-top:2px}
-.config-hint a{color:var(--blue);text-decoration:none}
-.admin-toggle{margin-top:14px;font-size:12px;color:var(--ink3);text-align:center;cursor:pointer;text-decoration:underline}
-.admin-toggle:hover{color:var(--blue)}
 .auth-err{margin-top:12px;padding:10px 14px;background:rgba(242,92,92,.08);border:1px solid rgba(242,92,92,.2);border-radius:8px;font-size:13px;color:var(--red);display:none}
 .auth-err.show{display:block}
 /* APP */
@@ -178,8 +168,6 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
 .es,.ei,.et{background:var(--s2);border:1px solid var(--b1);color:var(--ink);border-radius:8px;font-family:'Outfit',sans-serif;font-size:13px;padding:9px 12px;outline:none;width:100%;transition:border-color var(--tr)}
 .es:focus,.ei:focus,.et:focus{border-color:var(--blue)}
 .et{resize:vertical;min-height:68px}
-.yest-box{background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:11px 13px;display:flex;align-items:center;gap:10px}
-.yest-label{font-size:11px;color:var(--ink3);font-weight:500}
 .ro-field{background:var(--s2);border:1px solid var(--b1);color:var(--ink);border-radius:8px;padding:9px 12px;font-family:'JetBrains Mono',monospace;font-size:12px;word-break:break-all}
 /* AUDIT */
 .audit-item{background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:12px 14px;margin-bottom:8px}
@@ -218,14 +206,9 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
 .toast.ok{border-color:rgba(34,209,122,.4)}
 .toast.err{border-color:rgba(242,92,92,.4)}
 .toast.info{border-color:rgba(74,158,255,.3)}
-.warn-banner{background:rgba(245,183,49,.07);border:1px solid rgba(245,183,49,.2);border-radius:var(--r);padding:12px 16px;margin-bottom:16px;font-size:13px;color:var(--yellow);display:none;align-items:center;gap:10px}
-.warn-banner.show{display:flex}
-.warn-banner a{color:var(--blue)}
 .page-head{margin-bottom:18px;display:flex;align-items:center;justify-content:space-between}
 .page-h{font-size:19px;font-weight:800;color:var(--ink)}
 .page-s{font-size:13px;color:var(--ink3);margin-top:2px}
-#setup-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:999;align-items:center;justify-content:center;padding:20px}
-.setup-box{background:var(--s1);border:1px solid var(--b2);border-radius:14px;padding:32px;max-width:600px;width:100%;max-height:85vh;overflow-y:auto}
 @media(max-width:900px){
   .sidebar{width:60px}
   .logo-text,.logo-sub,.nav-item span:not(.nav-icon),.nav-section-label,.user-name,.user-role,.logout-btn{display:none}
@@ -238,12 +221,26 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
 </style>
 </head>
 <body>
+
+<!-- =====================================================
+  🔧 ADMIN CONFIGURATION — Sirf yahan 2 lines badlo
+  Step 1: Apna Google OAuth Client ID yahan paste karo
+  Step 2: Apna Google Sheet ID yahan paste karo
+  Bas! Agents ko kuch configure nahi karna padega.
+====================================================== -->
+<script>
+  // ▼▼▼ YAHAN APNI VALUES PASTE KARO ▼▼▼
+  const HARDCODED_CLIENT_ID = '441324421260-qpvoha7vmbo2tmp4f7ofkj844nlrj0ir.apps.googleusercontent.com';   // e.g. '12345-abc.apps.googleusercontent.com'
+  const HARDCODED_SHEET_ID  = '1KZxUavEe9n-V4AdMZopaWiDGqwo1V260tK_XwcVzxpU';    // e.g. '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms'
+  // ▲▲▲ BAS ITNA HI KARNA HAI ▲▲▲
+</script>
+
 <!-- AUTH -->
 <div id="auth-screen">
   <div class="auth-card">
     <div class="auth-eyebrow">Student CRM</div>
     <div class="auth-title">Welcome Back</div>
-    <div class="auth-sub">Sign in with your Google account. Your admin must have registered your email to grant access.</div>
+    <div class="auth-sub">Apne Google account se sign in karein. Admin ne aapka email register kiya hona chahiye.</div>
     <button class="google-btn" onclick="startGoogleAuth()">
       <svg class="google-icon" viewBox="0 0 24 24">
         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -253,31 +250,18 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
       </svg>
       Continue with Google
     </button>
-    <div class="config-section" id="config-section">
-      <label class="config-label">Google OAuth Client ID</label>
-      <input class="config-input" id="client-id-input" placeholder="xxxx.apps.googleusercontent.com"/>
-      <label class="config-label" style="margin-top:6px">Google Sheet ID</label>
-      <input class="config-input" id="sheet-id-input" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms"/>
-      <div class="config-hint"><a href="https://console.cloud.google.com" target="_blank">Cloud Console</a> se Client ID lein · <a href="#" onclick="showSetupModal();return false">📖 Setup guide</a></div>
-    </div>
-    <div class="admin-toggle" id="admin-toggle" onclick="toggleConfigPanel()">⚙️ Admin? Configure credentials</div>
     <div class="auth-err" id="auth-err"></div>
   </div>
 </div>
-<!-- SETUP MODAL -->
-<div id="setup-modal">
-  <div class="setup-box">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-      <div style="font-size:17px;font-weight:800;color:var(--ink)">🚀 Setup Guide</div>
-      <button onclick="document.getElementById('setup-modal').style.display='none'" style="background:var(--s2);border:1px solid var(--b1);color:var(--ink2);border-radius:7px;width:30px;height:30px;cursor:pointer;font-size:16px">×</button>
-    </div>
-    <div id="setup-content" style="font-size:13px;color:var(--ink2);line-height:1.9"></div>
-  </div>
-</div>
+
 <!-- APP -->
 <div id="app">
   <div class="sidebar">
-    <div class="sidebar-logo"><div class="logo-mark">📋</div><div><div class="logo-text">Collection Tracker</div><div class="logo-sub">Student Management</div></div><button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()" title="Hide sidebar">☰</button></div>
+    <div class="sidebar-logo">
+      <div class="logo-mark">📋</div>
+      <div><div class="logo-text">Collection Tracker</div><div class="logo-sub">Student Management</div></div>
+      <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()" title="Hide sidebar">☰</button>
+    </div>
     <div class="nav">
       <div class="nav-section-label">Main</div>
       <button class="nav-item active" onclick="showPage('tracker',this)"><span class="nav-icon">📊</span><span>Tracker</span></button>
@@ -286,7 +270,10 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
       <button class="nav-item admin-nav" style="display:none" onclick="showPage('settings',this)"><span class="nav-icon">⚙️</span><span>Settings</span></button>
     </div>
     <div class="sidebar-footer">
-      <div class="user-chip"><div class="user-avatar" id="user-avatar">?</div><div style="min-width:0"><div class="user-name" id="user-name">Loading...</div><div class="user-role" id="user-role">—</div></div></div>
+      <div class="user-chip">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <div style="min-width:0"><div class="user-name" id="user-name">Loading...</div><div class="user-role" id="user-role">—</div></div>
+      </div>
       <button class="logout-btn" onclick="doLogout()">Sign out</button>
     </div>
   </div>
@@ -301,7 +288,6 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
     <div class="content">
       <!-- TRACKER -->
       <div id="page-tracker">
-        <div class="warn-banner" id="warn-banner">⚠️ <span>Config missing. <a href="#" onclick="doLogout()">Go back →</a></span></div>
         <div class="filter-bar">
           <div class="fg"><span class="fl">Region</span><select class="fs" id="f-region" onchange="applyFilters()"><option value="">All Regions</option></select></div>
           <div class="fg"><span class="fl">Center</span><select class="fs" id="f-center" onchange="applyFilters()"><option value="">All Centers</option></select></div>
@@ -334,9 +320,9 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
         </div>
         <div id="audit-list"></div>
       </div>
-      <!-- SETTINGS -->
+      <!-- SETTINGS (Admin only) -->
       <div id="page-settings" style="display:none">
-        <div class="page-head"><div><div class="page-h">Settings</div><div class="page-s">User management & configuration</div></div></div>
+        <div class="page-head"><div><div class="page-h">Settings</div><div class="page-s">User management</div></div></div>
         <div class="settings-grid">
           <div class="s-card">
             <div class="s-card-t">👥 Registered Users</div>
@@ -348,17 +334,24 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
             </div>
           </div>
           <div class="s-card">
-            <div class="s-card-t">🔧 Sheet Configuration</div>
-            <div class="ef"><label class="el">Client ID</label><input class="ei" id="s-client-id" placeholder="xxxx.apps.googleusercontent.com"/></div>
-            <div class="ef"><label class="el">Sheet ID</label><input class="ei" id="s-sheet-id" placeholder="Sheet ID from URL"/></div>
-            <button class="btn btn-primary btn-sm" onclick="saveConfig()">Save & Reload</button>
-            <div style="margin-top:14px;font-size:12px;color:var(--ink3);line-height:1.8"><b style="color:var(--ink2)">Required sheet tabs (auto-created):</b><br/><code style="color:var(--blue)">Main Tracker</code> · <code style="color:var(--blue)">Audit Log</code> · <code style="color:var(--blue)">Users</code></div>
+            <div class="s-card-t">🔧 Sheet Info</div>
+            <div style="font-size:12px;color:var(--ink2);line-height:2">
+              <div><span style="color:var(--ink3)">Client ID:</span> <code style="color:var(--blue);font-size:11px" id="info-client-id">—</code></div>
+              <div><span style="color:var(--ink3)">Sheet ID:</span> <code style="color:var(--blue);font-size:11px" id="info-sheet-id">—</code></div>
+            </div>
+            <div style="margin-top:14px;font-size:12px;color:var(--ink3);line-height:1.8">
+              <b style="color:var(--ink2)">Required sheet tabs:</b><br/>
+              <code style="color:var(--blue)">Main Tracker</code> · <code style="color:var(--blue)">Audit Log</code> · <code style="color:var(--blue)">Users</code><br/><br/>
+              Config change karne ke liye <b>index.html</b> mein<br/>
+              <code style="color:var(--yellow)">HARDCODED_CLIENT_ID</code> aur <code style="color:var(--yellow)">HARDCODED_SHEET_ID</code> update karein.
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
 <!-- PANEL -->
 <div class="panel-overlay" id="panel-ov" onclick="closePanel()"></div>
 <div class="panel" id="panel">
@@ -369,7 +362,7 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
   <div class="panel-body">
     <div class="p-section"><div class="p-section-t">📋 Student Info (Read Only)</div><div class="info-grid" id="p-info"></div></div>
     <div class="p-section">
-      <div class="p-section-t">✏️ Editable Fields Only</div>
+      <div class="p-section-t">✏️ Editable Fields</div>
       <div class="ef"><label class="el">PTP (Date)</label><input class="es" id="e-ptp" type="date"/></div>
       <div class="ef"><label class="el">Connected Status</label><select class="es" id="e-connected"><option value="">— Select —</option><option>Connected</option><option>Not Connected</option><option>Busy</option><option>No Answer</option><option>Switched Off</option><option>Invalid Number</option></select></div>
       <div class="ef"><label class="el">Dialled Status</label><select class="es" id="e-dialled"><option value="">— Select —</option><option>Dialled</option><option>Not Dialled</option></select></div>
@@ -383,11 +376,13 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
     <button class="btn btn-ghost" onclick="closePanel()">Cancel</button>
   </div>
 </div>
+
 <div class="loader-ov" id="loader"><div class="loader-box"><div class="spinner"></div><div class="loader-msg" id="loader-msg">Loading…</div></div></div>
 <div class="toast" id="toast"></div>
+
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
-// ── THEME: apply before render to avoid flash ──
+// ── THEME ──
 (function(){
   const t=localStorage.getItem('crm_theme')||'dark';
   if(t==='light') document.body.classList.add('light');
@@ -400,41 +395,18 @@ function toggleTheme(){
 document.addEventListener('DOMContentLoaded',()=>{
   const t=localStorage.getItem('crm_theme')||'dark';
   document.getElementById('theme-btn').textContent=t==='light'?'☀️ Light':'🌙 Dark';
-  
-  // Restore sidebar state
   const sidebarCollapsed=localStorage.getItem('crm_sidebar_collapsed')==='true';
-  if(sidebarCollapsed){
-    document.querySelector('.sidebar').classList.add('collapsed');
-  }
+  if(sidebarCollapsed) document.querySelector('.sidebar').classList.add('collapsed');
 });
-// ── CONFIG ──
+
+// ── CONFIG — Hardcoded, agents ko kuch nahi karna ──
+// (Values ऊपर <script> block mein define hain: HARDCODED_CLIENT_ID, HARDCODED_SHEET_ID)
 const CFG={
-  get clientId(){return '441324421260-qpvoha7vmbo2tmp4f7ofkj844nlrj0ir.apps.googleusercontent.com';},
-    get sheetId() {return '1KZxUavEe9n-V4AdMZopaWiDGqwo1V260tK_XwcVzxpU';},
-  set clientId(v){localStorage.setItem('crm_client_id',v); console.log('✓ Client ID saved:', v);},
-  set sheetId(v) {localStorage.setItem('crm_sheet_id',v); console.log('✓ Sheet ID saved:', v);},
+  get clientId(){ return HARDCODED_CLIENT_ID; },
+  get sheetId() { return HARDCODED_SHEET_ID;  },
 };
-document.addEventListener('DOMContentLoaded',()=>{
-  const savedClientId=localStorage.getItem('crm_client_id');
-  const savedSheetId=localStorage.getItem('crm_sheet_id');
-  document.getElementById('client-id-input').value=savedClientId||'';
-  document.getElementById('sheet-id-input').value=savedSheetId||'';
-  if(!savedClientId||!savedSheetId){
-    document.getElementById('config-section').classList.add('visible');
-    document.getElementById('admin-toggle').textContent='▲ Hide config';
-  }
-});
-function toggleConfigPanel(){
-  const s=document.getElementById('config-section');
-  const t=document.getElementById('admin-toggle');
-  const show=s.classList.toggle('visible');
-  t.textContent=show?'▲ Hide config':'⚙️ Admin? Configure credentials';
-  if(show){
-    document.getElementById('client-id-input').value=CFG.clientId;
-    document.getElementById('sheet-id-input').value=CFG.sheetId;
-  }
-}
-// ── SHEET CONFIG ──
+
+// ── SHEET SETUP ──
 const SH={main:'Main Tracker',audit:'Audit Log',users:'Users'};
 const COL={
   regno:0,student_name:1,center:2,region:3,newpayment_checks:4,fees_amt:5,
@@ -445,40 +417,32 @@ const COL={
 };
 const NUM_COLS=21;
 const MAIN_HEADERS=['Reg No','Student Name','Center','Region','Payment Check','Fees Amt','Fees Paid','1st EMI Paid Date','2nd EMI Paid Date','3rd EMI Paid Date','4th EMI Paid Date','Total Paid Date','Form Status','% 15 Days Attendance','Last Punch Date','PTP','Connected Status','Dialled Status','Yesterday Disposition','Today\'s Disposition','Other Remarks'];
+
 // ── STATE ──
 let accessToken=null,currentUser=null;
 let allData=[],filteredData=[],auditLog=[],users=[];
 let selectedIdx=null;
+
 // ── AUTH ──
 function startGoogleAuth(){
-  // Try to use saved config first (for agents who login after admin setup)
-  let cid=document.getElementById('client-id-input').value.trim();
-  let sid=document.getElementById('sheet-id-input').value.trim();
-  
-  // If empty in inputs, check localStorage directly
-  if(!cid) cid=localStorage.getItem('crm_client_id')||'';
-  if(!sid) sid=localStorage.getItem('crm_sheet_id')||'';
-  
-  if(!cid||!sid){
-    showAuthErr('⚙️ Admin must configure first. Click "⚙️ Admin? Configure credentials" and enter Client ID + Sheet ID.');
-    // Auto-show config panel
-    document.getElementById('config-section').classList.add('visible');
-    document.getElementById('admin-toggle').textContent='▲ Hide config';
+  // Config validation
+  if(!HARDCODED_CLIENT_ID || HARDCODED_CLIENT_ID==='YOUR_CLIENT_ID_HERE'){
+    showAuthErr('⚙️ Admin ne abhi Client ID configure nahi ki. index.html mein HARDCODED_CLIENT_ID set karein.');
     return;
   }
-  
-  // Save config for next time
-  CFG.clientId=cid; 
-  CFG.sheetId=sid;
-  
-  if(!window.google){showAuthErr('Google script not loaded. Check internet.');return;}
+  if(!HARDCODED_SHEET_ID || HARDCODED_SHEET_ID==='YOUR_SHEET_ID_HERE'){
+    showAuthErr('⚙️ Admin ne abhi Sheet ID configure nahi ki. index.html mein HARDCODED_SHEET_ID set karein.');
+    return;
+  }
+  if(!window.google){showAuthErr('Google script load nahi hua. Internet check karein.');return;}
   google.accounts.oauth2.initTokenClient({
-    client_id:cid,
+    client_id: HARDCODED_CLIENT_ID,
     scope:'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
     callback:onTokenReceived,
     error_callback:e=>showAuthErr('OAuth error: '+(e.message||JSON.stringify(e))),
   }).requestAccessToken();
 }
+
 async function onTokenReceived(resp){
   if(resp.error){showAuthErr(resp.error);return;}
   accessToken=resp.access_token;
@@ -490,13 +454,14 @@ async function onTokenReceived(resp){
     const found=users.find(u=>u.email.toLowerCase()===uInfo.email.toLowerCase());
     if(!found){
       if(users.length===0){
+        // Pehla login = auto admin
         await sheetsAppend(SH.users,[[uInfo.email,'admin','system',nowStr()]]);
         await loadUsers();
         currentUser={...uInfo,role:'admin'};
         boot();
       } else {
         hideLoader();
-        showAuthErr('❌ Access denied. Your email ('+uInfo.email+') is not registered. Ask your admin to add you in Settings.');
+        showAuthErr('❌ Access denied. Aapka email ('+uInfo.email+') registered nahi hai. Admin se contact karein.');
         accessToken=null;
       }
     } else {
@@ -505,6 +470,7 @@ async function onTokenReceived(resp){
     }
   }catch(e){hideLoader();showAuthErr('Error: '+e.message);}
 }
+
 function boot(){
   hideLoader();
   document.getElementById('auth-screen').style.display='none';
@@ -516,18 +482,22 @@ function boot(){
   else{av.textContent=(currentUser.name||currentUser.email)[0].toUpperCase();}
   if(currentUser.role==='admin'){
     document.querySelectorAll('.admin-nav').forEach(el=>el.style.display='');
-    document.getElementById('s-client-id').value=CFG.clientId;
-    document.getElementById('s-sheet-id').value=CFG.sheetId;
+    // Show config info in settings
+    const ci=document.getElementById('info-client-id');
+    const si=document.getElementById('info-sheet-id');
+    if(ci) ci.textContent=HARDCODED_CLIENT_ID.substring(0,30)+'…';
+    if(si) si.textContent=HARDCODED_SHEET_ID.substring(0,30)+'…';
   }
-  if(!CFG.clientId||!CFG.sheetId) document.getElementById('warn-banner').classList.add('show');
   loadAll();
 }
+
 function doLogout(){
   accessToken=null;currentUser=null;
   document.getElementById('app').style.display='none';
   document.getElementById('auth-screen').style.display='flex';
   document.getElementById('auth-err').classList.remove('show');
 }
+
 // ── SHEETS API ──
 const API='https://sheets.googleapis.com/v4/spreadsheets';
 function gFetch(url,opts={}){return fetch(url,{...opts,headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json',...(opts.headers||{})}});}
@@ -535,7 +505,7 @@ async function sheetsGet(range){const r=await gFetch(`${API}/${CFG.sheetId}/valu
 async function sheetsUpdate(range,values){const r=await gFetch(`${API}/${CFG.sheetId}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`,{method:'PUT',body:JSON.stringify({range,majorDimension:'ROWS',values})});if(!r.ok){const e=await r.json();throw new Error(e.error?.message||'Write error');}return r.json();}
 async function sheetsAppend(sheet,values){const r=await gFetch(`${API}/${CFG.sheetId}/values/${encodeURIComponent(sheet+'!A1')}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,{method:'POST',body:JSON.stringify({majorDimension:'ROWS',values})});if(!r.ok){const e=await r.json();throw new Error(e.error?.message||'Append error');}return r.json();}
 async function sheetsBatch(reqs){const r=await gFetch(`${API}/${CFG.sheetId}:batchUpdate`,{method:'POST',body:JSON.stringify({requests:reqs})});if(!r.ok){const e=await r.json();throw new Error(e.error?.message||'Batch error');}return r.json();}
-async function getSheetInfo(){const r=await gFetch(`${API}/${CFG.sheetId}`);if(!r.ok) throw new Error('Cannot read sheet. Check Sheet ID.');return r.json();}
+async function getSheetInfo(){const r=await gFetch(`${API}/${CFG.sheetId}`);if(!r.ok) throw new Error('Cannot read sheet. Sheet ID check karein.');return r.json();}
 async function ensureSheets(){
   const info=await getSheetInfo();
   const existing=info.sheets.map(s=>s.properties.title);
@@ -547,6 +517,7 @@ async function ensureSheets(){
     if(toCreate.includes(SH.users)) await sheetsUpdate(`${SH.users}!A1`,[['email','role','added_by','added_on']]);
   }
 }
+
 // ── LOAD ──
 async function loadAll(){
   const btn=document.getElementById('sync-btn');
@@ -582,6 +553,7 @@ async function loadUsers(){
   if(rows.length<=1){users=[];return;}
   users=rows.slice(1).map(r=>({email:r[0]||'',role:r[1]||'agent',added_by:r[2]||'',added_on:r[3]||''})).filter(u=>u.email);
 }
+
 // ── WRITE ──
 async function writeRowToSheet(rowIndex,record,changes){
   const row=Array(NUM_COLS).fill('');
@@ -592,6 +564,7 @@ async function writeRowToSheet(rowIndex,record,changes){
     await sheetsAppend(SH.audit,changes.map(c=>[now,currentUser.email,currentUser.name||currentUser.email,record.regno,record.student_name,c.field,c.old,c.new]));
   }
 }
+
 // ── FILTERS ──
 function buildFilters(){
   fillSel('f-region',unique(allData.map(r=>r.region)),'All Regions');
@@ -626,6 +599,7 @@ function connBadge(v){const m={'Connected':'green','Not Connected':'red','Busy':
 function dialBadge(v){return bBadge(v,v==='Dialled'?'green':'gray');}
 function formBadge(v){const m={'Stage 1':'blue','Stage 2':'yellow','Stage 3':'orange','Completed':'green'};return bBadge(v,m[v]||'gray');}
 function dispBadge(v){const m={'Interested':'green','Enrolled':'green','Not Interested':'red','Drop':'red','Follow Up':'yellow','Callback Requested':'yellow','RNR':'orange','Wrong Number':'red','Future Prospect':'violet'};return bBadge(v,m[v]||'gray');}
+
 // ── PANEL ──
 function openPanel(idx){
   selectedIdx=idx;const r=allData[idx];
@@ -659,6 +633,7 @@ function openPanel(idx){
   renderTable();
 }
 function closePanel(){document.getElementById('panel-ov').classList.remove('open');document.getElementById('panel').classList.remove('open');selectedIdx=null;}
+
 // ── SAVE ──
 async function saveChanges(){
   if(selectedIdx===null) return;
@@ -687,6 +662,7 @@ async function saveChanges(){
   }catch(e){hideLoader();showToast('❌ Save failed: '+e.message,'err');}
   btn.textContent='💾 Save to Sheet';btn.disabled=false;
 }
+
 // ── AUDIT ──
 function renderAudit(){
   const fu=v('audit-filter-user');
@@ -695,6 +671,7 @@ function renderAudit(){
   if(!data.length){el.innerHTML='<div class="empty"><div class="empty-icon">📭</div><div class="empty-t">No audit entries yet</div></div>';return;}
   el.innerHTML=data.slice(0,200).map(a=>`<div class="audit-item"><div class="audit-head"><span class="audit-who">📧 ${a.agent_name||a.agent_email}</span><span class="audit-when">${a.timestamp}</span></div><div class="audit-regno">Reg: ${a.regno} — ${a.student_name}</div><div class="audit-row"><span class="audit-field">${a.field}:</span><span class="audit-from">${a.old_value||'(empty)'}</span><span class="audit-arr">→</span><span class="audit-to">${a.new_value}</span></div></div>`).join('');
 }
+
 // ── USERS ──
 function renderUsersList(){
   const el=document.getElementById('users-list');if(!el)return;
@@ -722,11 +699,7 @@ async function removeUser(email){
   try{await sheetsBatch([{deleteDimension:{range:{sheetId:sh.properties.sheetId,dimension:'ROWS',startIndex:rowNum-1,endIndex:rowNum}}}]);await loadUsers();renderUsersList();hideLoader();showToast('User removed','ok');}
   catch(e){hideLoader();showToast('Error: '+e.message,'err');}
 }
-function saveConfig(){
-  CFG.clientId=document.getElementById('s-client-id').value.trim();
-  CFG.sheetId=document.getElementById('s-sheet-id').value.trim();
-  showToast('Saved! Reloading…','ok');setTimeout(()=>location.reload(),1200);
-}
+
 // ── NAV ──
 function toggleSidebar(){
   const sidebar=document.querySelector('.sidebar');
@@ -741,34 +714,7 @@ function showPage(name,btn){
   if(name==='audit')renderAudit();
   if(name==='settings')renderUsersList();
 }
-// ── SETUP MODAL ──
-function showSetupModal(){
-  document.getElementById('setup-modal').style.display='flex';
-  document.getElementById('setup-content').innerHTML=`
-    <b style="color:var(--ink)">Step 1 — Google Cloud Console</b><br/>
-    1. <a href="https://console.cloud.google.com" target="_blank" style="color:var(--blue)">console.cloud.google.com</a> → New Project<br/>
-    2. Enable: <b>Google Sheets API</b> + <b>People API</b><br/>
-    3. OAuth Consent Screen → External → Add scopes: <code style="color:var(--blue)">.../auth/spreadsheets</code> + <code style="color:var(--blue)">userinfo.email</code><br/>
-    4. Add all emails as Test Users (until you publish)<br/><br/>
-    <b style="color:var(--ink)">Step 2 — OAuth Client ID</b><br/>
-    Credentials → OAuth 2.0 Client → Web application<br/>
-    Authorized JS origins: <code style="color:var(--blue)">https://YOURUSERNAME.github.io</code><br/>
-    Copy the <b>Client ID</b><br/><br/>
-    <b style="color:var(--ink)">Step 3 — Google Sheet</b><br/>
-    Create new sheet → Copy ID from URL<br/>
-    App will auto-create: Main Tracker, Audit Log, Users tabs<br/>
-    Paste your data in Main Tracker from Row 2<br/><br/>
-    <b style="color:var(--ink)">Step 4 — GitHub Pages</b><br/>
-    Repo → Upload index.html → Settings → Pages → Enable<br/>
-    URL: <code style="color:var(--blue)">https://YOURUSERNAME.github.io/repo-name/</code><br/><br/>
-    <b style="color:var(--ink)">Step 5 — First Login (Admin)</b><br/>
-    Click ⚙️ below login button → Enter Client ID + Sheet ID → Sign in<br/>
-    First user = Auto Admin → Add agents from Settings tab<br/><br/>
-    <b style="color:var(--ink)">Step 6 — Agent Login</b><br/>
-    Agents just open the URL → Click "Continue with Google"<br/>
-    (Config is already saved in browser from admin setup)<br/>
-    Or share the URL with Client ID + Sheet ID pre-filled via localStorage`;
-}
+
 // ── UTILS ──
 function v(id){return document.getElementById(id)?.value||'';}
 function sVal(id,val){const el=document.getElementById(id);if(el)el.value=val||'';}
