@@ -166,7 +166,7 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
 .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .info-cell{background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:10px 12px}
 .info-k{font-size:10px;color:var(--ink3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
-.info-v{font-size:12.5px;color:var(--ink);font-family:'JetBrains Mono',monospace}
+.info-v{font-size:12.5px;color:var(--ink);font-family:'JetBrains Mono',monospace;word-break:break-word}
 .ef{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
 .el{font-size:11px;font-weight:600;color:var(--ink2);text-transform:uppercase;letter-spacing:.6px}
 .es,.ei,.et{background:var(--s2);border:1px solid var(--b1);color:var(--ink);border-radius:8px;font-family:'Outfit',sans-serif;font-size:13px;padding:9px 12px;outline:none;width:100%;transition:border-color var(--tr)}
@@ -174,7 +174,7 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
 .et{resize:vertical;min-height:68px}
 .yest-box{background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:11px 13px;display:flex;align-items:center;gap:10px}
 .yest-label{font-size:11px;color:var(--ink3);font-weight:500}
-.ro-field{background:var(--s2);border:1px solid var(--b1);color:var(--ink);border-radius:8px;padding:9px 12px;font-family:'JetBrains Mono',monospace;font-size:12px}
+.ro-field{background:var(--s2);border:1px solid var(--b1);color:var(--ink);border-radius:8px;padding:9px 12px;font-family:'JetBrains Mono',monospace;font-size:12px;word-break:break-all}
 /* AUDIT */
 .audit-item{background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:12px 14px;margin-bottom:8px}
 .audit-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
@@ -298,21 +298,23 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
         <div class="warn-banner" id="warn-banner">⚠️ <span>Config missing. <a href="#" onclick="doLogout()">Go back →</a></span></div>
         <div class="filter-bar">
           <div class="fg"><span class="fl">Region</span><select class="fs" id="f-region" onchange="applyFilters()"><option value="">All Regions</option></select></div>
+          <div class="fg"><span class="fl">Center</span><select class="fs" id="f-center" onchange="applyFilters()"><option value="">All Centers</option></select></div>
           <div class="fg"><span class="fl">Payment</span><select class="fs" id="f-payment" onchange="applyFilters()"><option value="">All</option></select></div>
+          <div class="fg"><span class="fl">Form Status</span><select class="fs" id="f-form" onchange="applyFilters()"><option value="">All</option><option>Stage 1</option><option>Stage 2</option><option>Stage 3</option><option>Completed</option></select></div>
           <div class="fg"><span class="fl">Search</span><input class="fi" id="f-search" placeholder="Reg No / Student Name..." oninput="applyFilters()"/></div>
           <div class="filter-actions"><button class="btn btn-ghost btn-sm" onclick="clearFilters()">Clear</button></div>
         </div>
         <div class="stats">
-          <div class="stat c-blue"><div class="stat-v" id="s-total">—</div><div class="stat-l">Total Records</div></div>
-          <div class="stat c-green"><div class="stat-v" id="s-conn">—</div><div class="stat-l">Connected Today</div></div>
+          <div class="stat c-blue"><div class="stat-v" id="s-total">—</div><div class="stat-l">Total Showing</div></div>
+          <div class="stat c-green"><div class="stat-v" id="s-conn">—</div><div class="stat-l">Connected</div></div>
           <div class="stat c-yellow"><div class="stat-v" id="s-ptp">—</div><div class="stat-l">PTP Created</div></div>
-          <div class="stat c-violet"><div class="stat-v" id="s-showing">—</div><div class="stat-l">Showing</div></div>
+          <div class="stat c-violet"><div class="stat-v" id="s-dialled">—</div><div class="stat-l">Dialled</div></div>
         </div>
         <div class="table-wrap">
           <div class="tw-head"><div class="tw-title">Student Records</div><div class="tw-meta" id="tw-meta">Loading…</div></div>
           <div class="tbl-outer">
             <table>
-              <thead><tr><th>Reg No</th><th>Student Name</th><th>Center</th><th>Region</th><th>Payment</th><th>Total Paid</th><th>PTP</th><th>Connected</th><th>Dialled</th><th>Yesterday Disp.</th><th>Today Disp.</th><th></th></tr></thead>
+              <thead><tr><th>Reg No</th><th>Student Name</th><th>Center</th><th>Region</th><th>Payment</th><th>Fees Amt</th><th>Fees Paid</th><th>1st EMI</th><th>2nd EMI</th><th>3rd EMI</th><th>4th EMI</th><th>Total Paid</th><th>Form</th><th>Attendance</th><th>Last Punch</th><th>PTP</th><th>Connected</th><th>Dialled</th><th>Yesterday</th><th>Today</th><th></th></tr></thead>
               <tbody id="tbl-body"></tbody>
             </table>
           </div>
@@ -362,7 +364,7 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
     <div class="p-section"><div class="p-section-t">📋 Student Info (Read Only)</div><div class="info-grid" id="p-info"></div></div>
     <div class="p-section">
       <div class="p-section-t">✏️ Editable Fields Only</div>
-      <div class="ef"><label class="el">PTP</label><input class="es" id="e-ptp" placeholder="Enter PTP date or details"/></div>
+      <div class="ef"><label class="el">PTP (Date)</label><input class="es" id="e-ptp" type="date"/></div>
       <div class="ef"><label class="el">Connected Status</label><select class="es" id="e-connected"><option value="">— Select —</option><option>Connected</option><option>Not Connected</option><option>Busy</option><option>No Answer</option><option>Switched Off</option><option>Invalid Number</option></select></div>
       <div class="ef"><label class="el">Dialled Status</label><select class="es" id="e-dialled"><option value="">— Select —</option><option>Dialled</option><option>Not Dialled</option></select></div>
       <div class="ef"><label class="el">Today's Disposition</label><select class="es" id="e-today"><option value="">— Select —</option><option>Interested</option><option>Not Interested</option><option>Follow Up</option><option>RNR</option><option>Callback Requested</option><option>Enrolled</option><option>Drop</option><option>Wrong Number</option><option>Future Prospect</option></select></div>
@@ -428,9 +430,7 @@ const COL={
   todays_disposition:19,other_remarks:20
 };
 const NUM_COLS=21;
-const MAIN_HEADERS=['Reg No','Student Name','Center','Region','Payment Check','Fees Amt','Fees Paid','Form Status','1st EMI Paid Date','2nd EMI Paid Date','3rd EMI Paid Date','4th EMI Paid Date','Total Paid Date','% 15 Days Attendance','Last Punch Date','PTP','Connected Status','Dialled Status','Yesterday Disposition','Today\'s Disposition','Other Remarks'];
-// Editable fields only
-const EDITABLE_FIELDS=['ptp','connected_status','dialled_status','todays_disposition','other_remarks'];
+const MAIN_HEADERS=['Reg No','Student Name','Center','Region','Payment Check','Fees Amt','Fees Paid','1st EMI Paid Date','2nd EMI Paid Date','3rd EMI Paid Date','4th EMI Paid Date','Total Paid Date','Form Status','% 15 Days Attendance','Last Punch Date','PTP','Connected Status','Dialled Status','Yesterday Disposition','Today\'s Disposition','Other Remarks'];
 // ── STATE ──
 let accessToken=null,currentUser=null;
 let allData=[],filteredData=[],auditLog=[],users=[];
@@ -568,31 +568,36 @@ async function writeRowToSheet(rowIndex,record,changes){
 // ── FILTERS ──
 function buildFilters(){
   fillSel('f-region',unique(allData.map(r=>r.region)),'All Regions');
+  fillSel('f-center',unique(allData.map(r=>r.center)),'All Centers');
   fillSel('f-payment',unique(allData.map(r=>r.newpayment_checks)),'All');
 }
 function fillSel(id,opts,lbl){const el=document.getElementById(id);const cur=el.value;el.innerHTML=`<option value="">${lbl}</option>`+opts.filter(Boolean).map(o=>`<option value="${o}">${o}</option>`).join('');if(cur)el.value=cur;}
 function applyFilters(){
-  const region=v('f-region'),payment=v('f-payment'),search=v('f-search').toLowerCase();
-  filteredData=allData.filter(r=>(!region||r.region===region)&&(!payment||r.newpayment_checks===payment)&&(!search||r.regno.toLowerCase().includes(search)||r.student_name.toLowerCase().includes(search)));
+  const region=v('f-region'),center=v('f-center'),payment=v('f-payment'),form=v('f-form'),search=v('f-search').toLowerCase();
+  filteredData=allData.filter(r=>(!region||r.region===region)&&(!center||r.center===center)&&(!payment||r.newpayment_checks===payment)&&(!form||r.form_status===form)&&(!search||r.regno.toLowerCase().includes(search)||r.student_name.toLowerCase().includes(search)));
   renderTable();updateStats();
 }
-function clearFilters(){['f-region','f-payment'].forEach(id=>document.getElementById(id).value='');document.getElementById('f-search').value='';applyFilters();}
+function clearFilters(){['f-region','f-center','f-payment','f-form'].forEach(id=>document.getElementById(id).value='');document.getElementById('f-search').value='';applyFilters();}
 function updateStats(){
-  document.getElementById('s-total').textContent=allData.length;
-  document.getElementById('s-conn').textContent=allData.filter(r=>r.connected_status==='Connected').length;
-  document.getElementById('s-ptp').textContent=allData.filter(r=>r.ptp).length;
-  document.getElementById('s-showing').textContent=filteredData.length;
+  const connected=filteredData.filter(r=>r.connected_status==='Connected').length;
+  const ptp=filteredData.filter(r=>r.ptp).length;
+  const dialled=filteredData.filter(r=>r.dialled_status==='Dialled').length;
+  document.getElementById('s-total').textContent=filteredData.length;
+  document.getElementById('s-conn').textContent=connected;
+  document.getElementById('s-ptp').textContent=ptp;
+  document.getElementById('s-dialled').textContent=dialled;
   document.getElementById('tw-meta').textContent=`${filteredData.length} / ${allData.length} records`;
 }
 function renderTable(){
   const body=document.getElementById('tbl-body');
-  if(!filteredData.length){body.innerHTML=`<tr><td colspan="12"><div class="empty"><div class="empty-icon">🔍</div><div class="empty-t">No records match filters</div></div></td></tr>`;return;}
-  body.innerHTML=filteredData.map(r=>{const idx=allData.indexOf(r);return`<tr onclick="openPanel(${idx})" class="${selectedIdx===idx?'selected':''}"><td class="regno-cell">${r.regno}</td><td class="name-cell">${r.student_name}</td><td style="max-width:120px;overflow:hidden;text-overflow:ellipsis">${r.center}</td><td>${bBadge(r.region,'blue')}</td><td>${payBadge(r.newpayment_checks)}</td><td>${r.total_paid_date||'—'}</td><td>${r.ptp?bBadge('✓ Yes','green'):bBadge('No','red')}</td><td>${connBadge(r.connected_status)}</td><td>${dialBadge(r.dialled_status)}</td><td>${dispBadge(r.yesterday_disposition)}</td><td>${dispBadge(r.todays_disposition)}</td><td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openPanel(${idx})">Edit</button></td></tr>`;}).join('');
+  if(!filteredData.length){body.innerHTML=`<tr><td colspan="21"><div class="empty"><div class="empty-icon">🔍</div><div class="empty-t">No records match filters</div></div></td></tr>`;return;}
+  body.innerHTML=filteredData.map(r=>{const idx=allData.indexOf(r);return`<tr onclick="openPanel(${idx})" class="${selectedIdx===idx?'selected':''}"><td class="regno-cell">${r.regno}</td><td class="name-cell">${r.student_name}</td><td>${r.center||'—'}</td><td>${bBadge(r.region,'blue')}</td><td>${payBadge(r.newpayment_checks)}</td><td>${r.fees_amt||'—'}</td><td>${r.fees_paid||'—'}</td><td>${r.emi1_paid_date||'—'}</td><td>${r.emi2_paid_date||'—'}</td><td>${r.emi3_paid_date||'—'}</td><td>${r.emi4_paid_date||'—'}</td><td>${r.total_paid_date||'—'}</td><td>${formBadge(r.form_status)}</td><td>${r.attendance_15days||'—'}</td><td>${r.last_punch_date||'—'}</td><td>${r.ptp?bBadge('✓','green'):'-'}</td><td>${connBadge(r.connected_status)}</td><td>${dialBadge(r.dialled_status)}</td><td>${dispBadge(r.yesterday_disposition)}</td><td>${dispBadge(r.todays_disposition)}</td><td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openPanel(${idx})">Edit</button></td></tr>`;}).join('');
 }
 const bBadge=(val,c)=>val?`<span class="badge b-${c}">${val}</span>`:`<span style="color:var(--ink3)">—</span>`;
 function payBadge(v){const m={'Full Paid':'green','50% Paid':'yellow','Token Paid':'blue','Less than Token':'orange'};return bBadge(v,m[v]||'gray');}
 function connBadge(v){const m={'Connected':'green','Not Connected':'red','Busy':'yellow','No Answer':'orange','Switched Off':'red','Invalid Number':'red'};return bBadge(v,m[v]||'gray');}
 function dialBadge(v){return bBadge(v,v==='Dialled'?'green':'gray');}
+function formBadge(v){const m={'Stage 1':'blue','Stage 2':'yellow','Stage 3':'orange','Completed':'green'};return bBadge(v,m[v]||'gray');}
 function dispBadge(v){const m={'Interested':'green','Enrolled':'green','Not Interested':'red','Drop':'red','Follow Up':'yellow','Callback Requested':'yellow','RNR':'orange','Wrong Number':'red','Future Prospect':'violet'};return bBadge(v,m[v]||'gray');}
 // ── PANEL ──
 function openPanel(idx){
@@ -600,12 +605,20 @@ function openPanel(idx){
   document.getElementById('p-name').textContent=r.student_name;
   document.getElementById('p-regno').textContent='#'+r.regno;
   document.getElementById('p-info').innerHTML=`
+    <div class="info-cell"><div class="info-k">Reg No</div><div class="info-v">${r.regno}</div></div>
     <div class="info-cell"><div class="info-k">Center</div><div class="info-v">${r.center}</div></div>
     <div class="info-cell"><div class="info-k">Region</div><div class="info-v">${r.region}</div></div>
     <div class="info-cell"><div class="info-k">Payment</div><div class="info-v">${r.newpayment_checks||'—'}</div></div>
+    <div class="info-cell"><div class="info-k">Fees Amount</div><div class="info-v">₹${r.fees_amt||'0'}</div></div>
+    <div class="info-cell"><div class="info-k">Fees Paid</div><div class="info-v">₹${r.fees_paid||'0'}</div></div>
+    <div class="info-cell"><div class="info-k">Form Status</div><div class="info-v">${formBadge(r.form_status)}</div></div>
+    <div class="info-cell"><div class="info-k">Attendance (15 Days)</div><div class="info-v">${r.attendance_15days||'—'}</div></div>
+    <div class="info-cell"><div class="info-k">Last Punch Date</div><div class="info-v">${r.last_punch_date||'—'}</div></div>
+    <div class="info-cell"><div class="info-k">1st EMI Date</div><div class="info-v">${r.emi1_paid_date||'—'}</div></div>
+    <div class="info-cell"><div class="info-k">2nd EMI Date</div><div class="info-v">${r.emi2_paid_date||'—'}</div></div>
+    <div class="info-cell"><div class="info-k">3rd EMI Date</div><div class="info-v">${r.emi3_paid_date||'—'}</div></div>
+    <div class="info-cell"><div class="info-k">4th EMI Date</div><div class="info-v">${r.emi4_paid_date||'—'}</div></div>
     <div class="info-cell"><div class="info-k">Total Paid Date</div><div class="info-v">${r.total_paid_date||'—'}</div></div>
-    <div class="info-cell"><div class="info-k">Attendance</div><div class="info-v">${r.attendance_15days||'—'}</div></div>
-    <div class="info-cell"><div class="info-k">Last Punch</div><div class="info-v">${r.last_punch_date||'—'}</div></div>
   `;
   sVal('e-ptp',r.ptp);
   sVal('e-connected',r.connected_status);
