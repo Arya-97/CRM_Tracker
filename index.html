@@ -5,242 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Collection Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<style>
-/* ── DARK THEME (default on :root) ── */
-:root {
-  --bg:#0b0c10;--s1:#111318;--s2:#181b22;--s3:#1f232e;
-  --b1:#252b38;--b2:#2d3446;--b3:#3a4258;
-  --ink:#dde1ec;--ink2:#8892a8;--ink3:#4e5870;
-  --blue:#4a9eff;--blue2:#2563eb;--violet:#7c6fff;
-  --green:#22d17a;--yellow:#f5b731;--red:#f25c5c;--orange:#ff8a3d;
-  --r:10px;--sh:0 4px 32px rgba(0,0,0,.5);--tr:.18s ease;
-}
-body.light {
-  --bg:#f0f2f8;--s1:#ffffff;--s2:#f4f6fc;--s3:#eaecf4;
-  --b1:#dde1ee;--b2:#cdd3e5;--b3:#bbc3d8;
-  --ink:#1a202e;--ink2:#4a5268;--ink3:#8e96ac;
-  --blue:#2563eb;--blue2:#1d4ed8;--violet:#6d5dfc;
-  --green:#16a34a;--yellow:#b45309;--red:#dc2626;--orange:#c2410c;
-  --sh:0 4px 20px rgba(0,0,0,.08);
-}
-body.light .topbar { background: rgba(255,255,255,0.88); }
-body.light .loader-ov { background: rgba(240,242,248,.82); }
-body.light tbody tr:hover { background: rgba(37,99,235,.04); }
-body.light tbody tr.selected { background: rgba(37,99,235,.08) !important; }
-body.light .b-blue{background:rgba(37,99,235,.1);color:#2563eb}
-body.light .b-green{background:rgba(22,163,74,.1);color:#16a34a}
-body.light .b-yellow{background:rgba(180,83,9,.1);color:#b45309}
-body.light .b-red{background:rgba(220,38,38,.1);color:#dc2626}
-body.light .b-orange{background:rgba(194,65,12,.1);color:#c2410c}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;overflow-x:hidden;transition:background .2s,color .2s}
-code,pre{font-family:'JetBrains Mono',monospace}
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
-/* AUTH */
-#auth-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:900;background-image:radial-gradient(ellipse 70% 50% at 80% 10%,rgba(74,158,255,.06) 0%,transparent 60%),radial-gradient(ellipse 50% 70% at 10% 90%,rgba(124,111,255,.05) 0%,transparent 60%)}
-.auth-card{width:420px;background:var(--s1);border:1px solid var(--b2);border-radius:16px;padding:44px 48px;box-shadow:var(--sh);animation:fadeUp .5s ease both}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-.auth-eyebrow{font-size:11px;font-weight:600;color:var(--blue);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
-.auth-title{font-size:28px;font-weight:800;color:var(--ink);line-height:1.2;margin-bottom:8px}
-.auth-sub{font-size:13px;color:var(--ink2);margin-bottom:32px;line-height:1.65}
-.google-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:12px;background:var(--s2);border:1px solid var(--b2);border-radius:10px;color:var(--ink);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;padding:14px;cursor:pointer;transition:all var(--tr)}
-.google-btn:hover{background:var(--s3);border-color:var(--b3);transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.15)}
-.google-btn:active{transform:none}
-.google-icon{width:20px;height:20px;flex-shrink:0}
-.auth-err{margin-top:12px;padding:10px 14px;background:rgba(242,92,92,.08);border:1px solid rgba(242,92,92,.2);border-radius:8px;font-size:13px;color:var(--red);display:none}
-.auth-err.show{display:block}
-/* APP */
-#app{display:none;flex-direction:column;min-height:100vh;position:relative;z-index:1}
-/* SIDEBAR */
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:var(--s1);border-right:1px solid var(--b1);display:flex;flex-direction:column;z-index:100;transition:width .3s ease,transform .3s ease}
-.sidebar.collapsed{width:60px}
-.sidebar.collapsed .logo-text,.sidebar.collapsed .logo-sub,.sidebar.collapsed .nav-item span:not(.nav-icon),.sidebar.collapsed .nav-section-label,.sidebar.collapsed .user-name,.sidebar.collapsed .user-role,.sidebar.collapsed .logout-btn{display:none}
-.sidebar.collapsed .sidebar-toggle{right:2px}
-.sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:10px;position:relative}
-.logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--blue),var(--violet));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.logo-text{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.3px}
-.logo-sub{font-size:10px;color:var(--ink3)}
-.sidebar-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:28px;height:28px;background:var(--s2);border:1px solid var(--b1);border-radius:6px;color:var(--ink2);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all var(--tr)}
-.sidebar-toggle:hover{background:var(--s3);color:var(--ink)}
-.nav{flex:1;padding:12px 10px;display:flex;flex-direction:column;gap:2px}
-.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:13px;font-weight:500;color:var(--ink2);cursor:pointer;transition:all var(--tr);border:none;background:transparent;width:100%;text-align:left}
-.nav-item:hover{background:var(--s2);color:var(--ink)}
-.nav-item.active{background:rgba(74,158,255,.12);color:var(--blue)}
-body.light .nav-item.active{background:rgba(37,99,235,.1)}
-.nav-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0}
-.nav-badge{margin-left:auto;background:var(--blue2);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px}
-.nav-section-label{font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:1px;padding:10px 12px 4px}
-.sidebar-footer{padding:12px 10px;border-top:1px solid var(--b1)}
-.user-chip{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--s2);border-radius:8px;cursor:pointer;transition:background var(--tr)}
-.user-chip:hover{background:var(--s3)}
-.user-avatar{width:30px;height:30px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--blue),var(--violet));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;overflow:hidden}
-.user-name{font-size:12px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.user-role{font-size:10px;color:var(--ink3);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
-.logout-btn{margin-top:6px;width:100%;background:transparent;border:1px solid var(--b1);border-radius:7px;color:var(--ink3);font-family:'Outfit',sans-serif;font-size:12px;padding:6px;cursor:pointer;transition:all var(--tr)}
-.logout-btn:hover{border-color:var(--red);color:var(--red)}
-/* MAIN */
-.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh;transition:margin-left .3s ease}
-.sidebar.collapsed ~ .main{margin-left:60px}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:54px;background:rgba(11,12,16,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--b1);position:sticky;top:0;z-index:50;transition:background var(--tr)}
-.page-title{font-size:15px;font-weight:700;color:var(--ink)}
-.topbar-right{display:flex;align-items:center;gap:8px}
-.icon-btn{display:flex;align-items:center;gap:6px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--ink2);font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;padding:6px 12px;cursor:pointer;transition:all var(--tr)}
-.icon-btn:hover{color:var(--ink);border-color:var(--b2)}
-.icon-btn.spinning .si{animation:spin .7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.content{padding:20px 24px;flex:1}
-/* FILTERS */
-.filter-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:14px 16px;margin-bottom:16px}
-.fg{display:flex;flex-direction:column;gap:4px}
-.fl{font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.7px}
-.fs,.fi{background:var(--s2);border:1px solid var(--b1);color:var(--ink);border-radius:7px;font-family:'Outfit',sans-serif;font-size:13px;padding:7px 10px;outline:none;cursor:pointer;transition:border-color var(--tr);min-width:130px}
-.fs:focus,.fi:focus{border-color:var(--blue)}
-.fi{cursor:text;min-width:200px}
-.filter-actions{display:flex;gap:6px;align-items:flex-end;margin-left:auto}
-/* BUTTONS */
-.btn{border:none;border-radius:8px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;padding:8px 16px;cursor:pointer;transition:all var(--tr);display:inline-flex;align-items:center;gap:6px}
-.btn-primary{background:var(--blue);color:#fff}
-.btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px)}
-.btn-ghost{background:var(--s2);color:var(--ink2);border:1px solid var(--b1)}
-.btn-ghost:hover{color:var(--ink);border-color:var(--b2)}
-.btn-sm{padding:5px 10px;font-size:12px;border-radius:6px}
-.btn-success{background:rgba(34,209,122,.1);color:var(--green);border:1px solid rgba(34,209,122,.2)}
-.btn-success:hover{background:rgba(34,209,122,.18)}
-.btn-danger{background:rgba(242,92,92,.08);color:var(--red);border:1px solid rgba(242,92,92,.2)}
-.btn-danger:hover{background:rgba(242,92,92,.15)}
-/* STATS */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
-.stat{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:14px 16px;position:relative;overflow:hidden}
-.stat::after{content:'';position:absolute;right:-10px;top:-10px;width:60px;height:60px;border-radius:50%;opacity:.06}
-.stat.c-blue::after{background:var(--blue)}.stat.c-green::after{background:var(--green)}.stat.c-yellow::after{background:var(--yellow)}.stat.c-violet::after{background:var(--violet)}
-.stat-v{font-size:28px;font-weight:800;font-family:'JetBrains Mono',monospace}
-.stat.c-blue .stat-v{color:var(--blue)}.stat.c-green .stat-v{color:var(--green)}.stat.c-yellow .stat-v{color:var(--yellow)}.stat.c-violet .stat-v{color:var(--violet)}
-.stat-l{font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:.6px;margin-top:2px}
-/* TABLE */
-.table-wrap{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);overflow:hidden}
-.tw-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--b1)}
-.tw-title{font-size:13px;font-weight:700;color:var(--ink)}
-.tw-meta{font-size:11px;color:var(--ink3);font-family:'JetBrains Mono',monospace}
-.tbl-outer{overflow-x:auto;max-height:calc(100vh - 340px)}
-table{width:100%;border-collapse:collapse;font-size:12.5px}
-thead{position:sticky;top:0;z-index:5}
-thead th{background:var(--s2);color:var(--ink3);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:9px 12px;text-align:left;white-space:nowrap;border-bottom:1px solid var(--b1)}
-tbody tr{border-bottom:1px solid rgba(37,43,56,.4);transition:background var(--tr);cursor:pointer}
-tbody tr:last-child{border-bottom:none}
-tbody tr:hover{background:rgba(74,158,255,.04)}
-tbody tr.selected{background:rgba(74,158,255,.09)!important}
-tbody td{padding:9px 12px;color:var(--ink2);font-family:'JetBrains Mono',monospace;font-size:11.5px;white-space:nowrap}
-tbody td.name-cell{font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;color:var(--ink)}
-tbody td.regno-cell{color:var(--blue);font-weight:500}
-.empty{text-align:center;padding:60px 20px;color:var(--ink3)}
-.empty-icon{font-size:40px;margin-bottom:12px}
-.empty-t{font-size:14px;font-weight:500}
-/* BADGES */
-.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:600;font-family:'Outfit',sans-serif;white-space:nowrap}
-.b-blue{background:rgba(74,158,255,.12);color:var(--blue)}
-.b-green{background:rgba(34,209,122,.12);color:var(--green)}
-.b-yellow{background:rgba(245,183,49,.15);color:var(--yellow)}
-.b-red{background:rgba(242,92,92,.12);color:var(--red)}
-.b-orange{background:rgba(255,138,61,.12);color:var(--orange)}
-.b-violet{background:rgba(124,111,255,.12);color:var(--violet)}
-.b-gray{background:rgba(78,88,112,.15);color:var(--ink2)}
-/* PANEL */
-.panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;opacity:0;pointer-events:none;transition:opacity var(--tr)}
-.panel-overlay.open{opacity:1;pointer-events:all}
-.panel{position:fixed;right:0;top:0;bottom:0;width:500px;background:var(--s1);border-left:1px solid var(--b2);box-shadow:-12px 0 48px rgba(0,0,0,.4);z-index:201;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)}
-.panel.open{transform:none}
-.panel-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--b1);background:var(--s2);flex-shrink:0}
-.panel-name{font-size:15px;font-weight:700;color:var(--ink)}
-.panel-regno{font-size:11px;color:var(--blue);font-family:'JetBrains Mono',monospace;margin-top:2px}
-.panel-close{width:32px;height:32px;background:var(--s3);border:1px solid var(--b1);border-radius:7px;color:var(--ink2);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all var(--tr)}
-.panel-close:hover{border-color:var(--red);color:var(--red)}
-.panel-body{flex:1;overflow-y:auto;padding:18px 20px}
-.panel-footer{padding:14px 20px;border-top:1px solid var(--b1);display:flex;gap:8px;background:var(--s1);flex-shrink:0}
-.p-section{margin-bottom:22px}
-.p-section-t{font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:6px}
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.info-cell{background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:10px 12px}
-.info-k{font-size:10px;color:var(--ink3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
-.info-v{font-size:12.5px;color:var(--ink);font-family:'JetBrains Mono',monospace;word-break:break-word}
-.ef{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
-.el{font-size:11px;font-weight:600;color:var(--ink2);text-transform:uppercase;letter-spacing:.6px}
-.es,.ei,.et{background:var(--s2);border:1px solid var(--b1);color:var(--ink);border-radius:8px;font-family:'Outfit',sans-serif;font-size:13px;padding:9px 12px;outline:none;width:100%;transition:border-color var(--tr)}
-.es:focus,.ei:focus,.et:focus{border-color:var(--blue)}
-.et{resize:vertical;min-height:68px}
-.ro-field{background:var(--s2);border:1px solid var(--b1);color:var(--ink);border-radius:8px;padding:9px 12px;font-family:'JetBrains Mono',monospace;font-size:12px;word-break:break-all}
-/* AUDIT */
-.audit-item{background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:12px 14px;margin-bottom:8px}
-.audit-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
-.audit-who{font-size:12px;font-weight:600;color:var(--blue)}
-.audit-when{font-size:10px;color:var(--ink3);font-family:'JetBrains Mono',monospace}
-.audit-regno{font-size:10px;color:var(--violet);margin-bottom:5px;font-family:'JetBrains Mono',monospace}
-.audit-row{display:flex;align-items:baseline;gap:5px;font-size:11.5px;margin-top:3px;flex-wrap:wrap}
-.audit-field{color:var(--ink3);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.4px}
-.audit-from{color:var(--red);text-decoration:line-through;font-family:'JetBrains Mono',monospace;font-size:11px}
-.audit-arr{color:var(--ink3)}
-.audit-to{color:var(--green);font-family:'JetBrains Mono',monospace;font-size:11px}
-/* SETTINGS */
-.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.s-card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:18px}
-.s-card-t{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:14px}
-.u-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--b1)}
-.u-row:last-of-type{border-bottom:none}
-.u-email{font-size:12.5px;color:var(--ink)}
-.u-role-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px}
-.ur-admin{background:rgba(124,111,255,.12);color:var(--violet)}
-.ur-agent{background:rgba(74,158,255,.12);color:var(--blue)}
-.add-row{display:flex;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--b1)}
-.add-input{flex:1;background:var(--s2);border:1px solid var(--b1);color:var(--ink);border-radius:7px;font-family:'Outfit',sans-serif;font-size:12px;padding:7px 10px;outline:none}
-.add-input:focus{border-color:var(--blue)}
-.add-select{background:var(--s2);border:1px solid var(--b1);color:var(--ink);border-radius:7px;font-family:'Outfit',sans-serif;font-size:12px;padding:7px 8px;outline:none}
-/* LOADER */
-.loader-ov{position:fixed;inset:0;background:rgba(11,12,16,.75);display:none;align-items:center;justify-content:center;z-index:800}
-.loader-ov.on{display:flex}
-.loader-box{background:var(--s1);border:1px solid var(--b2);border-radius:12px;padding:28px 40px;text-align:center}
-.spinner{width:38px;height:38px;border:3px solid var(--b2);border-top-color:var(--blue);border-radius:50%;animation:spin .65s linear infinite;margin:0 auto 14px}
-.loader-msg{font-size:13px;color:var(--ink2)}
-/* TOAST */
-.toast{position:fixed;bottom:20px;right:20px;background:var(--s1);border:1px solid var(--b2);border-radius:10px;padding:11px 16px;font-size:13px;color:var(--ink);box-shadow:var(--sh);z-index:999;transform:translateY(60px);opacity:0;transition:all .25s ease;max-width:300px;display:flex;align-items:center;gap:8px}
-.toast.on{transform:none;opacity:1}
-.toast.ok{border-color:rgba(34,209,122,.4)}
-.toast.err{border-color:rgba(242,92,92,.4)}
-.toast.info{border-color:rgba(74,158,255,.3)}
-.page-head{margin-bottom:18px;display:flex;align-items:center;justify-content:space-between}
-.page-h{font-size:19px;font-weight:800;color:var(--ink)}
-.page-s{font-size:13px;color:var(--ink3);margin-top:2px}
-@media(max-width:900px){
-  .sidebar{width:60px}
-  .logo-text,.logo-sub,.nav-item span:not(.nav-icon),.nav-section-label,.user-name,.user-role,.logout-btn{display:none}
-  .main{margin-left:60px}
-  .panel{width:100%}
-  .stats{grid-template-columns:1fr 1fr}
-  .settings-grid{grid-template-columns:1fr}
-  .info-grid{grid-template-columns:1fr}
-}
-</style>
+<link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-
-<!-- =====================================================
-  🔧 ADMIN CONFIGURATION — Sirf yahan 2 lines badlo
-  Step 1: Apna Google OAuth Client ID yahan paste karo
-  Step 2: Apna Google Sheet ID yahan paste karo
-  Bas! Agents ko kuch configure nahi karna padega.
-====================================================== -->
+  
 <script>
-  // ▼▼▼ YAHAN APNI VALUES PASTE KARO ▼▼▼
-  const HARDCODED_CLIENT_ID = '441324421260-qpvoha7vmbo2tmp4f7ofkj844nlrj0ir.apps.googleusercontent.com';   // e.g. '12345-abc.apps.googleusercontent.com'
-  const HARDCODED_SHEET_ID  = '1KZxUavEe9n-V4AdMZopaWiDGqwo1V260tK_XwcVzxpU';    // e.g. '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms'
-  // ▲▲▲ BAS ITNA HI KARNA HAI ▲▲▲
+  // ▼▼▼ PASTE YOUR VALUES HERE ▼▼▼
+  const HARDCODED_CLIENT_ID = 'YOUR_CLIENT_ID_HERE';   // e.g. '12345-abc.apps.googleusercontent.com'
+  const HARDCODED_SHEET_ID  = 'YOUR_SHEET_ID_HERE';    // e.g. '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms'
+  // ▲▲▲ THAT'S ALL YOU NEED TO DO ▲▲▲
 </script>
 
-<!-- AUTH -->
+<!-- AUTH SCREEN -->
 <div id="auth-screen">
   <div class="auth-card">
     <div class="auth-eyebrow">Student CRM</div>
     <div class="auth-title">Welcome Back</div>
-    <div class="auth-sub">Apne Google account se sign in karein. Admin ne aapka email register kiya hona chahiye.</div>
+    <div class="auth-sub">Sign in with your Google account. Your email must be registered by the admin.</div>
     <button class="google-btn" onclick="startGoogleAuth()">
       <svg class="google-icon" viewBox="0 0 24 24">
         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -254,8 +35,9 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
   </div>
 </div>
 
-<!-- APP -->
+<!-- MAIN APP -->
 <div id="app">
+  <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-logo">
       <div class="logo-mark">📋</div>
@@ -265,7 +47,7 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
     <div class="nav">
       <div class="nav-section-label">Main</div>
       <button class="nav-item active" onclick="showPage('tracker',this)"><span class="nav-icon">📊</span><span>Tracker</span></button>
-      <button class="nav-item" onclick="showPage('audit',this)"><span class="nav-icon">🕐</span><span>Audit Log</span><span class="nav-badge" id="audit-count">0</span></button>
+      <button class="nav-item agent-hide" onclick="showPage('audit',this)"><span class="nav-icon">🕐</span><span>Audit Log</span><span class="nav-badge" id="audit-count">0</span></button>
       <div class="nav-section-label admin-nav" style="display:none">Admin</div>
       <button class="nav-item admin-nav" style="display:none" onclick="showPage('settings',this)"><span class="nav-icon">⚙️</span><span>Settings</span></button>
     </div>
@@ -277,6 +59,8 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
       <button class="logout-btn" onclick="doLogout()">Sign out</button>
     </div>
   </div>
+
+  <!-- MAIN CONTENT -->
   <div class="main">
     <div class="topbar">
       <div class="page-title" id="page-title">📊 Tracker</div>
@@ -286,13 +70,15 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
       </div>
     </div>
     <div class="content">
-      <!-- TRACKER -->
+      <!-- TRACKER PAGE -->
       <div id="page-tracker">
         <div class="filter-bar">
-          <div class="fg"><span class="fl">Region</span><select class="fs" id="f-region" onchange="applyFilters()"><option value="">All Regions</option></select></div>
+          <div class="fg"><span class="fl">Region</span><select class="fs" id="f-region" onchange="onRegionChange()"><option value="">All Regions</option></select></div>
           <div class="fg"><span class="fl">Center</span><select class="fs" id="f-center" onchange="applyFilters()"><option value="">All Centers</option></select></div>
           <div class="fg"><span class="fl">Payment</span><select class="fs" id="f-payment" onchange="applyFilters()"><option value="">All</option></select></div>
           <div class="fg"><span class="fl">Form Status</span><select class="fs" id="f-form" onchange="applyFilters()"><option value="">All</option><option>Stage 1</option><option>Stage 2</option><option>Stage 3</option><option>Completed</option></select></div>
+          <div class="fg"><span class="fl">Connected</span><select class="fs" id="f-connected" onchange="applyFilters()"><option value="">All</option><option>Connected</option><option>Not Connected</option><option>Busy</option><option>No Answer</option><option>Switched Off</option><option>Invalid Number</option></select></div>
+          <div class="fg"><span class="fl">Dialled</span><select class="fs" id="f-dialled" onchange="applyFilters()"><option value="">All</option><option>Dialled</option><option>Not Dialled</option></select></div>
           <div class="fg"><span class="fl">Search</span><input class="fi" id="f-search" placeholder="Reg No / Student Name..." oninput="applyFilters()"/></div>
           <div class="filter-actions"><button class="btn btn-ghost btn-sm" onclick="clearFilters()">Clear</button></div>
         </div>
@@ -312,15 +98,17 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
           </div>
         </div>
       </div>
-      <!-- AUDIT -->
+
+      <!-- AUDIT LOG PAGE (Admin Only) -->
       <div id="page-audit" style="display:none">
         <div class="page-head">
-          <div><div class="page-h">Audit Log</div><div class="page-s">Har change ka complete record</div></div>
+          <div><div class="page-h">Audit Log</div><div class="page-s">Complete record of all changes</div></div>
           <select class="fs" id="audit-filter-user" onchange="renderAudit()" style="min-width:200px"><option value="">All Users</option></select>
         </div>
         <div id="audit-list"></div>
       </div>
-      <!-- SETTINGS (Admin only) -->
+
+      <!-- SETTINGS PAGE (Admin Only) -->
       <div id="page-settings" style="display:none">
         <div class="page-head"><div><div class="page-h">Settings</div><div class="page-s">User management</div></div></div>
         <div class="settings-grid">
@@ -342,8 +130,7 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
             <div style="margin-top:14px;font-size:12px;color:var(--ink3);line-height:1.8">
               <b style="color:var(--ink2)">Required sheet tabs:</b><br/>
               <code style="color:var(--blue)">Main Tracker</code> · <code style="color:var(--blue)">Audit Log</code> · <code style="color:var(--blue)">Users</code><br/><br/>
-              Config change karne ke liye <b>index.html</b> mein<br/>
-              <code style="color:var(--yellow)">HARDCODED_CLIENT_ID</code> aur <code style="color:var(--yellow)">HARDCODED_SHEET_ID</code> update karein.
+              To change configuration, update <code style="color:var(--yellow)">HARDCODED_CLIENT_ID</code> and <code style="color:var(--yellow)">HARDCODED_SHEET_ID</code> in <b>index.html</b>.
             </div>
           </div>
         </div>
@@ -352,7 +139,7 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
   </div>
 </div>
 
-<!-- PANEL -->
+<!-- EDIT PANEL -->
 <div class="panel-overlay" id="panel-ov" onclick="closePanel()"></div>
 <div class="panel" id="panel">
   <div class="panel-head">
@@ -377,354 +164,12 @@ tbody td.regno-cell{color:var(--blue);font-weight:500}
   </div>
 </div>
 
+<!-- LOADER & TOAST -->
 <div class="loader-ov" id="loader"><div class="loader-box"><div class="spinner"></div><div class="loader-msg" id="loader-msg">Loading…</div></div></div>
 <div class="toast" id="toast"></div>
 
+<!-- SCRIPTS -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
-<script>
-// ── THEME ──
-(function(){
-  const t=localStorage.getItem('crm_theme')||'dark';
-  if(t==='light') document.body.classList.add('light');
-})();
-function toggleTheme(){
-  const light=document.body.classList.toggle('light');
-  localStorage.setItem('crm_theme',light?'light':'dark');
-  document.getElementById('theme-btn').textContent=light?'☀️ Light':'🌙 Dark';
-}
-document.addEventListener('DOMContentLoaded',()=>{
-  const t=localStorage.getItem('crm_theme')||'dark';
-  document.getElementById('theme-btn').textContent=t==='light'?'☀️ Light':'🌙 Dark';
-  const sidebarCollapsed=localStorage.getItem('crm_sidebar_collapsed')==='true';
-  if(sidebarCollapsed) document.querySelector('.sidebar').classList.add('collapsed');
-});
-
-// ── CONFIG — Hardcoded, agents ko kuch nahi karna ──
-// (Values ऊपर <script> block mein define hain: HARDCODED_CLIENT_ID, HARDCODED_SHEET_ID)
-const CFG={
-  get clientId(){ return HARDCODED_CLIENT_ID; },
-  get sheetId() { return HARDCODED_SHEET_ID;  },
-};
-
-// ── SHEET SETUP ──
-const SH={main:'Main Tracker',audit:'Audit Log',users:'Users'};
-const COL={
-  regno:0,student_name:1,center:2,region:3,newpayment_checks:4,fees_amt:5,
-  fees_paid:6,form_status:7,emi1_paid_date:8,emi2_paid_date:9,emi3_paid_date:10,
-  emi4_paid_date:11,total_paid_date:12,attendance_15days:13,last_punch_date:14,
-  ptp:15,connected_status:16,dialled_status:17,yesterday_disposition:18,
-  todays_disposition:19,other_remarks:20
-};
-const NUM_COLS=21;
-const MAIN_HEADERS=['Reg No','Student Name','Center','Region','Payment Check','Fees Amt','Fees Paid','1st EMI Paid Date','2nd EMI Paid Date','3rd EMI Paid Date','4th EMI Paid Date','Total Paid Date','Form Status','% 15 Days Attendance','Last Punch Date','PTP','Connected Status','Dialled Status','Yesterday Disposition','Today\'s Disposition','Other Remarks'];
-
-// ── STATE ──
-let accessToken=null,currentUser=null;
-let allData=[],filteredData=[],auditLog=[],users=[];
-let selectedIdx=null;
-
-// ── AUTH ──
-function startGoogleAuth(){
-  // Config validation
-  if(!HARDCODED_CLIENT_ID || HARDCODED_CLIENT_ID==='YOUR_CLIENT_ID_HERE'){
-    showAuthErr('⚙️ Admin ne abhi Client ID configure nahi ki. index.html mein HARDCODED_CLIENT_ID set karein.');
-    return;
-  }
-  if(!HARDCODED_SHEET_ID || HARDCODED_SHEET_ID==='YOUR_SHEET_ID_HERE'){
-    showAuthErr('⚙️ Admin ne abhi Sheet ID configure nahi ki. index.html mein HARDCODED_SHEET_ID set karein.');
-    return;
-  }
-  if(!window.google){showAuthErr('Google script load nahi hua. Internet check karein.');return;}
-  google.accounts.oauth2.initTokenClient({
-    client_id: HARDCODED_CLIENT_ID,
-    scope:'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
-    callback:onTokenReceived,
-    error_callback:e=>showAuthErr('OAuth error: '+(e.message||JSON.stringify(e))),
-  }).requestAccessToken();
-}
-
-async function onTokenReceived(resp){
-  if(resp.error){showAuthErr(resp.error);return;}
-  accessToken=resp.access_token;
-  showLoader('Verifying account…');
-  try{
-    const uInfo=await gFetch('https://www.googleapis.com/oauth2/v2/userinfo').then(r=>r.json());
-    await ensureSheets();
-    await loadUsers();
-    const found=users.find(u=>u.email.toLowerCase()===uInfo.email.toLowerCase());
-    if(!found){
-      if(users.length===0){
-        // Pehla login = auto admin
-        await sheetsAppend(SH.users,[[uInfo.email,'admin','system',nowStr()]]);
-        await loadUsers();
-        currentUser={...uInfo,role:'admin'};
-        boot();
-      } else {
-        hideLoader();
-        showAuthErr('❌ Access denied. Aapka email ('+uInfo.email+') registered nahi hai. Admin se contact karein.');
-        accessToken=null;
-      }
-    } else {
-      currentUser={...uInfo,role:found.role};
-      boot();
-    }
-  }catch(e){hideLoader();showAuthErr('Error: '+e.message);}
-}
-
-function boot(){
-  hideLoader();
-  document.getElementById('auth-screen').style.display='none';
-  document.getElementById('app').style.display='flex';
-  document.getElementById('user-name').textContent=currentUser.name||currentUser.email;
-  document.getElementById('user-role').textContent=currentUser.role.toUpperCase();
-  const av=document.getElementById('user-avatar');
-  if(currentUser.picture){av.innerHTML=`<img src="${currentUser.picture}" style="width:30px;height:30px;border-radius:50%;object-fit:cover"/>`;}
-  else{av.textContent=(currentUser.name||currentUser.email)[0].toUpperCase();}
-  if(currentUser.role==='admin'){
-    document.querySelectorAll('.admin-nav').forEach(el=>el.style.display='');
-    // Show config info in settings
-    const ci=document.getElementById('info-client-id');
-    const si=document.getElementById('info-sheet-id');
-    if(ci) ci.textContent=HARDCODED_CLIENT_ID.substring(0,30)+'…';
-    if(si) si.textContent=HARDCODED_SHEET_ID.substring(0,30)+'…';
-  }
-  loadAll();
-}
-
-function doLogout(){
-  accessToken=null;currentUser=null;
-  document.getElementById('app').style.display='none';
-  document.getElementById('auth-screen').style.display='flex';
-  document.getElementById('auth-err').classList.remove('show');
-}
-
-// ── SHEETS API ──
-const API='https://sheets.googleapis.com/v4/spreadsheets';
-function gFetch(url,opts={}){return fetch(url,{...opts,headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json',...(opts.headers||{})}});}
-async function sheetsGet(range){const r=await gFetch(`${API}/${CFG.sheetId}/values/${encodeURIComponent(range)}?valueRenderOption=FORMATTED_VALUE`);if(!r.ok){const e=await r.json();throw new Error(e.error?.message||'Read error');}return r.json();}
-async function sheetsUpdate(range,values){const r=await gFetch(`${API}/${CFG.sheetId}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`,{method:'PUT',body:JSON.stringify({range,majorDimension:'ROWS',values})});if(!r.ok){const e=await r.json();throw new Error(e.error?.message||'Write error');}return r.json();}
-async function sheetsAppend(sheet,values){const r=await gFetch(`${API}/${CFG.sheetId}/values/${encodeURIComponent(sheet+'!A1')}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,{method:'POST',body:JSON.stringify({majorDimension:'ROWS',values})});if(!r.ok){const e=await r.json();throw new Error(e.error?.message||'Append error');}return r.json();}
-async function sheetsBatch(reqs){const r=await gFetch(`${API}/${CFG.sheetId}:batchUpdate`,{method:'POST',body:JSON.stringify({requests:reqs})});if(!r.ok){const e=await r.json();throw new Error(e.error?.message||'Batch error');}return r.json();}
-async function getSheetInfo(){const r=await gFetch(`${API}/${CFG.sheetId}`);if(!r.ok) throw new Error('Cannot read sheet. Sheet ID check karein.');return r.json();}
-async function ensureSheets(){
-  const info=await getSheetInfo();
-  const existing=info.sheets.map(s=>s.properties.title);
-  const toCreate=[SH.main,SH.audit,SH.users].filter(n=>!existing.includes(n));
-  if(toCreate.length){
-    await sheetsBatch(toCreate.map(t=>({addSheet:{properties:{title:t}}})));
-    if(toCreate.includes(SH.main))  await sheetsUpdate(`${SH.main}!A1`,[MAIN_HEADERS]);
-    if(toCreate.includes(SH.audit)) await sheetsUpdate(`${SH.audit}!A1`,[['timestamp','agent_email','agent_name','regno','student_name','field','old_value','new_value']]);
-    if(toCreate.includes(SH.users)) await sheetsUpdate(`${SH.users}!A1`,[['email','role','added_by','added_on']]);
-  }
-}
-
-// ── LOAD ──
-async function loadAll(){
-  const btn=document.getElementById('sync-btn');
-  btn.classList.add('spinning');showLoader('Syncing from Google Sheets…');
-  try{
-    await Promise.all([loadMainData(),loadAuditData(),loadUsers()]);
-    buildFilters();applyFilters();renderAudit();renderUsersList();
-    hideLoader();showToast('✅ Synced','ok');
-  }catch(e){hideLoader();showToast('❌ '+e.message,'err');}
-  btn.classList.remove('spinning');
-}
-async function loadMainData(){
-  const res=await sheetsGet(`${SH.main}!A1:U2000`);
-  const rows=res.values||[];
-  if(rows.length<=1){allData=[];return;}
-  allData=rows.slice(1).map((row,i)=>{
-    const r={};Object.entries(COL).forEach(([k,ci])=>r[k]=(row[ci]||'').toString().trim());r._rowIndex=i+2;return r;
-  }).filter(r=>r.regno);
-}
-async function loadAuditData(){
-  const res=await sheetsGet(`${SH.audit}!A1:H5000`);
-  const rows=res.values||[];
-  if(rows.length<=1){auditLog=[];return;}
-  auditLog=rows.slice(1).map(r=>({timestamp:r[0]||'',agent_email:r[1]||'',agent_name:r[2]||'',regno:r[3]||'',student_name:r[4]||'',field:r[5]||'',old_value:r[6]||'',new_value:r[7]||''})).reverse();
-  document.getElementById('audit-count').textContent=auditLog.length;
-  const emails=[...new Set(auditLog.map(a=>a.agent_email).filter(Boolean))];
-  const sel=document.getElementById('audit-filter-user');
-  sel.innerHTML='<option value="">All Users</option>'+emails.map(e=>`<option value="${e}">${e}</option>`).join('');
-}
-async function loadUsers(){
-  const res=await sheetsGet(`${SH.users}!A1:D500`);
-  const rows=res.values||[];
-  if(rows.length<=1){users=[];return;}
-  users=rows.slice(1).map(r=>({email:r[0]||'',role:r[1]||'agent',added_by:r[2]||'',added_on:r[3]||''})).filter(u=>u.email);
-}
-
-// ── WRITE ──
-async function writeRowToSheet(rowIndex,record,changes){
-  const row=Array(NUM_COLS).fill('');
-  Object.entries(COL).forEach(([k,ci])=>row[ci]=record[k]||'');
-  await sheetsUpdate(`${SH.main}!A${rowIndex}:U${rowIndex}`,[row]);
-  if(changes.length){
-    const now=nowStr();
-    await sheetsAppend(SH.audit,changes.map(c=>[now,currentUser.email,currentUser.name||currentUser.email,record.regno,record.student_name,c.field,c.old,c.new]));
-  }
-}
-
-// ── FILTERS ──
-function buildFilters(){
-  fillSel('f-region',unique(allData.map(r=>r.region)),'All Regions');
-  fillSel('f-center',unique(allData.map(r=>r.center)),'All Centers');
-  fillSel('f-payment',unique(allData.map(r=>r.newpayment_checks)),'All');
-}
-function fillSel(id,opts,lbl){const el=document.getElementById(id);const cur=el.value;el.innerHTML=`<option value="">${lbl}</option>`+opts.filter(Boolean).map(o=>`<option value="${o}">${o}</option>`).join('');if(cur)el.value=cur;}
-function applyFilters(){
-  const region=v('f-region'),center=v('f-center'),payment=v('f-payment'),form=v('f-form'),search=v('f-search').toLowerCase();
-  filteredData=allData.filter(r=>(!region||r.region===region)&&(!center||r.center===center)&&(!payment||r.newpayment_checks===payment)&&(!form||r.form_status===form)&&(!search||r.regno.toLowerCase().includes(search)||r.student_name.toLowerCase().includes(search)));
-  renderTable();updateStats();
-}
-function clearFilters(){['f-region','f-center','f-payment','f-form'].forEach(id=>document.getElementById(id).value='');document.getElementById('f-search').value='';applyFilters();}
-function updateStats(){
-  const connected=filteredData.filter(r=>r.connected_status==='Connected').length;
-  const ptp=filteredData.filter(r=>r.ptp).length;
-  const dialled=filteredData.filter(r=>r.dialled_status==='Dialled').length;
-  document.getElementById('s-total').textContent=filteredData.length;
-  document.getElementById('s-conn').textContent=connected;
-  document.getElementById('s-ptp').textContent=ptp;
-  document.getElementById('s-dialled').textContent=dialled;
-  document.getElementById('tw-meta').textContent=`${filteredData.length} / ${allData.length} records`;
-}
-function renderTable(){
-  const body=document.getElementById('tbl-body');
-  if(!filteredData.length){body.innerHTML=`<tr><td colspan="21"><div class="empty"><div class="empty-icon">🔍</div><div class="empty-t">No records match filters</div></div></td></tr>`;return;}
-  body.innerHTML=filteredData.map(r=>{const idx=allData.indexOf(r);return`<tr onclick="openPanel(${idx})" class="${selectedIdx===idx?'selected':''}"><td class="regno-cell">${r.regno}</td><td class="name-cell">${r.student_name}</td><td>${r.center||'—'}</td><td>${bBadge(r.region,'blue')}</td><td>${payBadge(r.newpayment_checks)}</td><td>${r.fees_amt||'—'}</td><td>${r.fees_paid||'—'}</td><td>${r.emi1_paid_date||'—'}</td><td>${r.emi2_paid_date||'—'}</td><td>${r.emi3_paid_date||'—'}</td><td>${r.emi4_paid_date||'—'}</td><td>${r.total_paid_date||'—'}</td><td>${formBadge(r.form_status)}</td><td>${r.attendance_15days||'—'}</td><td>${r.last_punch_date||'—'}</td><td>${r.ptp?bBadge('✓','green'):'-'}</td><td>${connBadge(r.connected_status)}</td><td>${dialBadge(r.dialled_status)}</td><td>${dispBadge(r.yesterday_disposition)}</td><td>${dispBadge(r.todays_disposition)}</td><td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openPanel(${idx})">Edit</button></td></tr>`;}).join('');
-}
-const bBadge=(val,c)=>val?`<span class="badge b-${c}">${val}</span>`:`<span style="color:var(--ink3)">—</span>`;
-function payBadge(v){const m={'Full Paid':'green','50% Paid':'yellow','Token Paid':'blue','Less than Token':'orange'};return bBadge(v,m[v]||'gray');}
-function connBadge(v){const m={'Connected':'green','Not Connected':'red','Busy':'yellow','No Answer':'orange','Switched Off':'red','Invalid Number':'red'};return bBadge(v,m[v]||'gray');}
-function dialBadge(v){return bBadge(v,v==='Dialled'?'green':'gray');}
-function formBadge(v){const m={'Stage 1':'blue','Stage 2':'yellow','Stage 3':'orange','Completed':'green'};return bBadge(v,m[v]||'gray');}
-function dispBadge(v){const m={'Interested':'green','Enrolled':'green','Not Interested':'red','Drop':'red','Follow Up':'yellow','Callback Requested':'yellow','RNR':'orange','Wrong Number':'red','Future Prospect':'violet'};return bBadge(v,m[v]||'gray');}
-
-// ── PANEL ──
-function openPanel(idx){
-  selectedIdx=idx;const r=allData[idx];
-  document.getElementById('p-name').textContent=r.student_name;
-  document.getElementById('p-regno').textContent='#'+r.regno;
-  document.getElementById('p-info').innerHTML=`
-    <div class="info-cell"><div class="info-k">Reg No</div><div class="info-v">${r.regno}</div></div>
-    <div class="info-cell"><div class="info-k">Center</div><div class="info-v">${r.center}</div></div>
-    <div class="info-cell"><div class="info-k">Region</div><div class="info-v">${r.region}</div></div>
-    <div class="info-cell"><div class="info-k">Payment</div><div class="info-v">${r.newpayment_checks||'—'}</div></div>
-    <div class="info-cell"><div class="info-k">Fees Amount</div><div class="info-v">₹${r.fees_amt||'0'}</div></div>
-    <div class="info-cell"><div class="info-k">Fees Paid</div><div class="info-v">₹${r.fees_paid||'0'}</div></div>
-    <div class="info-cell"><div class="info-k">Form Status</div><div class="info-v">${formBadge(r.form_status)}</div></div>
-    <div class="info-cell"><div class="info-k">Attendance (15 Days)</div><div class="info-v">${r.attendance_15days||'—'}</div></div>
-    <div class="info-cell"><div class="info-k">Last Punch Date</div><div class="info-v">${r.last_punch_date||'—'}</div></div>
-    <div class="info-cell"><div class="info-k">1st EMI Date</div><div class="info-v">${r.emi1_paid_date||'—'}</div></div>
-    <div class="info-cell"><div class="info-k">2nd EMI Date</div><div class="info-v">${r.emi2_paid_date||'—'}</div></div>
-    <div class="info-cell"><div class="info-k">3rd EMI Date</div><div class="info-v">${r.emi3_paid_date||'—'}</div></div>
-    <div class="info-cell"><div class="info-k">4th EMI Date</div><div class="info-v">${r.emi4_paid_date||'—'}</div></div>
-    <div class="info-cell"><div class="info-k">Total Paid Date</div><div class="info-v">${r.total_paid_date||'—'}</div></div>
-  `;
-  sVal('e-ptp',r.ptp);
-  sVal('e-connected',r.connected_status);
-  sVal('e-dialled',r.dialled_status);
-  sVal('e-today',r.todays_disposition);
-  document.getElementById('e-remarks').value=r.other_remarks||'';
-  const hist=auditLog.filter(a=>a.regno===r.regno);
-  document.getElementById('p-history').innerHTML=!hist.length?'<div style="font-size:12px;color:var(--ink3);padding:8px 0">No history yet</div>':hist.slice(0,10).map(a=>`<div class="audit-item"><div class="audit-head"><span class="audit-who">📧 ${a.agent_name||a.agent_email}</span><span class="audit-when">${a.timestamp}</span></div><div class="audit-row"><span class="audit-field">${a.field}:</span><span class="audit-from">${a.old_value||'(empty)'}</span><span class="audit-arr">→</span><span class="audit-to">${a.new_value}</span></div></div>`).join('');
-  document.getElementById('panel-ov').classList.add('open');
-  document.getElementById('panel').classList.add('open');
-  renderTable();
-}
-function closePanel(){document.getElementById('panel-ov').classList.remove('open');document.getElementById('panel').classList.remove('open');selectedIdx=null;}
-
-// ── SAVE ──
-async function saveChanges(){
-  if(selectedIdx===null) return;
-  const r=allData[selectedIdx];
-  const newVals={ptp:document.getElementById('e-ptp').value.trim(),connected_status:v('e-connected'),dialled_status:v('e-dialled'),todays_disposition:v('e-today'),other_remarks:document.getElementById('e-remarks').value.trim()};
-  const labels={ptp:'PTP',connected_status:'Connected Status',dialled_status:'Dialled Status',todays_disposition:"Today's Disposition",other_remarks:'Other Remarks'};
-  const changes=Object.keys(newVals).filter(k=>(r[k]||'')!==(newVals[k]||'')).map(k=>({key:k,field:labels[k],old:r[k]||'',new:newVals[k]}));
-  if(!changes.length){showToast('No changes to save','info');return;}
-  const updated={...r};
-  if(newVals.todays_disposition&&newVals.todays_disposition!==r.todays_disposition&&r.todays_disposition){
-    updated.yesterday_disposition=r.todays_disposition;
-    changes.push({key:'yesterday_disposition',field:"Yesterday's Disposition (auto)",old:r.yesterday_disposition||'',new:r.todays_disposition});
-  }
-  Object.assign(updated,newVals);
-  const btn=document.getElementById('save-btn');
-  btn.textContent='Saving…';btn.disabled=true;
-  showLoader('Writing to Google Sheet…');
-  try{
-    await writeRowToSheet(r._rowIndex,updated,changes);
-    Object.assign(allData[selectedIdx],updated);
-    const now=nowStr();
-    changes.forEach(c=>auditLog.unshift({timestamp:now,agent_email:currentUser.email,agent_name:currentUser.name||currentUser.email,regno:r.regno,student_name:r.student_name,field:c.field,old_value:c.old,new_value:c.new}));
-    document.getElementById('audit-count').textContent=auditLog.length;
-    renderTable();renderAudit();openPanel(selectedIdx);
-    hideLoader();showToast('✅ Saved to Google Sheet!','ok');
-  }catch(e){hideLoader();showToast('❌ Save failed: '+e.message,'err');}
-  btn.textContent='💾 Save to Sheet';btn.disabled=false;
-}
-
-// ── AUDIT ──
-function renderAudit(){
-  const fu=v('audit-filter-user');
-  const data=fu?auditLog.filter(a=>a.agent_email===fu):auditLog;
-  const el=document.getElementById('audit-list');
-  if(!data.length){el.innerHTML='<div class="empty"><div class="empty-icon">📭</div><div class="empty-t">No audit entries yet</div></div>';return;}
-  el.innerHTML=data.slice(0,200).map(a=>`<div class="audit-item"><div class="audit-head"><span class="audit-who">📧 ${a.agent_name||a.agent_email}</span><span class="audit-when">${a.timestamp}</span></div><div class="audit-regno">Reg: ${a.regno} — ${a.student_name}</div><div class="audit-row"><span class="audit-field">${a.field}:</span><span class="audit-from">${a.old_value||'(empty)'}</span><span class="audit-arr">→</span><span class="audit-to">${a.new_value}</span></div></div>`).join('');
-}
-
-// ── USERS ──
-function renderUsersList(){
-  const el=document.getElementById('users-list');if(!el)return;
-  if(!users.length){el.innerHTML='<div style="font-size:13px;color:var(--ink3);padding:8px 0">No users yet</div>';return;}
-  el.innerHTML=users.map(u=>`<div class="u-row"><span class="u-email">${u.email}</span><span class="u-role-tag ur-${u.role}">${u.role.toUpperCase()}</span>${currentUser?.role==='admin'?`<button class="btn btn-danger btn-sm" onclick="removeUser('${u.email}')">Remove</button>`:''}</div>`).join('');
-}
-async function addUser(){
-  const email=document.getElementById('new-email').value.trim().toLowerCase();
-  const role=document.getElementById('new-role').value;
-  if(!email||!email.includes('@')){showToast('Valid email enter karein','err');return;}
-  if(users.find(u=>u.email===email)){showToast('User already exists','err');return;}
-  showLoader('Adding user…');
-  try{await sheetsAppend(SH.users,[[email,role,currentUser.email,nowStr()]]);await loadUsers();renderUsersList();document.getElementById('new-email').value='';hideLoader();showToast('✅ User added: '+email,'ok');}
-  catch(e){hideLoader();showToast('Error: '+e.message,'err');}
-}
-async function removeUser(email){
-  if(!confirm('Remove '+email+'?'))return;
-  const res=await sheetsGet(`${SH.users}!A:A`);
-  const rows=res.values||[];let rowNum=-1;
-  for(let i=1;i<rows.length;i++){if((rows[i][0]||'').toLowerCase()===email.toLowerCase()){rowNum=i+1;break;}}
-  if(rowNum<0){showToast('User not found','err');return;}
-  const info=await getSheetInfo();
-  const sh=info.sheets.find(s=>s.properties.title===SH.users);
-  showLoader('Removing…');
-  try{await sheetsBatch([{deleteDimension:{range:{sheetId:sh.properties.sheetId,dimension:'ROWS',startIndex:rowNum-1,endIndex:rowNum}}}]);await loadUsers();renderUsersList();hideLoader();showToast('User removed','ok');}
-  catch(e){hideLoader();showToast('Error: '+e.message,'err');}
-}
-
-// ── NAV ──
-function toggleSidebar(){
-  const sidebar=document.querySelector('.sidebar');
-  const isCollapsed=sidebar.classList.toggle('collapsed');
-  localStorage.setItem('crm_sidebar_collapsed',isCollapsed?'true':'false');
-}
-function showPage(name,btn){
-  ['tracker','audit','settings'].forEach(p=>document.getElementById('page-'+p).style.display=p===name?'':'none');
-  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
-  if(btn)btn.classList.add('active');
-  document.getElementById('page-title').textContent={tracker:'📊 Tracker',audit:'🕐 Audit Log',settings:'⚙️ Settings'}[name]||name;
-  if(name==='audit')renderAudit();
-  if(name==='settings')renderUsersList();
-}
-
-// ── UTILS ──
-function v(id){return document.getElementById(id)?.value||'';}
-function sVal(id,val){const el=document.getElementById(id);if(el)el.value=val||'';}
-function unique(arr){return[...new Set(arr.filter(Boolean))];}
-function nowStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0');}
-function showLoader(msg){document.getElementById('loader-msg').textContent=msg||'Loading…';document.getElementById('loader').classList.add('on');}
-function hideLoader(){document.getElementById('loader').classList.remove('on');}
-function showAuthErr(msg){const el=document.getElementById('auth-err');el.textContent=msg;el.classList.add('show');}
-let _tt;
-function showToast(msg,type='info'){const el=document.getElementById('toast');el.textContent=msg;el.className='toast on '+(type||'');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('on'),3200);}
-</script>
+<script src="app.js"></script>
 </body>
 </html>
