@@ -3,25 +3,62 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Collection Tracker</title>
+<title>Collection Tracker - Student Management Portal</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>📋</text></svg>"/>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-  
+
+<!-- =====================================================
+  🔧 ADMIN CONFIGURATION — Only change these 2 lines
+  Step 1: Paste your Google OAuth Client ID here
+  Step 2: Paste your Google Sheet ID here
+  Done! Agents don't need to configure anything.
+====================================================== -->
 <script>
   // ▼▼▼ PASTE YOUR VALUES HERE ▼▼▼
-  const HARDCODED_CLIENT_ID = '441324421260-qpvoha7vmbo2tmp4f7ofkj844nlrj0ir.apps.googleusercontent.com';   // e.g. '12345-abc.apps.googleusercontent.com'
-  const HARDCODED_SHEET_ID  = '1KZxUavEe9n-V4AdMZopaWiDGqwo1V260tK_XwcVzxpU';    // e.g. '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms'
+  const HARDCODED_CLIENT_ID = '441324421260-qpvoha7vmbo2tmp4f7ofkj844nlrj0ir.apps.googleusercontent.com';
+  const HARDCODED_SHEET_ID  = '1KZxUavEe9n-V4AdMZopaWiDGqwo1V260tK_XwcVzxpU';
   // ▲▲▲ THAT'S ALL YOU NEED TO DO ▲▲▲
 </script>
 
 <!-- AUTH SCREEN -->
 <div id="auth-screen">
+  <div class="auth-bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+  
   <div class="auth-card">
-    <div class="auth-eyebrow">Student CRM</div>
-    <div class="auth-title">Welcome Back</div>
-    <div class="auth-sub">Sign in with your Google account. Your email must be registered by the admin.</div>
+    <div class="auth-logo-wrapper">
+      <div class="auth-logo">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#4a9eff;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#7c6fff;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect x="15" y="15" width="70" height="70" rx="12" fill="url(#logo-grad)"/>
+          <path d="M 30 35 L 70 35 M 30 50 L 70 50 M 30 65 L 55 65" stroke="white" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="65" cy="65" r="3" fill="white"/>
+        </svg>
+      </div>
+      <div class="auth-brand">
+        <div class="auth-brand-name">Collection Tracker</div>
+        <div class="auth-brand-tagline">Student Management Portal</div>
+      </div>
+    </div>
+    
+    <div class="auth-divider"></div>
+    
+    <div class="auth-welcome">
+      <h1 class="auth-title">Welcome Back!</h1>
+      <p class="auth-subtitle">Sign in to access your student dashboard</p>
+    </div>
+    
     <button class="google-btn" onclick="startGoogleAuth()">
       <svg class="google-icon" viewBox="0 0 24 24">
         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -31,18 +68,42 @@
       </svg>
       Continue with Google
     </button>
+    
+    <div class="auth-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="16" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+      </svg>
+      <span>Your email must be registered by admin to access</span>
+    </div>
+    
     <div class="auth-err" id="auth-err"></div>
+  </div>
+  
+  <div class="auth-footer">
+    <div class="auth-footer-text">Secured by Google OAuth 2.0 | Data stored in Google Sheets</div>
   </div>
 </div>
 
 <!-- MAIN APP -->
 <div id="app">
-  <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-logo">
-      <div class="logo-mark">📋</div>
+      <div class="logo-mark">
+        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="sidebar-logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#4a9eff;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#7c6fff;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect x="4" y="4" width="24" height="24" rx="4" fill="url(#sidebar-logo-grad)"/>
+          <path d="M 10 11 L 22 11 M 10 16 L 22 16 M 10 21 L 18 21" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
       <div><div class="logo-text">Collection Tracker</div><div class="logo-sub">Student Management</div></div>
-      <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()" title="Hide sidebar">☰</button>
+      <button class="sidebar-toggle" onclick="toggleSidebar()" title="Hide sidebar">☰</button>
     </div>
     <div class="nav">
       <div class="nav-section-label">Main</div>
@@ -60,7 +121,6 @@
     </div>
   </div>
 
-  <!-- MAIN CONTENT -->
   <div class="main">
     <div class="topbar">
       <div class="page-title" id="page-title">📊 Tracker</div>
@@ -70,7 +130,6 @@
       </div>
     </div>
     <div class="content">
-      <!-- TRACKER PAGE -->
       <div id="page-tracker">
         <div class="filter-bar">
           <div class="fg"><span class="fl">Region</span><select class="fs" id="f-region" onchange="onRegionChange()"><option value="">All Regions</option></select></div>
@@ -90,85 +149,29 @@
         </div>
         <div class="table-wrap">
           <div class="tw-head"><div class="tw-title">Student Records</div><div class="tw-meta" id="tw-meta">Loading…</div></div>
-          <div class="tbl-outer">
-            <table>
-              <thead><tr><th>Reg No</th><th>Student Name</th><th>Center</th><th>Region</th><th>Payment</th><th>Fees Amt</th><th>Fees Paid</th><th>1st EMI</th><th>2nd EMI</th><th>3rd EMI</th><th>4th EMI</th><th>Total Paid</th><th>Form</th><th>Attendance</th><th>Last Punch</th><th>PTP</th><th>Connected</th><th>Dialled</th><th>Yesterday</th><th>Today</th><th></th></tr></thead>
-              <tbody id="tbl-body"></tbody>
-            </table>
-          </div>
+          <div class="tbl-outer"><table><thead><tr><th>Reg No</th><th>Student Name</th><th>Center</th><th>Region</th><th>Payment</th><th>Fees Amt</th><th>Fees Paid</th><th>1st EMI</th><th>2nd EMI</th><th>3rd EMI</th><th>4th EMI</th><th>Total Paid</th><th>Form</th><th>Attendance</th><th>Last Punch</th><th>PTP</th><th>Connected</th><th>Dialled</th><th>Yesterday</th><th>Today</th><th></th></tr></thead><tbody id="tbl-body"></tbody></table></div>
         </div>
       </div>
-
-      <!-- AUDIT LOG PAGE (Admin Only) -->
-      <div id="page-audit" style="display:none">
-        <div class="page-head">
-          <div><div class="page-h">Audit Log</div><div class="page-s">Complete record of all changes</div></div>
-          <select class="fs" id="audit-filter-user" onchange="renderAudit()" style="min-width:200px"><option value="">All Users</option></select>
-        </div>
-        <div id="audit-list"></div>
-      </div>
-
-      <!-- SETTINGS PAGE (Admin Only) -->
-      <div id="page-settings" style="display:none">
-        <div class="page-head"><div><div class="page-h">Settings</div><div class="page-s">User management</div></div></div>
-        <div class="settings-grid">
-          <div class="s-card">
-            <div class="s-card-t">👥 Registered Users</div>
-            <div id="users-list"></div>
-            <div class="add-row">
-              <input class="add-input" id="new-email" placeholder="user@gmail.com"/>
-              <select class="add-select" id="new-role"><option value="agent">Agent</option><option value="admin">Admin</option></select>
-              <button class="btn btn-success btn-sm" onclick="addUser()">Add</button>
-            </div>
-          </div>
-          <div class="s-card">
-            <div class="s-card-t">🔧 Sheet Info</div>
-            <div style="font-size:12px;color:var(--ink2);line-height:2">
-              <div><span style="color:var(--ink3)">Client ID:</span> <code style="color:var(--blue);font-size:11px" id="info-client-id">—</code></div>
-              <div><span style="color:var(--ink3)">Sheet ID:</span> <code style="color:var(--blue);font-size:11px" id="info-sheet-id">—</code></div>
-            </div>
-            <div style="margin-top:14px;font-size:12px;color:var(--ink3);line-height:1.8">
-              <b style="color:var(--ink2)">Required sheet tabs:</b><br/>
-              <code style="color:var(--blue)">Main Tracker</code> · <code style="color:var(--blue)">Audit Log</code> · <code style="color:var(--blue)">Users</code><br/><br/>
-              To change configuration, update <code style="color:var(--yellow)">HARDCODED_CLIENT_ID</code> and <code style="color:var(--yellow)">HARDCODED_SHEET_ID</code> in <b>index.html</b>.
-            </div>
-          </div>
-        </div>
-      </div>
+      <div id="page-audit" style="display:none"><div class="page-head"><div><div class="page-h">Audit Log</div><div class="page-s">Complete record of all changes</div></div><select class="fs" id="audit-filter-user" onchange="renderAudit()" style="min-width:200px"><option value="">All Users</option></select></div><div id="audit-list"></div></div>
+      <div id="page-settings" style="display:none"><div class="page-head"><div><div class="page-h">Settings</div><div class="page-s">User management</div></div></div><div class="settings-grid"><div class="s-card"><div class="s-card-t">👥 Registered Users</div><div id="users-list"></div><div class="add-row"><input class="add-input" id="new-email" placeholder="user@gmail.com"/><select class="add-select" id="new-role"><option value="agent">Agent</option><option value="admin">Admin</option></select><button class="btn btn-success btn-sm" onclick="addUser()">Add</button></div></div><div class="s-card"><div class="s-card-t">🔧 Sheet Info</div><div style="font-size:12px;color:var(--ink2);line-height:2"><div><span style="color:var(--ink3)">Client ID:</span> <code style="color:var(--blue);font-size:11px" id="info-client-id">—</code></div><div><span style="color:var(--ink3)">Sheet ID:</span> <code style="color:var(--blue);font-size:11px" id="info-sheet-id">—</code></div></div><div style="margin-top:14px;font-size:12px;color:var(--ink3);line-height:1.8"><b style="color:var(--ink2)">Required sheet tabs:</b><br/><code style="color:var(--blue)">Main Tracker</code> · <code style="color:var(--blue)">Audit Log</code> · <code style="color:var(--blue)">Users</code><br/><br/>Update <code style="color:var(--yellow)">HARDCODED_CLIENT_ID</code> and <code style="color:var(--yellow)">HARDCODED_SHEET_ID</code> in <b>index.html</b>.</div></div></div></div>
     </div>
   </div>
 </div>
 
-<!-- EDIT PANEL -->
 <div class="panel-overlay" id="panel-ov" onclick="closePanel()"></div>
 <div class="panel" id="panel">
-  <div class="panel-head">
-    <div><div class="panel-name" id="p-name">Student</div><div class="panel-regno" id="p-regno">#—</div></div>
-    <button class="panel-close" onclick="closePanel()">×</button>
-  </div>
+  <div class="panel-head"><div><div class="panel-name" id="p-name">Student</div><div class="panel-regno" id="p-regno">#—</div></div><button class="panel-close" onclick="closePanel()">×</button></div>
   <div class="panel-body">
     <div class="p-section"><div class="p-section-t">📋 Student Info (Read Only)</div><div class="info-grid" id="p-info"></div></div>
-    <div class="p-section">
-      <div class="p-section-t">✏️ Editable Fields</div>
-      <div class="ef"><label class="el">PTP (Date)</label><input class="es" id="e-ptp" type="date"/></div>
-      <div class="ef"><label class="el">Connected Status</label><select class="es" id="e-connected"><option value="">— Select —</option><option>Connected</option><option>Not Connected</option><option>Busy</option><option>No Answer</option><option>Switched Off</option><option>Invalid Number</option></select></div>
-      <div class="ef"><label class="el">Dialled Status</label><select class="es" id="e-dialled"><option value="">— Select —</option><option>Dialled</option><option>Not Dialled</option></select></div>
-      <div class="ef"><label class="el">Today's Disposition</label><select class="es" id="e-today"><option value="">— Select —</option><option>Interested</option><option>Not Interested</option><option>Follow Up</option><option>RNR</option><option>Callback Requested</option><option>Enrolled</option><option>Drop</option><option>Wrong Number</option><option>Future Prospect</option></select></div>
-      <div class="ef"><label class="el">Other Remarks</label><textarea class="et" id="e-remarks" placeholder="Notes, callback time, etc..."></textarea></div>
-    </div>
+    <div class="p-section"><div class="p-section-t">✏️ Editable Fields</div><div class="ef"><label class="el">PTP (Date)</label><input class="es" id="e-ptp" type="date"/></div><div class="ef"><label class="el">Connected Status</label><select class="es" id="e-connected"><option value="">— Select —</option><option>Connected</option><option>Not Connected</option><option>Busy</option><option>No Answer</option><option>Switched Off</option><option>Invalid Number</option></select></div><div class="ef"><label class="el">Dialled Status</label><select class="es" id="e-dialled"><option value="">— Select —</option><option>Dialled</option><option>Not Dialled</option></select></div><div class="ef"><label class="el">Today's Disposition</label><select class="es" id="e-today"><option value="">— Select —</option><option>Interested</option><option>Not Interested</option><option>Follow Up</option><option>RNR</option><option>Callback Requested</option><option>Enrolled</option><option>Drop</option><option>Wrong Number</option><option>Future Prospect</option></select></div><div class="ef"><label class="el">Other Remarks</label><textarea class="et" id="e-remarks" placeholder="Notes, callback time, etc..."></textarea></div></div>
     <div class="p-section"><div class="p-section-t">🕐 This Record's History</div><div id="p-history"></div></div>
   </div>
-  <div class="panel-footer">
-    <button class="btn btn-primary" onclick="saveChanges()" style="flex:1" id="save-btn">💾 Save to Sheet</button>
-    <button class="btn btn-ghost" onclick="closePanel()">Cancel</button>
-  </div>
+  <div class="panel-footer"><button class="btn btn-primary" onclick="saveChanges()" style="flex:1" id="save-btn">💾 Save to Sheet</button><button class="btn btn-ghost" onclick="closePanel()">Cancel</button></div>
 </div>
 
-<!-- LOADER & TOAST -->
 <div class="loader-ov" id="loader"><div class="loader-box"><div class="spinner"></div><div class="loader-msg" id="loader-msg">Loading…</div></div></div>
 <div class="toast" id="toast"></div>
 
-<!-- SCRIPTS -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="app.js"></script>
 </body>
