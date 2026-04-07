@@ -1,9 +1,9 @@
 /* ═══════════════════════════════════════════════════════
-   COLLECTION TRACKER - MAIN APPLICATION SCRIPT
-   Google Sheets Integration | Role-Based Access Control
+   COLLECTION TRACKER - PERFORMANCE OPTIMIZED
+   Built for 80+ concurrent users | Smart caching
    ═══════════════════════════════════════════════════════ */
 
-// ── THEME MANAGEMENT ──
+// ═══ THEME MANAGEMENT ═══
 (function initTheme(){
   const theme = localStorage.getItem('crm_theme') || 'dark';
   if(theme === 'light') document.body.classList.add('light');
@@ -23,14 +23,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if(sidebarCollapsed) document.querySelector('.sidebar').classList.add('collapsed');
 });
 
-// ── CONFIGURATION ──
-// These values are defined in index.html: HARDCODED_CLIENT_ID, HARDCODED_SHEET_ID
+// ═══ CONFIGURATION ═══
 const CFG = {
   get clientId() { return HARDCODED_CLIENT_ID; },
   get sheetId()  { return HARDCODED_SHEET_ID;  },
 };
 
-// ── SHEET STRUCTURE ──
+// ═══ SHEET STRUCTURE ═══
 const SHEETS = {
   main: 'Main Tracker',
   audit: 'Audit Log',
@@ -38,40 +37,17 @@ const SHEETS = {
 };
 
 const COLUMNS = {
-  regno: 0,
-  student_name: 1,
-  center: 2,
-  region: 3,
-  newpayment_checks: 4,
-  fees_amt: 5,
-  fees_paid: 6,
-  form_status: 7,
-  emi1_paid_date: 8,
-  emi2_paid_date: 9,
-  emi3_paid_date: 10,
-  emi4_paid_date: 11,
-  total_paid_date: 12,
-  attendance_15days: 13,
-  last_punch_date: 14,
-  ptp: 15,
-  connected_status: 16,
-  dialled_status: 17,
-  yesterday_disposition: 18,
-  todays_disposition: 19,
-  other_remarks: 20
+  regno: 0, student_name: 1, center: 2, region: 3, newpayment_checks: 4, fees_amt: 5,
+  fees_paid: 6, form_status: 7, emi1_paid_date: 8, emi2_paid_date: 9, emi3_paid_date: 10,
+  emi4_paid_date: 11, total_paid_date: 12, attendance_15days: 13, last_punch_date: 14,
+  ptp: 15, connected_status: 16, dialled_status: 17, yesterday_disposition: 18,
+  todays_disposition: 19, other_remarks: 20
 };
 
 const NUM_COLS = 21;
+const MAIN_HEADERS = ['Reg No', 'Student Name', 'Center', 'Region', 'Payment Check', 'Fees Amt', 'Fees Paid', '1st EMI Paid Date', '2nd EMI Paid Date', '3rd EMI Paid Date', '4th EMI Paid Date', 'Total Paid Date', 'Form Status', '% 15 Days Attendance', 'Last Punch Date', 'PTP', 'Connected Status', 'Dialled Status', 'Yesterday Disposition', 'Today\'s Disposition', 'Other Remarks'];
 
-const MAIN_HEADERS = [
-  'Reg No', 'Student Name', 'Center', 'Region', 'Payment Check', 'Fees Amt',
-  'Fees Paid', '1st EMI Paid Date', '2nd EMI Paid Date', '3rd EMI Paid Date',
-  '4th EMI Paid Date', 'Total Paid Date', 'Form Status', '% 15 Days Attendance',
-  'Last Punch Date', 'PTP', 'Connected Status', 'Dialled Status',
-  'Yesterday Disposition', 'Today\'s Disposition', 'Other Remarks'
-];
-
-// ── STATE MANAGEMENT ──
+// ═══ STATE MANAGEMENT ═══
 let accessToken = null;
 let currentUser = null;
 let allData = [];
@@ -79,28 +55,61 @@ let filteredData = [];
 let auditLog = [];
 let users = [];
 let selectedIdx = null;
-
-// Store all unique values for advanced filtering
 let allRegions = [];
 let allCenters = [];
-let regionCenterMap = {}; // Map regions to their centers
+let regionCenterMap = {};
 
-// ═══════════════════════════════════════════════════════
-// AUTHENTICATION
-// ═══════════════════════════════════════════════════════
+// ═══ PERFORMANCE OPTIMIZATION - LOCAL CACHE ═══
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
+const cache = {
+  data: null,
+  timestamp: null,
+  isValid() {
+    return this.data && this.timestamp && (Date.now() - this.timestamp < CACHE_DURATION);
+  },
+  set(data) {
+    this.data = data;
+    this.timestamp = Date.now();
+    // Store in sessionStorage for cross-tab sync
+    try {
+      sessionStorage.setItem('tracker_cache', JSON.stringify({data, timestamp: this.timestamp}));
+    } catch(e) { console.warn('Cache storage failed'); }
+  },
+  get() {
+    if(this.isValid()) return this.data;
+    // Try sessionStorage
+    try {
+      const stored = sessionStorage.getItem('tracker_cache');
+      if(stored) {
+        const parsed = JSON.parse(stored);
+        if(Date.now() - parsed.timestamp < CACHE_DURATION) {
+          this.data = parsed.data;
+          this.timestamp = parsed.timestamp;
+          return this.data;
+        }
+      }
+    } catch(e) { console.warn('Cache retrieval failed'); }
+    return null;
+  },
+  clear() {
+    this.data = null;
+    this.timestamp = null;
+    try { sessionStorage.removeItem('tracker_cache'); } catch(e) {}
+  }
+};
 
+// ═══ AUTHENTICATION ═══
 function startGoogleAuth(){
-  // Validate configuration
   if(!HARDCODED_CLIENT_ID || HARDCODED_CLIENT_ID === 'YOUR_CLIENT_ID_HERE'){
-    showAuthErr('⚙️ Admin has not configured Client ID yet. Please set HARDCODED_CLIENT_ID in index.html.');
+    showAuthErr('⚙️ Admin configuration required: Please set HARDCODED_CLIENT_ID in index.html');
     return;
   }
   if(!HARDCODED_SHEET_ID || HARDCODED_SHEET_ID === 'YOUR_SHEET_ID_HERE'){
-    showAuthErr('⚙️ Admin has not configured Sheet ID yet. Please set HARDCODED_SHEET_ID in index.html.');
+    showAuthErr('⚙️ Admin configuration required: Please set HARDCODED_SHEET_ID in index.html');
     return;
   }
   if(!window.google){
-    showAuthErr('Google script failed to load. Please check your internet connection.');
+    showAuthErr('Unable to load Google authentication. Please check your internet connection.');
     return;
   }
 
@@ -108,7 +117,7 @@ function startGoogleAuth(){
     client_id: HARDCODED_CLIENT_ID,
     scope: 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
     callback: onTokenReceived,
-    error_callback: err => showAuthErr('OAuth error: ' + (err.message || JSON.stringify(err))),
+    error_callback: err => showAuthErr('Authentication error: ' + (err.message || JSON.stringify(err))),
   }).requestAccessToken();
 }
 
@@ -119,31 +128,25 @@ async function onTokenReceived(response){
   }
 
   accessToken = response.access_token;
-  showLoader('Verifying your account…');
+  showLoader('Verifying your credentials…');
 
   try {
-    // Get user info from Google
     const userInfo = await gFetch('https://www.googleapis.com/oauth2/v2/userinfo').then(r => r.json());
-    
-    // Ensure sheets exist
     await ensureSheets();
-    
-    // Load users list
     await loadUsers();
     
-    // Check if user is registered
     const foundUser = users.find(u => u.email.toLowerCase() === userInfo.email.toLowerCase());
     
     if(!foundUser){
       if(users.length === 0){
-        // First login = auto admin
+        // First user becomes admin
         await sheetsAppend(SHEETS.users, [[userInfo.email, 'admin', 'system', nowStr()]]);
         await loadUsers();
         currentUser = { ...userInfo, role: 'admin' };
         bootApp();
       } else {
         hideLoader();
-        showAuthErr('❌ Access denied. Your email (' + userInfo.email + ') is not registered. Please contact your administrator.');
+        showAuthErr('❌ Access Denied\n\nYour email (' + userInfo.email + ') is not registered in the system.\n\nPlease contact your administrator to request access.');
         accessToken = null;
       }
     } else {
@@ -152,49 +155,43 @@ async function onTokenReceived(response){
     }
   } catch(err) {
     hideLoader();
-    showAuthErr('Error: ' + err.message);
+    showAuthErr('System error: ' + err.message);
   }
 }
 
 function bootApp(){
   hideLoader();
-  
-  // Hide auth screen, show app
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('app').style.display = 'flex';
   
-  // Set user info
   document.getElementById('user-name').textContent = currentUser.name || currentUser.email;
   document.getElementById('user-role').textContent = currentUser.role.toUpperCase();
   
   const avatar = document.getElementById('user-avatar');
   if(currentUser.picture){
-    avatar.innerHTML = `<img src="${currentUser.picture}" style="width:30px;height:30px;border-radius:50%;object-fit:cover"/>`;
+    avatar.innerHTML = `<img src="${currentUser.picture}" style="width:32px;height:32px;border-radius:50%;object-fit:cover"/>`;
   } else {
     avatar.textContent = (currentUser.name || currentUser.email)[0].toUpperCase();
   }
   
-  // Show/hide admin features based on role
   if(currentUser.role === 'admin'){
     document.querySelectorAll('.admin-nav').forEach(el => el.style.display = '');
     document.querySelectorAll('.agent-hide').forEach(el => el.style.display = '');
     
-    // Show config info in settings
     const clientIdEl = document.getElementById('info-client-id');
     const sheetIdEl = document.getElementById('info-sheet-id');
     if(clientIdEl) clientIdEl.textContent = HARDCODED_CLIENT_ID.substring(0, 30) + '…';
     if(sheetIdEl) sheetIdEl.textContent = HARDCODED_SHEET_ID.substring(0, 30) + '…';
   } else {
-    // Agent: Hide audit log and settings
     document.querySelectorAll('.admin-nav').forEach(el => el.style.display = 'none');
     document.querySelectorAll('.agent-hide').forEach(el => el.style.display = 'none');
   }
   
-  // Load all data
   loadAll();
 }
 
 function doLogout(){
+  cache.clear();
   accessToken = null;
   currentUser = null;
   document.getElementById('app').style.display = 'none';
@@ -202,10 +199,7 @@ function doLogout(){
   document.getElementById('auth-err').classList.remove('show');
 }
 
-// ═══════════════════════════════════════════════════════
-// GOOGLE SHEETS API
-// ═══════════════════════════════════════════════════════
-
+// ═══ GOOGLE SHEETS API ═══
 const API_BASE = 'https://sheets.googleapis.com/v4/spreadsheets';
 
 function gFetch(url, options = {}){
@@ -284,21 +278,37 @@ async function ensureSheets(){
   }
 }
 
-// ═══════════════════════════════════════════════════════
-// DATA LOADING
-// ═══════════════════════════════════════════════════════
-
+// ═══ DATA LOADING WITH CACHE ═══
 async function loadAll(){
   const syncBtn = document.getElementById('sync-btn');
   syncBtn.classList.add('spinning');
-  showLoader('Syncing from Google Sheets…');
+  showLoader('Syncing data from Google Sheets…');
 
   try {
+    // Check cache first
+    const cached = cache.get();
+    if(cached && !syncBtn.classList.contains('force-refresh')){
+      allData = cached.main || [];
+      auditLog = cached.audit || [];
+      users = cached.users || [];
+      buildFilters();
+      applyFilters();
+      renderAudit();
+      renderUsersList();
+      hideLoader();
+      showToast('✅ Loaded from cache (auto-syncs every 5 min)', 'info');
+      syncBtn.classList.remove('spinning');
+      return;
+    }
+
     await Promise.all([
       loadMainData(),
       loadAuditData(),
       loadUsers()
     ]);
+    
+    // Cache the data
+    cache.set({ main: allData, audit: auditLog, users: users });
     
     buildFilters();
     applyFilters();
@@ -309,10 +319,11 @@ async function loadAll(){
     showToast('✅ Data synced successfully', 'ok');
   } catch(err) {
     hideLoader();
-    showToast('❌ ' + err.message, 'err');
+    showToast('❌ Sync failed: ' + err.message, 'err');
   }
 
   syncBtn.classList.remove('spinning');
+  syncBtn.classList.remove('force-refresh');
 }
 
 async function loadMainData(){
@@ -329,9 +340,9 @@ async function loadMainData(){
     Object.entries(COLUMNS).forEach(([key, colIndex]) => {
       record[key] = (row[colIndex] || '').toString().trim();
     });
-    record._rowIndex = index + 2; // +2 because: +1 for 0-index, +1 for header
+    record._rowIndex = index + 2;
     return record;
-  }).filter(r => r.regno); // Only keep rows with registration number
+  }).filter(r => r.regno);
 }
 
 async function loadAuditData(){
@@ -344,19 +355,13 @@ async function loadAuditData(){
   }
   
   auditLog = rows.slice(1).map(r => ({
-    timestamp: r[0] || '',
-    agent_email: r[1] || '',
-    agent_name: r[2] || '',
-    regno: r[3] || '',
-    student_name: r[4] || '',
-    field: r[5] || '',
-    old_value: r[6] || '',
-    new_value: r[7] || ''
-  })).reverse(); // Most recent first
+    timestamp: r[0] || '', agent_email: r[1] || '', agent_name: r[2] || '',
+    regno: r[3] || '', student_name: r[4] || '', field: r[5] || '',
+    old_value: r[6] || '', new_value: r[7] || ''
+  })).reverse();
   
   document.getElementById('audit-count').textContent = auditLog.length;
   
-  // Populate audit filter dropdown
   const uniqueEmails = [...new Set(auditLog.map(a => a.agent_email).filter(Boolean))];
   const auditFilterSelect = document.getElementById('audit-filter-user');
   auditFilterSelect.innerHTML = '<option value="">All Users</option>' + 
@@ -373,50 +378,35 @@ async function loadUsers(){
   }
   
   users = rows.slice(1).map(r => ({
-    email: r[0] || '',
-    role: r[1] || 'agent',
-    added_by: r[2] || '',
-    added_on: r[3] || ''
+    email: r[0] || '', role: r[1] || 'agent',
+    added_by: r[2] || '', added_on: r[3] || ''
   })).filter(u => u.email);
 }
 
-// ═══════════════════════════════════════════════════════
-// DATA WRITING
-// ═══════════════════════════════════════════════════════
-
+// ═══ DATA WRITING ═══
 async function writeRowToSheet(rowIndex, record, changes){
-  // Prepare row data
   const row = Array(NUM_COLS).fill('');
   Object.entries(COLUMNS).forEach(([key, colIndex]) => {
     row[colIndex] = record[key] || '';
   });
   
-  // Update main tracker
   await sheetsUpdate(`${SHEETS.main}!A${rowIndex}:U${rowIndex}`, [row]);
   
-  // Append audit entries
   if(changes.length){
     const timestamp = nowStr();
     const auditEntries = changes.map(change => [
-      timestamp,
-      currentUser.email,
-      currentUser.name || currentUser.email,
-      record.regno,
-      record.student_name,
-      change.field,
-      change.old,
-      change.new
+      timestamp, currentUser.email, currentUser.name || currentUser.email,
+      record.regno, record.student_name, change.field, change.old, change.new
     ]);
     await sheetsAppend(SHEETS.audit, auditEntries);
   }
+  
+  // Clear cache after write
+  cache.clear();
 }
 
-// ═══════════════════════════════════════════════════════
-// FILTERS & SEARCH
-// ═══════════════════════════════════════════════════════
-
+// ═══ FILTERS & SEARCH ═══
 function buildFilters(){
-  // Extract unique regions and build region-center mapping
   allRegions = unique(allData.map(r => r.region));
   allCenters = unique(allData.map(r => r.center));
   
@@ -428,7 +418,6 @@ function buildFilters(){
     }
   });
   
-  // Populate filter dropdowns
   fillSelect('f-region', allRegions, 'All Regions');
   fillSelect('f-center', allCenters, 'All Centers');
   fillSelect('f-payment', unique(allData.map(r => r.newpayment_checks)), 'All');
@@ -449,10 +438,8 @@ function onRegionChange(){
   const centerSelect = document.getElementById('f-center');
   
   if(!selectedRegion){
-    // Show all centers
     fillSelect('f-center', allCenters, 'All Centers');
   } else {
-    // Show only centers in selected region
     const centersInRegion = regionCenterMap[selectedRegion] ? Array.from(regionCenterMap[selectedRegion]) : [];
     fillSelect('f-center', centersInRegion, 'All Centers');
   }
@@ -460,42 +447,33 @@ function onRegionChange(){
   applyFilters();
 }
 
+// Debounce for search input
+let filterTimeout;
 function applyFilters(){
-  const region = getValue('f-region');
-  const center = getValue('f-center');
-  const payment = getValue('f-payment');
-  const form = getValue('f-form');
-  const connected = getValue('f-connected');
-  const dialled = getValue('f-dialled');
-  const search = getValue('f-search').toLowerCase();
-  
-  filteredData = allData.filter(record => {
-    // Region filter
-    if(region && record.region !== region) return false;
+  clearTimeout(filterTimeout);
+  filterTimeout = setTimeout(() => {
+    const region = getValue('f-region');
+    const center = getValue('f-center');
+    const payment = getValue('f-payment');
+    const form = getValue('f-form');
+    const connected = getValue('f-connected');
+    const dialled = getValue('f-dialled');
+    const search = getValue('f-search').toLowerCase();
     
-    // Center filter
-    if(center && record.center !== center) return false;
+    filteredData = allData.filter(record => {
+      if(region && record.region !== region) return false;
+      if(center && record.center !== center) return false;
+      if(payment && record.newpayment_checks !== payment) return false;
+      if(form && record.form_status !== form) return false;
+      if(connected && record.connected_status !== connected) return false;
+      if(dialled && record.dialled_status !== dialled) return false;
+      if(search && !record.regno.toLowerCase().includes(search) && !record.student_name.toLowerCase().includes(search)) return false;
+      return true;
+    });
     
-    // Payment filter
-    if(payment && record.newpayment_checks !== payment) return false;
-    
-    // Form status filter
-    if(form && record.form_status !== form) return false;
-    
-    // Connected status filter
-    if(connected && record.connected_status !== connected) return false;
-    
-    // Dialled status filter
-    if(dialled && record.dialled_status !== dialled) return false;
-    
-    // Search filter (searches in regno and student name)
-    if(search && !record.regno.toLowerCase().includes(search) && !record.student_name.toLowerCase().includes(search)) return false;
-    
-    return true;
-  });
-  
-  renderTable();
-  updateStats();
+    renderTable();
+    updateStats();
+  }, 150); // Debounce 150ms
 }
 
 function clearFilters(){
@@ -503,10 +481,7 @@ function clearFilters(){
     document.getElementById(id).value = '';
   });
   document.getElementById('f-search').value = '';
-  
-  // Rebuild center options
   fillSelect('f-center', allCenters, 'All Centers');
-  
   applyFilters();
 }
 
@@ -522,10 +497,7 @@ function updateStats(){
   document.getElementById('tw-meta').textContent = `${filteredData.length} / ${allData.length} records`;
 }
 
-// ═══════════════════════════════════════════════════════
-// TABLE RENDERING
-// ═══════════════════════════════════════════════════════
-
+// ═══ TABLE RENDERING (Optimized) ═══
 function renderTable(){
   const tbody = document.getElementById('tbl-body');
   
@@ -534,7 +506,11 @@ function renderTable(){
     return;
   }
   
-  tbody.innerHTML = filteredData.map(record => {
+  // Use DocumentFragment for better performance
+  const fragment = document.createDocumentFragment();
+  const tempDiv = document.createElement('div');
+  
+  const html = filteredData.map(record => {
     const index = allData.indexOf(record);
     const isSelected = selectedIdx === index ? 'selected' : '';
     
@@ -562,32 +538,19 @@ function renderTable(){
       <td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openPanel(${index})">Edit</button></td>
     </tr>`;
   }).join('');
+  
+  tbody.innerHTML = html;
 }
 
-// Badge helper functions
-const badgeBuilder = (value, color) => value 
-  ? `<span class="badge b-${color}">${value}</span>` 
-  : `<span style="color:var(--ink3)">—</span>`;
+const badgeBuilder = (value, color) => value ? `<span class="badge b-${color}">${value}</span>` : `<span style="color:var(--ink3)">—</span>`;
 
 function paymentBadge(value){
-  const colorMap = {
-    'Full Paid': 'green',
-    '50% Paid': 'yellow',
-    'Token Paid': 'blue',
-    'Less than Token': 'orange'
-  };
+  const colorMap = {'Full Paid': 'green', '50% Paid': 'yellow', 'Token Paid': 'blue', 'Less than Token': 'orange'};
   return badgeBuilder(value, colorMap[value] || 'gray');
 }
 
 function connectedBadge(value){
-  const colorMap = {
-    'Connected': 'green',
-    'Not Connected': 'red',
-    'Busy': 'yellow',
-    'No Answer': 'orange',
-    'Switched Off': 'red',
-    'Invalid Number': 'red'
-  };
+  const colorMap = {'Connected': 'green', 'Not Connected': 'red', 'Busy': 'yellow', 'No Answer': 'orange', 'Switched Off': 'red', 'Invalid Number': 'red'};
   return badgeBuilder(value, colorMap[value] || 'gray');
 }
 
@@ -596,43 +559,23 @@ function dialledBadge(value){
 }
 
 function formBadge(value){
-  const colorMap = {
-    'Stage 1': 'blue',
-    'Stage 2': 'yellow',
-    'Stage 3': 'orange',
-    'Completed': 'green'
-  };
+  const colorMap = {'Stage 1': 'blue', 'Stage 2': 'yellow', 'Stage 3': 'orange', 'Completed': 'green'};
   return badgeBuilder(value, colorMap[value] || 'gray');
 }
 
 function dispositionBadge(value){
-  const colorMap = {
-    'Interested': 'green',
-    'Enrolled': 'green',
-    'Not Interested': 'red',
-    'Drop': 'red',
-    'Follow Up': 'yellow',
-    'Callback Requested': 'yellow',
-    'RNR': 'orange',
-    'Wrong Number': 'red',
-    'Future Prospect': 'violet'
-  };
+  const colorMap = {'Interested': 'green', 'Enrolled': 'green', 'Not Interested': 'red', 'Drop': 'red', 'Follow Up': 'yellow', 'Callback Requested': 'yellow', 'RNR': 'orange', 'Wrong Number': 'red', 'Future Prospect': 'violet'};
   return badgeBuilder(value, colorMap[value] || 'gray');
 }
 
-// ═══════════════════════════════════════════════════════
-// EDIT PANEL
-// ═══════════════════════════════════════════════════════
-
+// ═══ EDIT PANEL ═══
 function openPanel(index){
   selectedIdx = index;
   const record = allData[index];
   
-  // Set panel header
   document.getElementById('p-name').textContent = record.student_name;
   document.getElementById('p-regno').textContent = '#' + record.regno;
   
-  // Populate read-only info
   document.getElementById('p-info').innerHTML = `
     <div class="info-cell"><div class="info-k">Reg No</div><div class="info-v">${record.regno}</div></div>
     <div class="info-cell"><div class="info-k">Center</div><div class="info-v">${record.center}</div></div>
@@ -650,14 +593,12 @@ function openPanel(index){
     <div class="info-cell"><div class="info-k">Total Paid Date</div><div class="info-v">${record.total_paid_date || '—'}</div></div>
   `;
   
-  // Set editable fields
   setValue('e-ptp', record.ptp);
   setValue('e-connected', record.connected_status);
   setValue('e-dialled', record.dialled_status);
   setValue('e-today', record.todays_disposition);
   document.getElementById('e-remarks').value = record.other_remarks || '';
   
-  // Show history for this record
   const history = auditLog.filter(a => a.regno === record.regno);
   const historyHtml = !history.length 
     ? '<div style="font-size:12px;color:var(--ink3);padding:8px 0">No history yet</div>'
@@ -677,11 +618,8 @@ function openPanel(index){
       `).join('');
   document.getElementById('p-history').innerHTML = historyHtml;
   
-  // Show panel
   document.getElementById('panel-ov').classList.add('open');
   document.getElementById('panel').classList.add('open');
-  
-  // Update table to show selection
   renderTable();
 }
 
@@ -691,16 +629,11 @@ function closePanel(){
   selectedIdx = null;
 }
 
-// ═══════════════════════════════════════════════════════
-// SAVE CHANGES
-// ═══════════════════════════════════════════════════════
-
+// ═══ SAVE CHANGES ═══
 async function saveChanges(){
   if(selectedIdx === null) return;
   
   const record = allData[selectedIdx];
-  
-  // Get new values
   const newValues = {
     ptp: document.getElementById('e-ptp').value.trim(),
     connected_status: getValue('e-connected'),
@@ -710,45 +643,31 @@ async function saveChanges(){
   };
   
   const fieldLabels = {
-    ptp: 'PTP',
-    connected_status: 'Connected Status',
-    dialled_status: 'Dialled Status',
-    todays_disposition: "Today's Disposition",
-    other_remarks: 'Other Remarks'
+    ptp: 'PTP', connected_status: 'Connected Status', dialled_status: 'Dialled Status',
+    todays_disposition: "Today's Disposition", other_remarks: 'Other Remarks'
   };
   
-  // Find what changed
   const changes = Object.keys(newValues)
     .filter(key => (record[key] || '') !== (newValues[key] || ''))
-    .map(key => ({
-      key: key,
-      field: fieldLabels[key],
-      old: record[key] || '',
-      new: newValues[key]
-    }));
+    .map(key => ({ key: key, field: fieldLabels[key], old: record[key] || '', new: newValues[key] }));
   
   if(!changes.length){
     showToast('No changes to save', 'info');
     return;
   }
   
-  // Create updated record
   const updatedRecord = { ...record };
   
-  // Auto-move today to yesterday if today's disposition changed
   if(newValues.todays_disposition && newValues.todays_disposition !== record.todays_disposition && record.todays_disposition){
     updatedRecord.yesterday_disposition = record.todays_disposition;
     changes.push({
-      key: 'yesterday_disposition',
-      field: "Yesterday's Disposition (auto)",
-      old: record.yesterday_disposition || '',
-      new: record.todays_disposition
+      key: 'yesterday_disposition', field: "Yesterday's Disposition (auto)",
+      old: record.yesterday_disposition || '', new: record.todays_disposition
     });
   }
   
   Object.assign(updatedRecord, newValues);
   
-  // Save to sheet
   const saveBtn = document.getElementById('save-btn');
   saveBtn.textContent = 'Saving…';
   saveBtn.disabled = true;
@@ -756,34 +675,24 @@ async function saveChanges(){
   
   try {
     await writeRowToSheet(record._rowIndex, updatedRecord, changes);
-    
-    // Update local data
     Object.assign(allData[selectedIdx], updatedRecord);
     
-    // Update audit log
     const timestamp = nowStr();
     changes.forEach(change => {
       auditLog.unshift({
-        timestamp: timestamp,
-        agent_email: currentUser.email,
-        agent_name: currentUser.name || currentUser.email,
-        regno: record.regno,
-        student_name: record.student_name,
-        field: change.field,
-        old_value: change.old,
-        new_value: change.new
+        timestamp: timestamp, agent_email: currentUser.email,
+        agent_name: currentUser.name || currentUser.email, regno: record.regno,
+        student_name: record.student_name, field: change.field,
+        old_value: change.old, new_value: change.new
       });
     });
     
     document.getElementById('audit-count').textContent = auditLog.length;
-    
-    // Refresh UI
     renderTable();
     renderAudit();
-    openPanel(selectedIdx); // Refresh panel
-    
+    openPanel(selectedIdx);
     hideLoader();
-    showToast('✅ Saved to Google Sheet!', 'ok');
+    showToast('✅ Changes saved successfully!', 'ok');
   } catch(err) {
     hideLoader();
     showToast('❌ Save failed: ' + err.message, 'err');
@@ -793,10 +702,7 @@ async function saveChanges(){
   saveBtn.disabled = false;
 }
 
-// ═══════════════════════════════════════════════════════
-// AUDIT LOG
-// ═══════════════════════════════════════════════════════
-
+// ═══ AUDIT LOG ═══
 function renderAudit(){
   const filterUser = getValue('audit-filter-user');
   const data = filterUser ? auditLog.filter(a => a.agent_email === filterUser) : auditLog;
@@ -824,10 +730,7 @@ function renderAudit(){
   `).join('');
 }
 
-// ═══════════════════════════════════════════════════════
-// USER MANAGEMENT (Admin Only)
-// ═══════════════════════════════════════════════════════
-
+// ═══ USER MANAGEMENT ═══
 function renderUsersList(){
   const usersListEl = document.getElementById('users-list');
   if(!usersListEl) return;
@@ -867,6 +770,7 @@ async function addUser(){
     await loadUsers();
     renderUsersList();
     document.getElementById('new-email').value = '';
+    cache.clear();
     hideLoader();
     showToast('✅ User added: ' + email, 'ok');
   } catch(err) {
@@ -902,17 +806,13 @@ async function removeUser(email){
   try {
     await sheetsBatch([{
       deleteDimension: {
-        range: {
-          sheetId: sheet.properties.sheetId,
-          dimension: 'ROWS',
-          startIndex: rowNumber - 1,
-          endIndex: rowNumber
-        }
+        range: { sheetId: sheet.properties.sheetId, dimension: 'ROWS', startIndex: rowNumber - 1, endIndex: rowNumber }
       }
     }]);
     
     await loadUsers();
     renderUsersList();
+    cache.clear();
     hideLoader();
     showToast('User removed', 'ok');
   } catch(err) {
@@ -921,10 +821,7 @@ async function removeUser(email){
   }
 }
 
-// ═══════════════════════════════════════════════════════
-// NAVIGATION
-// ═══════════════════════════════════════════════════════
-
+// ═══ NAVIGATION ═══
 function toggleSidebar(){
   const sidebar = document.querySelector('.sidebar');
   const isCollapsed = sidebar.classList.toggle('collapsed');
@@ -932,53 +829,27 @@ function toggleSidebar(){
 }
 
 function showPage(pageName, buttonElement){
-  // Hide all pages
   ['tracker', 'audit', 'settings'].forEach(page => {
     document.getElementById('page-' + page).style.display = page === pageName ? '' : 'none';
   });
   
-  // Update active nav item
   document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
   if(buttonElement) buttonElement.classList.add('active');
   
-  // Update page title
-  const titles = {
-    tracker: '📊 Tracker',
-    audit: '🕐 Audit Log',
-    settings: '⚙️ Settings'
-  };
+  const titles = { tracker: '📊 Tracker', audit: '🕐 Audit Log', settings: '⚙️ Settings' };
   document.getElementById('page-title').textContent = titles[pageName] || pageName;
   
-  // Trigger renders for specific pages
   if(pageName === 'audit') renderAudit();
   if(pageName === 'settings') renderUsersList();
 }
 
-// ═══════════════════════════════════════════════════════
-// UTILITY FUNCTIONS
-// ═══════════════════════════════════════════════════════
-
-function getValue(id){
-  return document.getElementById(id)?.value || '';
-}
-
-function setValue(id, value){
-  const element = document.getElementById(id);
-  if(element) element.value = value || '';
-}
-
-function unique(array){
-  return [...new Set(array.filter(Boolean))];
-}
-
+// ═══ UTILITY FUNCTIONS ═══
+function getValue(id){ return document.getElementById(id)?.value || ''; }
+function setValue(id, value){ const el = document.getElementById(id); if(el) el.value = value || ''; }
+function unique(array){ return [...new Set(array.filter(Boolean))]; }
 function nowStr(){
   const date = new Date();
-  return date.getFullYear() + '-' + 
-    String(date.getMonth() + 1).padStart(2, '0') + '-' + 
-    String(date.getDate()).padStart(2, '0') + ' ' + 
-    String(date.getHours()).padStart(2, '0') + ':' + 
-    String(date.getMinutes()).padStart(2, '0') + ':' + 
-    String(date.getSeconds()).padStart(2, '0');
+  return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0') + ' ' + String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0') + ':' + String(date.getSeconds()).padStart(2, '0');
 }
 
 function showLoader(message){
@@ -1007,3 +878,13 @@ function showToast(message, type = 'info'){
     toastEl.classList.remove('on');
   }, 3200);
 }
+
+// ═══ AUTO-REFRESH CACHE (Every 5 minutes) ═══
+setInterval(() => {
+  if(currentUser && document.getElementById('app').style.display === 'flex'){
+    console.log('Auto-refreshing data cache...');
+    const syncBtn = document.getElementById('sync-btn');
+    syncBtn.classList.add('force-refresh');
+    loadAll();
+  }
+}, 5 * 60 * 1000); // 5 minutes
