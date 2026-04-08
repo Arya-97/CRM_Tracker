@@ -10,17 +10,9 @@
 </head>
 <body>
 
-<!-- =====================================================
-  🔧 ADMIN CONFIGURATION — Only change these 2 lines
-  Step 1: Paste your Google OAuth Client ID here
-  Step 2: Paste your Google Sheet ID here
-  Done! Agents don't need to configure anything.
-====================================================== -->
 <script>
-  // ▼▼▼ PASTE YOUR VALUES HERE ▼▼▼
-  const HARDCODED_CLIENT_ID = '441324421260-qpvoha7vmbo2tmp4f7ofkj844nlrj0ir.apps.googleusercontent.com';
-  const HARDCODED_SHEET_ID  = '1KZxUavEe9n-V4AdMZopaWiDGqwo1V260tK_XwcVzxpU';
-  // ▲▲▲ THAT'S ALL YOU NEED TO DO ▲▲▲
+  const HARDCODED_CLIENT_ID = 'YOUR_CLIENT_ID_HERE';
+  const HARDCODED_SHEET_ID  = 'YOUR_SHEET_ID_HERE';
 </script>
 
 <!-- AUTH SCREEN -->
@@ -78,7 +70,83 @@
       <span>Your email must be registered by admin to access</span>
     </div>
     
+    <div class="auth-signup-link">
+      Don't have access? <a href="#" onclick="showSignupForm();return false;">Request Access</a>
+    </div>
+    
     <div class="auth-err" id="auth-err"></div>
+  </div>
+  
+  <div class="auth-footer">
+    <div class="auth-footer-text">Secured by Google OAuth 2.0 | Data stored in Google Sheets</div>
+  </div>
+</div>
+
+<!-- SIGNUP SCREEN -->
+<div id="signup-screen" style="display:none">
+  <div class="auth-bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+  
+  <div class="auth-card">
+    <div class="auth-logo-wrapper">
+      <div class="auth-logo">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="logo-grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#4a9eff;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#7c6fff;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect x="15" y="15" width="70" height="70" rx="12" fill="url(#logo-grad2)"/>
+          <path d="M 30 35 L 70 35 M 30 50 L 70 50 M 30 65 L 55 65" stroke="white" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="65" cy="65" r="3" fill="white"/>
+        </svg>
+      </div>
+      <div class="auth-brand">
+        <div class="auth-brand-name">Request Access</div>
+        <div class="auth-brand-tagline">Join the team</div>
+      </div>
+    </div>
+    
+    <div class="auth-divider"></div>
+    
+    <div class="signup-form" id="signup-form">
+      <div class="ef">
+        <label class="el">Your Email Address</label>
+        <input class="es" id="signup-email" type="email" placeholder="your.email@company.com" required/>
+      </div>
+      
+      <div class="ef">
+        <label class="el">Your Full Name</label>
+        <input class="es" id="signup-name" type="text" placeholder="John Doe" required/>
+      </div>
+      
+      <div class="ef">
+        <label class="el">Manager Email</label>
+        <input class="es" id="signup-manager" type="email" placeholder="manager@company.com" required/>
+        <div class="field-hint">Enter your reporting manager's email address</div>
+      </div>
+      
+      <button class="btn btn-primary" style="width:100%;margin-top:8px" onclick="submitSignupRequest()">
+        Submit Access Request
+      </button>
+      
+      <div class="auth-signup-link" style="text-align:center;margin-top:16px">
+        Already have access? <a href="#" onclick="showLoginForm();return false;">Sign In</a>
+      </div>
+    </div>
+    
+    <div class="signup-success" id="signup-success" style="display:none">
+      <div class="success-icon">✅</div>
+      <h3 class="success-title">Request Submitted!</h3>
+      <p class="success-msg">Your access request has been sent to your manager and admin. You will receive an email once approved.</p>
+      <button class="btn btn-ghost" style="width:100%;margin-top:20px" onclick="showLoginForm()">Back to Sign In</button>
+    </div>
+    
+    <div class="auth-err" id="signup-err"></div>
   </div>
   
   <div class="auth-footer">
@@ -109,6 +177,9 @@
       <div class="nav-section-label">Main</div>
       <button class="nav-item active" onclick="showPage('tracker',this)"><span class="nav-icon">📊</span><span>Tracker</span></button>
       <button class="nav-item agent-hide" onclick="showPage('audit',this)"><span class="nav-icon">🕐</span><span>Audit Log</span><span class="nav-badge" id="audit-count">0</span></button>
+      <div class="nav-section-label manager-nav" style="display:none">Management</div>
+      <button class="nav-item manager-nav" style="display:none" onclick="showPage('members',this)"><span class="nav-icon">👥</span><span>My Team</span></button>
+      <button class="nav-item manager-nav admin-nav" style="display:none" onclick="showPage('requests',this)"><span class="nav-icon">📬</span><span>Access Requests</span><span class="nav-badge" id="requests-count">0</span></button>
       <div class="nav-section-label admin-nav" style="display:none">Admin</div>
       <button class="nav-item admin-nav" style="display:none" onclick="showPage('settings',this)"><span class="nav-icon">⚙️</span><span>Settings</span></button>
     </div>
@@ -130,6 +201,7 @@
       </div>
     </div>
     <div class="content">
+      <!-- TRACKER PAGE -->
       <div id="page-tracker">
         <div class="filter-bar">
           <div class="fg"><span class="fl">Region</span><select class="fs" id="f-region" onchange="onRegionChange()"><option value="">All Regions</option></select></div>
@@ -152,12 +224,60 @@
           <div class="tbl-outer"><table><thead><tr><th>Reg No</th><th>Student Name</th><th>Center</th><th>Region</th><th>Payment</th><th>Fees Amt</th><th>Fees Paid</th><th>1st EMI</th><th>2nd EMI</th><th>3rd EMI</th><th>4th EMI</th><th>Total Paid</th><th>Form</th><th>Attendance</th><th>Last Punch</th><th>PTP</th><th>Connected</th><th>Dialled</th><th>Yesterday</th><th>Today</th><th></th></tr></thead><tbody id="tbl-body"></tbody></table></div>
         </div>
       </div>
+
+      <!-- AUDIT LOG PAGE (Admin Only) -->
       <div id="page-audit" style="display:none"><div class="page-head"><div><div class="page-h">Audit Log</div><div class="page-s">Complete record of all changes</div></div><select class="fs" id="audit-filter-user" onchange="renderAudit()" style="min-width:200px"><option value="">All Users</option></select></div><div id="audit-list"></div></div>
-      <div id="page-settings" style="display:none"><div class="page-head"><div><div class="page-h">Settings</div><div class="page-s">User management</div></div></div><div class="settings-grid"><div class="s-card"><div class="s-card-t">👥 Registered Users</div><div id="users-list"></div><div class="add-row"><input class="add-input" id="new-email" placeholder="user@gmail.com"/><select class="add-select" id="new-role"><option value="agent">Agent</option><option value="admin">Admin</option></select><button class="btn btn-success btn-sm" onclick="addUser()">Add</button></div></div><div class="s-card"><div class="s-card-t">🔧 Sheet Info</div><div style="font-size:12px;color:var(--ink2);line-height:2"><div><span style="color:var(--ink3)">Client ID:</span> <code style="color:var(--blue);font-size:11px" id="info-client-id">—</code></div><div><span style="color:var(--ink3)">Sheet ID:</span> <code style="color:var(--blue);font-size:11px" id="info-sheet-id">—</code></div></div><div style="margin-top:14px;font-size:12px;color:var(--ink3);line-height:1.8"><b style="color:var(--ink2)">Required sheet tabs:</b><br/><code style="color:var(--blue)">Main Tracker</code> · <code style="color:var(--blue)">Audit Log</code> · <code style="color:var(--blue)">Users</code><br/><br/>Update <code style="color:var(--yellow)">HARDCODED_CLIENT_ID</code> and <code style="color:var(--yellow)">HARDCODED_SHEET_ID</code> in <b>index.html</b>.</div></div></div></div>
+
+      <!-- MY TEAM PAGE (Manager) -->
+      <div id="page-members" style="display:none">
+        <div class="page-head"><div><div class="page-h">My Team Members</div><div class="page-s">Manage your team</div></div></div>
+        <div class="s-card">
+          <div class="s-card-t">👥 Team Members</div>
+          <div id="team-members-list"></div>
+          <div class="add-row">
+            <input class="add-input" id="new-member-email" placeholder="member@company.com"/>
+            <button class="btn btn-success btn-sm" onclick="addTeamMember()">Add Member</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACCESS REQUESTS PAGE (Manager + Admin) -->
+      <div id="page-requests" style="display:none">
+        <div class="page-head"><div><div class="page-h">Access Requests</div><div class="page-s">Approve or decline pending requests</div></div></div>
+        <div id="requests-list"></div>
+      </div>
+
+      <!-- SETTINGS PAGE (Admin Only) -->
+      <div id="page-settings" style="display:none">
+        <div class="page-head"><div><div class="page-h">Settings</div><div class="page-s">User management</div></div></div>
+        <div class="settings-grid">
+          <div class="s-card">
+            <div class="s-card-t">👥 All Users</div>
+            <div id="users-list"></div>
+            <div class="add-row">
+              <input class="add-input" id="new-email" placeholder="user@gmail.com"/>
+              <select class="add-select" id="new-role"><option value="agent">Agent</option><option value="manager">Manager</option><option value="admin">Admin</option></select>
+              <button class="btn btn-success btn-sm" onclick="addUser()">Add</button>
+            </div>
+          </div>
+          <div class="s-card">
+            <div class="s-card-t">🔧 Sheet Info</div>
+            <div style="font-size:12px;color:var(--ink2);line-height:2">
+              <div><span style="color:var(--ink3)">Client ID:</span> <code style="color:var(--blue);font-size:11px" id="info-client-id">—</code></div>
+              <div><span style="color:var(--ink3)">Sheet ID:</span> <code style="color:var(--blue);font-size:11px" id="info-sheet-id">—</code></div>
+            </div>
+            <div style="margin-top:14px;font-size:12px;color:var(--ink3);line-height:1.8">
+              <b style="color:var(--ink2)">Required sheet tabs:</b><br/>
+              <code style="color:var(--blue)">Main Tracker</code> · <code style="color:var(--blue)">Audit Log</code> · <code style="color:var(--blue)">Users</code> · <code style="color:var(--blue)">Access Requests</code>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
+<!-- EDIT PANEL -->
 <div class="panel-overlay" id="panel-ov" onclick="closePanel()"></div>
 <div class="panel" id="panel">
   <div class="panel-head"><div><div class="panel-name" id="p-name">Student</div><div class="panel-regno" id="p-regno">#—</div></div><button class="panel-close" onclick="closePanel()">×</button></div>
