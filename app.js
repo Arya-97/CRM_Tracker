@@ -1,4 +1,6 @@
-// Theme
+// ════════════════════════════════════════════════════════
+// THEME
+// ════════════════════════════════════════════════════════
 (function(){const t=localStorage.getItem('crm_theme')||'dark';if(t==='light')document.body.classList.add('light');})();
 function toggleTheme(){const l=document.body.classList.toggle('light');localStorage.setItem('crm_theme',l?'light':'dark');document.getElementById('theme-btn').textContent=l?'☀️ Light':'🌙 Dark';}
 document.addEventListener('DOMContentLoaded',()=>{
@@ -11,26 +13,34 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 const CFG={
   get clientId(){return HARDCODED_CLIENT_ID;},
-  get sheetIdMain(){return HARDCODED_SHEET_ID;},          // Main Tracker tab
-  get sheetIdMeta(){return HARDCODED_SHEET_ID_META;},     // Audit + Users + Requests tabs
+  get sheetIdMain(){return HARDCODED_SHEET_ID;},
+  get sheetIdMeta(){return HARDCODED_SHEET_ID_META;},
 };
 
 const SHEETS={main:'Main Tracker',audit:'Audit Log',users:'Users',requests:'Access Requests'};
 
+// ════════════════════════════════════════════════════════
 const COLUMNS={
-  regno:0,student_name:1,center:2,region:3,newpayment_checks:4,
-  fees_amt:5,fees_paid:6,form_status:7,emi1_paid_date:8,emi2_paid_date:9,
-  emi3_paid_date:10,emi4_paid_date:11,total_paid_date:12,attendance_15days:13,
-  last_punch_date:14,ptp:15,connected_status:16,dialled_status:17,
-  yesterday_disposition:18,todays_disposition:19,other_remarks:20,due_date:21
+  regno:0, student_name:1, center:2, region:3, newpayment_checks:4,
+  fees_amt:5, fees_paid:6, form_status:7, due_date:8,
+  emi1_paid_date:9, emi2_paid_date:10, emi3_paid_date:11, emi4_paid_date:12,
+  total_paid_date:13, attendance_15days:14, last_punch_date:15,
+  last_dialled_date:16, last_connected_date:17,
+  ptp:18, connected_status:19, dialled_status:20,
+  yesterday_disposition:21, todays_disposition:22, other_remarks:23
 };
-const NUM_COLS=22;
-const MAIN_HEADERS=['Reg No','Student Name','Center','Region','Payment Check','Fees Amt','Fees Paid','Form Status','1st EMI Paid Date','2nd EMI Paid Date','3rd EMI Paid Date','4th EMI Paid Date','Total Paid Date','% 15 Days Attendance','Last Punch Date','PTP','Connected Status','Dialled Status','Yesterday Disposition',"Today's Disposition",'Other Remarks','Due Date'];
+const NUM_COLS=24;
+const MAIN_HEADERS=[
+  'Reg No','Student Name','Center','Region','Payment Check','Fees Amt','Fees Paid','Form Status',
+  'Due Date','1st EMI Paid Date','2nd EMI Paid Date','3rd EMI Paid Date','4th EMI Paid Date',
+  'Total Paid Date','% 15 Days Attendance','Last Punch Date','Last Dialled Date','Last Connected Date',
+  'PTP','Connected Status','Dialled Status','Yesterday Disposition',"Today's Disposition",'Other Remarks'
+];
 
 // State
-let accessToken=null,currentUser=null;
-let allData=[],filteredData=[],auditLog=[],users=[],accessRequests=[];
-let selectedIdx=null,allRegions=[],allCenters=[],regionCenterMap={};
+let accessToken=null, currentUser=null;
+let allData=[], filteredData=[], auditLog=[], users=[], accessRequests=[];
+let selectedIdx=null, allRegions=[], allCenters=[], regionCenterMap={};
 let selectedPayments=new Set();
 
 // Cache
@@ -51,10 +61,11 @@ function initParticles(){
   if(!canvas)return;
   const ctx=canvas.getContext('2d');
   let W=canvas.width=window.innerWidth,H=canvas.height=window.innerHeight;
-  const particles=Array.from({length:60},()=>({
+  const particles=Array.from({length:80},()=>({
     x:Math.random()*W,y:Math.random()*H,
-    vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,
-    r:Math.random()*1.5+.5,o:Math.random()*.4+.1
+    vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,
+    r:Math.random()*2+.5,o:Math.random()*.35+.05,
+    hue:Math.random()*60+200
   }));
   window.addEventListener('resize',()=>{W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;});
   function draw(){
@@ -65,20 +76,19 @@ function initParticles(){
       if(p.x<0)p.x=W;if(p.x>W)p.x=0;
       if(p.y<0)p.y=H;if(p.y>H)p.y=0;
       ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle=isDark?`rgba(74,158,255,${p.o})`:`rgba(37,99,235,${p.o*0.5})`;
+      ctx.fillStyle=isDark?`hsla(${p.hue},90%,65%,${p.o})`:`hsla(${p.hue},80%,45%,${p.o*0.4})`;
       ctx.fill();
     });
-    // Draw connections
     for(let i=0;i<particles.length;i++){
       for(let j=i+1;j<particles.length;j++){
         const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
         const dist=Math.sqrt(dx*dx+dy*dy);
-        if(dist<120){
+        if(dist<100){
           ctx.beginPath();
           ctx.moveTo(particles[i].x,particles[i].y);
           ctx.lineTo(particles[j].x,particles[j].y);
-          const alpha=(1-dist/120)*0.08*(isDark?1:0.4);
-          ctx.strokeStyle=isDark?`rgba(74,158,255,${alpha})`:`rgba(37,99,235,${alpha})`;
+          const alpha=(1-dist/100)*0.06*(isDark?1:0.3);
+          ctx.strokeStyle=isDark?`rgba(100,160,255,${alpha})`:`rgba(37,99,235,${alpha})`;
           ctx.lineWidth=.5;ctx.stroke();
         }
       }
@@ -94,9 +104,6 @@ function initParticles(){
 function showLoginForm(){document.getElementById('auth-screen').style.display='flex';document.getElementById('signup-screen').style.display='none';}
 function showSignupForm(){document.getElementById('auth-screen').style.display='none';document.getElementById('signup-screen').style.display='flex';}
 
-// ════════════════════════════════════════════════════════
-// SIGNUP
-// ════════════════════════════════════════════════════════
 async function submitSignupRequest(){
   const email=document.getElementById('signup-email').value.trim().toLowerCase();
   const name=document.getElementById('signup-name').value.trim();
@@ -124,9 +131,6 @@ async function submitSignupRequest(){
   }catch(err){hideLoader();showSignupErr('Error: '+err.message);}
 }
 
-// ════════════════════════════════════════════════════════
-// AUTH
-// ════════════════════════════════════════════════════════
 function startGoogleAuth(){
   if(!HARDCODED_CLIENT_ID||HARDCODED_CLIENT_ID==='YOUR_CLIENT_ID_HERE'){showAuthErr('⚙️ Set HARDCODED_CLIENT_ID');return;}
   if(!HARDCODED_SHEET_ID||HARDCODED_SHEET_ID==='YOUR_SHEET_ID_HERE'){showAuthErr('⚙️ Set HARDCODED_SHEET_ID');return;}
@@ -141,7 +145,7 @@ function startGoogleAuth(){
 
 async function onTokenReceived(r){
   if(r.error){showAuthErr(r.error);return;}
-  accessToken=r.access_token;showLoader('Verifying…');
+  accessToken=r.access_token;showLoader('Verifying identity…');
   try{
     const uInfo=await gFetch('https://www.googleapis.com/oauth2/v2/userinfo').then(r=>r.json());
     await ensureMetaSheets();
@@ -191,8 +195,6 @@ function bootApp(){
     document.querySelectorAll('.manager-nav').forEach(el=>el.style.display='none');
     document.querySelectorAll('.agent-hide').forEach(el=>el.style.display='none');
   }
-
-  // Animate stats on load
   setTimeout(()=>loadAll(),100);
 }
 
@@ -204,7 +206,7 @@ function doLogout(){
 }
 
 // ════════════════════════════════════════════════════════
-// SHEETS API — DUAL SHEET SUPPORT
+// SHEETS API
 // ════════════════════════════════════════════════════════
 const API_BASE='https://sheets.googleapis.com/v4/spreadsheets';
 function gFetch(url,opts={}){return fetch(url,{...opts,headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json',...(opts.headers||{})}});}
@@ -275,7 +277,7 @@ function updatePaymentLabel(){const lbl=document.getElementById('payment-ms-labe
 // LOAD DATA
 // ════════════════════════════════════════════════════════
 async function loadAll(){
-  const btn=document.getElementById('sync-btn');btn.classList.add('spinning');showLoader('Syncing…');
+  const btn=document.getElementById('sync-btn');btn.classList.add('spinning');showLoader('Syncing data…');
   try{
     const cached=cache.get();
     if(cached&&!btn.classList.contains('force-refresh')){
@@ -292,7 +294,8 @@ async function loadAll(){
 }
 
 async function loadMainData(){
-  const res=await sheetsGet(CFG.sheetIdMain,`${SHEETS.main}!A1:V2000`);
+  // Fetch up to column X (col 24 = column X in A1 notation)
+  const res=await sheetsGet(CFG.sheetIdMain,`${SHEETS.main}!A1:X2000`);
   const rows=res.values||[];
   if(rows.length<=1){allData=[];return;}
   allData=rows.slice(1).map((row,i)=>{
@@ -338,7 +341,8 @@ async function loadAccessRequests(){
 async function writeRowToSheet(rowIndex,record,changes){
   const row=Array(NUM_COLS).fill('');
   Object.entries(COLUMNS).forEach(([k,ci])=>row[ci]=record[k]||'');
-  await sheetsUpdate(CFG.sheetIdMain,`${SHEETS.main}!A${rowIndex}:V${rowIndex}`,[row]);
+  // Write to A:X (24 columns)
+  await sheetsUpdate(CFG.sheetIdMain,`${SHEETS.main}!A${rowIndex}:X${rowIndex}`,[row]);
   if(changes.length){
     const now=nowStr();
     await sheetsAppend(CFG.sheetIdMeta,SHEETS.audit,
@@ -404,13 +408,13 @@ function animateCount(id,target){
   const el=document.getElementById(id);if(!el)return;
   const start=parseInt(el.textContent)||0;
   if(start===target){el.textContent=target;return;}
-  const step=Math.ceil(Math.abs(target-start)/12);
+  const step=Math.ceil(Math.abs(target-start)/14);
   let cur=start;
   const interval=setInterval(()=>{
     cur+=cur<target?Math.min(step,target-cur):-Math.min(step,cur-target);
     el.textContent=cur;
     if(cur===target)clearInterval(interval);
-  },30);
+  },28);
 }
 
 // ════════════════════════════════════════════════════════
@@ -418,11 +422,14 @@ function animateCount(id,target){
 // ════════════════════════════════════════════════════════
 function downloadFilteredData(){
   if(!filteredData.length){showToast('No data to download','err');return;}
-  const headers=['Reg No','Student Name','Center','Region','Payment Check','Fees Amt','Fees Paid','Form Status','1st EMI Paid','2nd EMI Paid','3rd EMI Paid','4th EMI Paid','Total Paid Date','15 Days Attendance','Last Punch Date','PTP','Connected Status','Dialled Status','Yesterday Disposition',"Today's Disposition",'Other Remarks','Due Date'];
-  const csvRows=[headers.join(',')];
+  const csvRows=[MAIN_HEADERS.join(',')];
   filteredData.forEach(r=>{
-    const row=[r.regno,r.student_name,r.center,r.region,r.newpayment_checks,r.fees_amt,r.fees_paid,r.form_status,r.emi1_paid_date,r.emi2_paid_date,r.emi3_paid_date,r.emi4_paid_date,r.total_paid_date,r.attendance_15days,r.last_punch_date,r.ptp,r.connected_status,r.dialled_status,r.yesterday_disposition,r.todays_disposition,r.other_remarks,r.due_date]
-      .map(v=>{const val=(v||'').toString().replace(/"/g,'""');return val.includes(',')||val.includes('"')||val.includes('\n')?`"${val}"`:val;});
+    const row=[
+      r.regno,r.student_name,r.center,r.region,r.newpayment_checks,r.fees_amt,r.fees_paid,r.form_status,
+      r.due_date,r.emi1_paid_date,r.emi2_paid_date,r.emi3_paid_date,r.emi4_paid_date,r.total_paid_date,
+      r.attendance_15days,r.last_punch_date,r.last_dialled_date,r.last_connected_date,
+      r.ptp,r.connected_status,r.dialled_status,r.yesterday_disposition,r.todays_disposition,r.other_remarks
+    ].map(v=>{const val=(v||'').toString().replace(/"/g,'""');return val.includes(',')||val.includes('"')||val.includes('\n')?`"${val}"`:val;});
     csvRows.push(row.join(','));
   });
   const blob=new Blob(['\uFEFF'+csvRows.join('\r\n')],{type:'text/csv;charset=utf-8;'});
@@ -433,42 +440,44 @@ function downloadFilteredData(){
 }
 
 // ════════════════════════════════════════════════════════
-// TABLE
+// TABLE — Correct column order
 // ════════════════════════════════════════════════════════
 function renderTable(){
   const tbody=document.getElementById('tbl-body');
   if(!filteredData.length){
-    tbody.innerHTML=`<tr><td colspan="22"><div class="empty"><div class="empty-icon">🔍</div><div class="empty-t">No records found</div><div class="empty-s">Try adjusting your filters</div></div></td></tr>`;
+    tbody.innerHTML=`<tr><td colspan="24"><div class="empty"><div class="empty-icon">🔍</div><div class="empty-t">No records found</div><div class="empty-s">Try adjusting your filters</div></div></td></tr>`;
     return;
   }
   tbody.innerHTML=filteredData.map(r=>{
     const idx=allData.indexOf(r);
     const sel=selectedIdx===idx?'selected':'';
     const dueCls=getDueDateClass(r.due_date);
-    return`<tr onclick="openPanel(${idx})" class="${sel}" style="animation:rowIn .2s ease backwards">
+    return`<tr onclick="openPanel(${idx})" class="${sel}">
       <td class="regno-cell">${r.regno}</td>
       <td class="name-cell">${r.student_name}</td>
       <td>${r.center||'—'}</td>
       <td>${bBadge(r.region,'blue')}</td>
       <td>${payBadge(r.newpayment_checks)}</td>
-      <td class="mono-cell">${r.fees_amt||'—'}</td>
-      <td class="mono-cell">${r.fees_paid||'—'}</td>
+      <td class="mono-cell">₹${r.fees_amt||'—'}</td>
+      <td class="mono-cell">₹${r.fees_paid||'—'}</td>
+      <td>${formBadge(r.form_status)}</td>
+      <td class="${dueCls}">${dueDateBadge(r.due_date)}</td>
       <td class="mono-cell">${r.emi1_paid_date||'—'}</td>
       <td class="mono-cell">${r.emi2_paid_date||'—'}</td>
       <td class="mono-cell">${r.emi3_paid_date||'—'}</td>
       <td class="mono-cell">${r.emi4_paid_date||'—'}</td>
       <td class="mono-cell">${r.total_paid_date||'—'}</td>
-      <td>${formBadge(r.form_status)}</td>
       <td class="mono-cell">${r.attendance_15days||'—'}</td>
       <td class="mono-cell">${r.last_punch_date||'—'}</td>
-      <td>${r.ptp?bBadge('✓','green'):'—'}</td>
+      <td class="mono-cell date-dialled">${r.last_dialled_date||'—'}</td>
+      <td class="mono-cell date-connected">${r.last_connected_date||'—'}</td>
+      <td>${r.ptp?`<span class="badge b-green">📅 ${r.ptp}</span>`:'<span class="null-val">—</span>'}</td>
       <td>${connBadge(r.connected_status)}</td>
       <td>${dialBadge(r.dialled_status)}</td>
       <td>${dispBadge(r.yesterday_disposition)}</td>
       <td>${dispBadge(r.todays_disposition)}</td>
-      <td class="${dueCls}">${dueDateBadge(r.due_date)}</td>
       <td><button class="btn btn-ghost btn-sm edit-btn" onclick="event.stopPropagation();openPanel(${idx})">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         Edit
       </button></td>
     </tr>`;
@@ -497,14 +506,15 @@ function dueDateBadge(d){
 }
 
 const bBadge=(v,c)=>v?`<span class="badge b-${c}">${v}</span>`:`<span class="null-val">—</span>`;
-function payBadge(v){const m={'Full Paid':'green','50% Paid':'yellow','Token Paid':'blue','Less than Token':'orange'};return bBadge(v,m[v]||'gray');}
+function payBadge(v){const m={'Total Paid':'green','Full Paid':'green','50% Paid':'yellow','Token Paid':'blue','Less than Token':'orange'};return bBadge(v,m[v]||'gray');}
 function connBadge(v){const m={'Connected':'green','Not Connected':'red','Busy':'yellow','No Answer':'orange','Switched Off':'red','Invalid Number':'red'};return bBadge(v,m[v]||'gray');}
 function dialBadge(v){return bBadge(v,v==='Dialled'?'green':'gray');}
 function formBadge(v){const m={'Stage 1':'blue','Stage 2':'yellow','Stage 3':'orange','Completed':'green'};return bBadge(v,m[v]||'gray');}
 function dispBadge(v){const m={'Interested':'green','Enrolled':'green','Not Interested':'red','Drop':'red','Follow Up':'yellow','Callback Requested':'yellow','RNR':'orange','Wrong Number':'red','Future Prospect':'violet'};return bBadge(v,m[v]||'gray');}
 
 // ════════════════════════════════════════════════════════
-// PANEL — DUE DATE READ-ONLY
+// PANEL — Editable: PTP, Connected, Dialled, Today's Disp, Remarks
+// Auto-fetch: last_dialled_date when Dialled, last_connected_date when Connected
 // ════════════════════════════════════════════════════════
 function openPanel(idx){
   selectedIdx=idx;
@@ -513,19 +523,20 @@ function openPanel(idx){
   document.getElementById('p-name').textContent=r.student_name;
   document.getElementById('p-regno').textContent='#'+r.regno;
 
-  // Build due date display
   const dueDateHtml=r.due_date?`<div class="due-display">${dueDateBadge(r.due_date)}</div>`:`<span class="null-val">Not set</span>`;
 
   document.getElementById('p-info').innerHTML=`
-    <div class="info-cell"><div class="info-k">Reg No</div><div class="info-v">${r.regno}</div></div>
+    <div class="info-cell"><div class="info-k">Reg No</div><div class="info-v mono">${r.regno}</div></div>
     <div class="info-cell"><div class="info-k">Center</div><div class="info-v">${r.center||'—'}</div></div>
     <div class="info-cell"><div class="info-k">Region</div><div class="info-v">${r.region||'—'}</div></div>
-    <div class="info-cell"><div class="info-k">Payment</div><div class="info-v">${r.newpayment_checks||'—'}</div></div>
+    <div class="info-cell"><div class="info-k">Payment Status</div><div class="info-v">${payBadge(r.newpayment_checks)||'—'}</div></div>
     <div class="info-cell"><div class="info-k">Fees Amount</div><div class="info-v mono">₹${r.fees_amt||'0'}</div></div>
     <div class="info-cell"><div class="info-k">Fees Paid</div><div class="info-v mono">₹${r.fees_paid||'0'}</div></div>
     <div class="info-cell"><div class="info-k">Form Status</div><div class="info-v">${formBadge(r.form_status)}</div></div>
-    <div class="info-cell"><div class="info-k">Attendance</div><div class="info-v">${r.attendance_15days||'—'}</div></div>
-    <div class="info-cell"><div class="info-k">Last Punch</div><div class="info-v mono">${r.last_punch_date||'—'}</div></div>
+    <div class="info-cell"><div class="info-k">Attendance (15d)</div><div class="info-v">${r.attendance_15days||'—'}</div></div>
+    <div class="info-cell"><div class="info-k">Last Punch Date</div><div class="info-v mono">${r.last_punch_date||'—'}</div></div>
+    <div class="info-cell"><div class="info-k">Last Dialled Date</div><div class="info-v mono" id="p-last-dialled">${r.last_dialled_date||'—'}</div></div>
+    <div class="info-cell"><div class="info-k">Last Connected Date</div><div class="info-v mono" id="p-last-connected">${r.last_connected_date||'—'}</div></div>
     <div class="info-cell"><div class="info-k">1st EMI</div><div class="info-v mono">${r.emi1_paid_date||'—'}</div></div>
     <div class="info-cell"><div class="info-k">2nd EMI</div><div class="info-v mono">${r.emi2_paid_date||'—'}</div></div>
     <div class="info-cell"><div class="info-k">3rd EMI</div><div class="info-v mono">${r.emi3_paid_date||'—'}</div></div>
@@ -533,16 +544,38 @@ function openPanel(idx){
     <div class="info-cell"><div class="info-k">Total Paid Date</div><div class="info-v mono">${r.total_paid_date||'—'}</div></div>
     <div class="info-cell" style="grid-column:span 2"><div class="info-k">📅 Due Date</div><div class="info-v">${dueDateHtml}</div></div>`;
 
-  setValue('e-ptp',r.ptp);
-  setValue('e-connected',r.connected_status);
-  setValue('e-dialled',r.dialled_status);
-  setValue('e-today',r.todays_disposition);
+  // Set editable fields
+  setValue('e-ptp', r.ptp);
+  setValue('e-connected', r.connected_status);
+  setValue('e-dialled', r.dialled_status);
+  setValue('e-today', r.todays_disposition);
   document.getElementById('e-remarks').value=r.other_remarks||'';
 
+  // Wire up auto-date listeners
+  const dialledSel=document.getElementById('e-dialled');
+  const connSel=document.getElementById('e-connected');
+
+  dialledSel.onchange=function(){
+    if(this.value==='Dialled'){
+      const today=todayStr();
+      // Update the info cell preview
+      const el=document.getElementById('p-last-dialled');
+      if(el)el.textContent=today;
+    }
+  };
+  connSel.onchange=function(){
+    if(this.value==='Connected'){
+      const today=todayStr();
+      const el=document.getElementById('p-last-connected');
+      if(el)el.textContent=today;
+    }
+  };
+
+  // History
   const hist=auditLog.filter(a=>a.regno===r.regno);
   document.getElementById('p-history').innerHTML=!hist.length
     ?'<div class="no-history">No changes recorded yet</div>'
-    :hist.slice(0,10).map(a=>`
+    :hist.slice(0,15).map(a=>`
       <div class="audit-item">
         <div class="audit-head">
           <span class="audit-who">👤 ${a.agent_name||a.agent_email}</span>
@@ -565,32 +598,60 @@ function closePanel(){
   document.getElementById('panel-ov').classList.remove('open');
   document.getElementById('panel').classList.remove('open');
   selectedIdx=null;
+  // Clean up listeners
+  const d=document.getElementById('e-dialled');
+  const c=document.getElementById('e-connected');
+  if(d)d.onchange=null;
+  if(c)c.onchange=null;
 }
 
 // ════════════════════════════════════════════════════════
-// SAVE (no due_date field — it's read-only now)
+// SAVE — Editable: PTP, Connected Status, Dialled Status, Today's Disp, Remarks
+// Auto-sets: last_dialled_date when status=Dialled, last_connected_date when status=Connected
 // ════════════════════════════════════════════════════════
 async function saveChanges(){
   if(selectedIdx===null)return;
   const r=allData[selectedIdx];
+  const today=todayStr();
+
+  const newConnected=getValue('e-connected');
+  const newDialled=getValue('e-dialled');
+  const newToday=getValue('e-today');
+  const newPtp=document.getElementById('e-ptp').value.trim();
+  const newRemarks=document.getElementById('e-remarks').value.trim();
+
+  // Auto-fetch dates
+  const newLastDialled=(newDialled==='Dialled'&&newDialled!==(r.dialled_status||''))?today:(r.last_dialled_date||'');
+  const newLastConnected=(newConnected==='Connected'&&newConnected!==(r.connected_status||''))?today:(r.last_connected_date||'');
+
   const newVals={
-    ptp:document.getElementById('e-ptp').value.trim(),
-    connected_status:getValue('e-connected'),
-    dialled_status:getValue('e-dialled'),
-    todays_disposition:getValue('e-today'),
-    other_remarks:document.getElementById('e-remarks').value.trim()
-    // due_date intentionally omitted — read-only
+    ptp:newPtp,
+    connected_status:newConnected,
+    dialled_status:newDialled,
+    todays_disposition:newToday,
+    other_remarks:newRemarks,
+    last_dialled_date:newLastDialled,
+    last_connected_date:newLastConnected,
   };
-  const labels={ptp:'PTP',connected_status:'Connected Status',dialled_status:'Dialled Status',todays_disposition:"Today's Disposition",other_remarks:'Other Remarks'};
+
+  const labels={
+    ptp:'PTP',connected_status:'Connected Status',dialled_status:'Dialled Status',
+    todays_disposition:"Today's Disposition",other_remarks:'Other Remarks',
+    last_dialled_date:'Last Dialled Date',last_connected_date:'Last Connected Date'
+  };
+
   const changes=Object.keys(newVals).filter(k=>(r[k]||'')!==(newVals[k]||'')).map(k=>({key:k,field:labels[k],old:r[k]||'',new:newVals[k]}));
 
   if(!changes.length){showToast('No changes to save','info');return;}
 
   const updated={...r};
-  if(newVals.todays_disposition&&newVals.todays_disposition!==r.todays_disposition&&r.todays_disposition){
+
+  // Auto-roll yesterday's disposition
+  if(newToday&&newToday!==(r.todays_disposition||'')&&r.todays_disposition){
     updated.yesterday_disposition=r.todays_disposition;
     changes.push({key:'yesterday_disposition',field:"Yesterday's Disposition (auto)",old:r.yesterday_disposition||'',new:r.todays_disposition});
   }
+
   Object.assign(updated,newVals);
 
   const btn=document.getElementById('save-btn');
@@ -607,7 +668,8 @@ async function saveChanges(){
     renderTable();renderAudit();openPanel(selectedIdx);
     hideLoader();showToast(`✅ Saved ${changes.length} change${changes.length>1?'s':''}!`,'ok');
   }catch(e){hideLoader();showToast('❌ '+e.message,'err');}
-  btn.innerHTML='💾 Save to Sheet';btn.disabled=false;
+  btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save Changes';
+  btn.disabled=false;
 }
 
 // ════════════════════════════════════════════════════════
@@ -624,7 +686,7 @@ function renderAudit(){
         <span class="audit-who">👤 ${a.agent_name||a.agent_email}</span>
         <span class="audit-when">${a.timestamp}</span>
       </div>
-      <div class="audit-regno">📋 Reg: ${a.regno} — ${a.student_name}</div>
+      <div class="audit-regno">📋 ${a.regno} — ${a.student_name}</div>
       <div class="audit-row">
         <span class="audit-field">${a.field}:</span>
         <span class="audit-from">${a.old_value||'(empty)'}</span>
@@ -638,7 +700,7 @@ function renderTeamMembers(){
   const el=document.getElementById('team-members-list');if(!el)return;
   const myEmail=currentUser.email;
   const team=users.filter(u=>u.manager&&u.manager.toLowerCase()===myEmail.toLowerCase());
-  if(!team.length){el.innerHTML='<div style="font-size:13px;color:var(--ink3);padding:12px 0">No team members assigned yet</div>';return;}
+  if(!team.length){el.innerHTML='<div class="empty-team">No team members assigned yet</div>';return;}
   el.innerHTML=team.map(u=>`
     <div class="u-row">
       <div class="u-avatar">${(u.email[0]).toUpperCase()}</div>
@@ -699,7 +761,7 @@ function renderAccessRequests(){
         <div class="request-detail"><strong>Submitted</strong><span>${req.submitted_on}</span></div>
       </div>
       <div class="request-actions">
-        <button class="btn btn-success" onclick="approveRequest('${req.email}','${req.name}','${req.manager_email}')">✓ Approve Access</button>
+        <button class="btn btn-success" onclick="approveRequest('${req.email}','${req.name}','${req.manager_email}')">✓ Approve</button>
         <button class="btn btn-danger" onclick="declineRequest('${req.email}','${req.name}')">✗ Decline</button>
       </div>
     </div>`).join('');
@@ -713,8 +775,7 @@ async function approveRequest(email,name,managerEmail){
     await sheetsUpdate(CFG.sheetIdMeta,`${SHEETS.requests}!D${req._rowIndex}`,[['approved']]);
     await sheetsAppend(CFG.sheetIdMeta,SHEETS.users,[[email,'agent',currentUser.email,nowStr(),managerEmail]]);
     await loadUsers();await loadAccessRequests();renderAccessRequests();
-    cache.clear();hideLoader();
-    showToast(`✅ ${name||email} approved!`,'ok');
+    cache.clear();hideLoader();showToast(`✅ ${name||email} approved!`,'ok');
   }catch(e){hideLoader();showToast('Error: '+e.message,'err');}
 }
 
@@ -732,7 +793,7 @@ async function declineRequest(email,name){
 
 function renderUsersList(){
   const el=document.getElementById('users-list');if(!el)return;
-  if(!users.length){el.innerHTML='<div style="font-size:13px;color:var(--ink3);padding:8px 0">No users yet</div>';return;}
+  if(!users.length){el.innerHTML='<div class="empty-team">No users yet</div>';return;}
   el.innerHTML=users.map(u=>`
     <div class="u-row">
       <div class="u-avatar">${(u.email[0]).toUpperCase()}</div>
@@ -802,12 +863,12 @@ function getValue(id){return document.getElementById(id)?.value||'';}
 function setValue(id,val){const el=document.getElementById(id);if(el)el.value=val||'';}
 function unique(arr){return[...new Set(arr.filter(Boolean))];}
 function nowStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0');}
+function todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function showLoader(msg){document.getElementById('loader-msg').textContent=msg||'Loading…';document.getElementById('loader').classList.add('on');}
 function hideLoader(){document.getElementById('loader').classList.remove('on');}
 function showAuthErr(msg){const el=document.getElementById('auth-err');el.textContent=msg;el.classList.add('show');}
 function showSignupErr(msg){const el=document.getElementById('signup-err');el.textContent=msg;el.classList.add('show');}
 
-let toastQueue=[];let toastShowing=false;
 function showToast(msg,type='info'){
   const el=document.getElementById('toast');
   el.textContent=msg;
