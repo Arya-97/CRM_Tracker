@@ -5,202 +5,135 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Collection Tracker — Student Management Portal</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>📋</text></svg>"/>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
 
 <script>
-  // ── SHEET A: Main Tracker data only ──────────────────────
   const HARDCODED_CLIENT_ID   = '441324421260-qpvoha7vmbo2tmp4f7ofkj844nlrj0ir.apps.googleusercontent.com';
   const HARDCODED_SHEET_ID    = '1KZxUavEe9n-V4AdMZopaWiDGqwo1V260tK_XwcVzxpU';
-
-  // ── SHEET B: Audit Log + Users + Access Requests ─────────
   const HARDCODED_SHEET_ID_META = '1HVrLkW58G0kxaVz2bbXgD4cxkiADXe3EGLGX_XjnB2Q';
 </script>
 
-<!-- PARTICLE CANVAS -->
-<canvas id="particle-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.6"></canvas>
+<canvas id="particle-canvas"></canvas>
 
-<!-- ══════════════════════════════════════
-     AUTH SCREEN
-══════════════════════════════════════ -->
+<!-- ══ AUTH SCREEN ══ -->
 <div id="auth-screen">
-  <div class="auth-bg-shapes">
-    <div class="shape shape-1"></div>
-    <div class="shape shape-2"></div>
-    <div class="shape shape-3"></div>
+  <div class="auth-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
   </div>
-
   <div class="auth-card">
-    <div class="auth-logo-wrapper">
-      <div class="auth-logo">
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#4a9eff;stop-opacity:1"/>
-              <stop offset="100%" style="stop-color:#7c6fff;stop-opacity:1"/>
-            </linearGradient>
-          </defs>
-          <rect x="15" y="15" width="70" height="70" rx="14" fill="url(#logo-grad)"/>
-          <path d="M 30 35 L 70 35 M 30 50 L 70 50 M 30 65 L 55 65" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
-          <circle cx="66" cy="65" r="4" fill="white"/>
+    <div class="auth-header">
+      <div class="auth-logo-ring">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="48" height="48" rx="14" fill="url(#ag)"/>
+          <path d="M20 24h24M20 32h24M20 40h16" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>
+          <circle cx="46" cy="40" r="5" fill="#fff" opacity=".9"/>
+          <defs><linearGradient id="ag" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#0ea5e9"/></linearGradient></defs>
         </svg>
       </div>
-      <div class="auth-brand">
+      <div>
         <div class="auth-brand-name">Collection Tracker</div>
-        <div class="auth-brand-tagline">Student Management Portal</div>
+        <div class="auth-brand-sub">Student Management Portal</div>
       </div>
     </div>
-
     <div class="auth-divider"></div>
-
-    <div class="auth-welcome">
-      <h1 class="auth-title">Welcome Back</h1>
-      <p class="auth-subtitle">Sign in with your Google account to continue</p>
-    </div>
-
+    <h2 class="auth-welcome">Welcome back</h2>
+    <p class="auth-sub">Sign in with your organization Google account</p>
     <button class="google-btn" onclick="startGoogleAuth()">
-      <svg class="google-icon" viewBox="0 0 24 24">
-        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-      </svg>
-      <span>Continue with Google</span>
+      <svg class="g-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
     </button>
-
-    <div class="auth-note">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-      <span>Your email must be registered by an admin to access this portal</span>
-    </div>
-
-    <div class="auth-signup-link">
-      Need access? <a href="#" onclick="showSignupForm();return false;">Request it here →</a>
-    </div>
-
+    <div class="auth-note">🔒 Your email must be registered by an admin to access this portal</div>
+    <div class="auth-req-link">Need access? <a href="#" onclick="showSignupForm();return false;">Request it →</a></div>
     <div class="auth-err" id="auth-err"></div>
   </div>
-
-  <div class="auth-footer">
-    <div class="auth-footer-text">🔒 Secured by Google OAuth 2.0 · Data stored in Google Sheets</div>
-  </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     SIGNUP SCREEN
-══════════════════════════════════════ -->
+<!-- ══ SIGNUP SCREEN ══ -->
 <div id="signup-screen" style="display:none">
-  <div class="auth-bg-shapes">
-    <div class="shape shape-1"></div>
-    <div class="shape shape-2"></div>
-    <div class="shape shape-3"></div>
+  <div class="auth-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
   </div>
-
   <div class="auth-card">
-    <div class="auth-logo-wrapper">
-      <div class="auth-logo">
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <defs><linearGradient id="logo-grad2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#4a9eff;stop-opacity:1"/><stop offset="100%" style="stop-color:#7c6fff;stop-opacity:1"/></linearGradient></defs>
-          <rect x="15" y="15" width="70" height="70" rx="14" fill="url(#logo-grad2)"/>
-          <path d="M 30 35 L 70 35 M 30 50 L 70 50 M 30 65 L 55 65" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
-          <circle cx="66" cy="65" r="4" fill="white"/>
-        </svg>
+    <div class="auth-header">
+      <div class="auth-logo-ring">
+        <svg viewBox="0 0 64 64" fill="none"><rect x="8" y="8" width="48" height="48" rx="14" fill="url(#ag2)"/><path d="M20 24h24M20 32h24M20 40h16" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/><circle cx="46" cy="40" r="5" fill="#fff" opacity=".9"/><defs><linearGradient id="ag2" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#0ea5e9"/></linearGradient></defs></svg>
       </div>
-      <div class="auth-brand">
+      <div>
         <div class="auth-brand-name">Request Access</div>
-        <div class="auth-brand-tagline">Join the collection team</div>
+        <div class="auth-brand-sub">Join the collection team</div>
       </div>
     </div>
-
     <div class="auth-divider"></div>
-
-    <div class="signup-form" id="signup-form">
-      <div class="ef">
-        <label class="el">Your Email Address</label>
-        <input class="es" id="signup-email" type="email" placeholder="your.email@company.com" required/>
-      </div>
-      <div class="ef">
-        <label class="el">Your Full Name</label>
-        <input class="es" id="signup-name" type="text" placeholder="John Doe" required/>
-      </div>
-      <div class="ef">
-        <label class="el">Manager's Email</label>
-        <input class="es" id="signup-manager" type="email" placeholder="manager@company.com" required/>
-        <div class="field-hint">Your reporting manager's email address</div>
-      </div>
-      <button class="btn btn-primary" style="width:100%;margin-top:10px;padding:13px" onclick="submitSignupRequest()">
-        Submit Access Request
-      </button>
-      <div class="auth-signup-link" style="text-align:center;margin-top:18px">
-        Already have access? <a href="#" onclick="showLoginForm();return false;">Sign In →</a>
-      </div>
+    <div id="signup-form">
+      <div class="ef"><label class="el">Your Email</label><input class="es" id="signup-email" type="email" placeholder="you@company.com"/></div>
+      <div class="ef"><label class="el">Full Name</label><input class="es" id="signup-name" type="text" placeholder="John Doe"/></div>
+      <div class="ef"><label class="el">Manager's Email</label><input class="es" id="signup-manager" type="email" placeholder="manager@company.com"/></div>
+      <button class="btn btn-primary" style="width:100%;margin-top:8px;padding:12px" onclick="submitSignupRequest()">Submit Request</button>
+      <div class="auth-req-link" style="text-align:center;margin-top:14px">Already have access? <a href="#" onclick="showLoginForm();return false;">Sign In →</a></div>
     </div>
-
-    <div class="signup-success" id="signup-success" style="display:none">
-      <div class="success-icon">✅</div>
-      <h3 class="success-title">Request Submitted!</h3>
-      <p class="success-msg">Your request has been sent. You'll be notified once your manager approves access.</p>
-      <button class="btn btn-ghost" style="width:100%;margin-top:20px" onclick="showLoginForm()">← Back to Sign In</button>
+    <div id="signup-success" style="display:none;text-align:center;padding:20px 0">
+      <div style="font-size:52px;margin-bottom:12px">✅</div>
+      <h3 style="color:var(--green);font-size:20px;margin-bottom:8px">Request Submitted!</h3>
+      <p style="color:var(--ink2);font-size:13px;line-height:1.7">Your manager will review and approve your request.</p>
+      <button class="btn btn-ghost" style="width:100%;margin-top:18px" onclick="showLoginForm()">← Back to Sign In</button>
     </div>
-
     <div class="auth-err" id="signup-err"></div>
   </div>
-
-  <div class="auth-footer">
-    <div class="auth-footer-text">🔒 Secured by Google OAuth 2.0 · Data stored in Google Sheets</div>
-  </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     MAIN APP
-══════════════════════════════════════ -->
+<!-- ══ MAIN APP ══ -->
 <div id="app">
   <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-logo">
-      <div class="logo-mark">
-        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-          <defs><linearGradient id="sbar-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#4a9eff;stop-opacity:1"/><stop offset="100%" style="stop-color:#7c6fff;stop-opacity:1"/></linearGradient></defs>
-          <rect x="4" y="4" width="24" height="24" rx="5" fill="url(#sbar-grad)"/>
-          <path d="M 10 11 L 22 11 M 10 16 L 22 16 M 10 21 L 18 21" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
-        </svg>
+      <div class="logo-icon">
+        <svg viewBox="0 0 32 32" fill="none"><rect x="3" y="3" width="26" height="26" rx="7" fill="url(#sg)"/><path d="M10 11h12M10 16h12M10 21h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/><defs><linearGradient id="sg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#0ea5e9"/></linearGradient></defs></svg>
       </div>
-      <div><div class="logo-text">Collection</div><div class="logo-sub">Tracker v3</div></div>
-      <button class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">☰</button>
+      <div class="logo-words">
+        <div class="logo-title">Collection</div>
+        <div class="logo-ver">Tracker v4</div>
+      </div>
+      <button class="sidebar-tog" onclick="toggleSidebar()" title="Toggle">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
     </div>
 
-    <div class="nav">
-      <div class="nav-section-label">Main</div>
+    <nav class="nav">
+      <div class="nav-label">MAIN</div>
       <button class="nav-item active" onclick="showPage('tracker',this)">
-        <span class="nav-icon">📊</span><span>Tracker</span>
+        <span class="ni">📊</span><span class="nt">Tracker</span>
       </button>
       <button class="nav-item agent-hide" onclick="showPage('audit',this)">
-        <span class="nav-icon">🕐</span><span>Audit Log</span>
-        <span class="nav-badge" id="audit-count">0</span>
+        <span class="ni">🕐</span><span class="nt">Audit Log</span>
+        <span class="nbadge" id="audit-count">0</span>
       </button>
-
-      <div class="nav-section-label manager-nav" style="display:none">Management</div>
+      <div class="nav-label manager-nav" style="display:none">MANAGEMENT</div>
       <button class="nav-item manager-nav" style="display:none" onclick="showPage('members',this)">
-        <span class="nav-icon">👥</span><span>My Team</span>
+        <span class="ni">👥</span><span class="nt">My Team</span>
       </button>
       <button class="nav-item manager-nav admin-nav" style="display:none" onclick="showPage('requests',this)">
-        <span class="nav-icon">📬</span><span>Access Requests</span>
-        <span class="nav-badge" id="requests-count">0</span>
+        <span class="ni">📬</span><span class="nt">Access Requests</span>
+        <span class="nbadge" id="requests-count">0</span>
       </button>
-
-      <div class="nav-section-label admin-nav" style="display:none">Admin</div>
+      <div class="nav-label admin-nav" style="display:none">ADMIN</div>
       <button class="nav-item admin-nav" style="display:none" onclick="showPage('settings',this)">
-        <span class="nav-icon">⚙️</span><span>Settings</span>
+        <span class="ni">⚙️</span><span class="nt">Settings</span>
       </button>
-    </div>
+    </nav>
 
-    <div class="sidebar-footer">
-      <div class="user-chip">
-        <div class="user-avatar" id="user-avatar">?</div>
-        <div style="min-width:0">
-          <div class="user-name" id="user-name">Loading...</div>
-          <div class="user-role" id="user-role">—</div>
+    <div class="sidebar-foot">
+      <div class="user-pill">
+        <div class="u-av" id="user-avatar">?</div>
+        <div class="u-info">
+          <div class="u-name" id="user-name">Loading…</div>
+          <div class="u-role" id="user-role">—</div>
         </div>
       </div>
       <button class="logout-btn" onclick="doLogout()">
@@ -210,98 +143,68 @@
     </div>
   </div>
 
-  <!-- MAIN -->
+  <!-- MAIN CONTENT -->
   <div class="main">
     <div class="topbar">
-      <div class="page-title" id="page-title">📊 Tracker</div>
+      <div class="topbar-left">
+        <div class="page-title" id="page-title">📊 Tracker</div>
+      </div>
       <div class="topbar-right">
         <button class="icon-btn" id="theme-btn" onclick="toggleTheme()">🌙 Dark</button>
         <button class="icon-btn" id="sync-btn" onclick="loadAll()">
           <svg class="si" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>
-          <span>Sync</span>
+          Sync
         </button>
       </div>
     </div>
 
     <div class="content">
 
-      <!-- ══ TRACKER PAGE ══ -->
+      <!-- ══ TRACKER ══ -->
       <div id="page-tracker">
         <!-- Filter Bar -->
         <div class="filter-bar">
-          <div class="fg">
-            <span class="fl">Region</span>
-            <select class="fs" id="f-region" onchange="onRegionChange()"><option value="">All Regions</option></select>
-          </div>
-          <div class="fg">
-            <span class="fl">Center</span>
-            <select class="fs" id="f-center" onchange="applyFilters()"><option value="">All Centers</option></select>
-          </div>
-          <div class="fg">
-            <span class="fl">Payment</span>
-            <div id="payment-multiselect-wrapper">
-              <div class="multiselect-container">
-                <div class="multiselect-trigger"><span>All Payments</span>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="fg">
-            <span class="fl">Form Status</span>
-            <select class="fs" id="f-form" onchange="applyFilters()">
-              <option value="">All</option><option>Stage 1</option><option>Stage 2</option><option>Stage 3</option><option>Completed</option>
-            </select>
-          </div>
-          <div class="fg">
-            <span class="fl">Connected</span>
-            <select class="fs" id="f-connected" onchange="applyFilters()">
-              <option value="">All</option><option>Connected</option><option>Not Connected</option><option>Busy</option><option>No Answer</option><option>Switched Off</option><option>Invalid Number</option>
-            </select>
-          </div>
-          <div class="fg">
-            <span class="fl">Dialled</span>
-            <select class="fs" id="f-dialled" onchange="applyFilters()">
-              <option value="">All</option><option>Dialled</option><option>Not Dialled</option>
-            </select>
-          </div>
-          <div class="fg">
-            <span class="fl">Search</span>
-            <input class="fi" id="f-search" placeholder="Reg No or Student Name…" oninput="applyFilters()"/>
-          </div>
+          <div class="fg"><span class="fl">Region</span><select class="fs" id="f-region" onchange="onRegionChange()"><option value="">All Regions</option></select></div>
+          <div class="fg"><span class="fl">Center</span><select class="fs" id="f-center" onchange="applyFilters()"><option value="">All Centers</option></select></div>
+          <div class="fg"><span class="fl">Payment</span><div id="payment-multiselect-wrapper"><div class="multiselect-container"><div class="multiselect-trigger"><span>All Payments</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div></div></div></div>
+          <div class="fg"><span class="fl">Form Status</span><select class="fs" id="f-form" onchange="applyFilters()"><option value="">All</option><option>Stage 1</option><option>Stage 2</option><option>Stage 3</option><option>Completed</option></select></div>
+          <div class="fg"><span class="fl">Connected</span><select class="fs" id="f-connected" onchange="applyFilters()"><option value="">All</option><option>Connected</option><option>Not Connected</option><option>Busy</option><option>No Answer</option><option>Switched Off</option><option>Invalid Number</option></select></div>
+          <div class="fg"><span class="fl">Dialled</span><select class="fs" id="f-dialled" onchange="applyFilters()"><option value="">All</option><option>Dialled</option><option>Not Dialled</option></select></div>
+          <div class="fg"><span class="fl">Search</span><input class="fi" id="f-search" placeholder="Reg No or Name…" oninput="applyFilters()"/></div>
           <div class="filter-actions">
-            <button class="btn btn-ghost btn-sm" onclick="clearFilters()">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-              Clear
-            </button>
-            <button class="btn btn-download btn-sm" onclick="downloadFilteredData()">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <button class="btn btn-ghost btn-sm" onclick="clearFilters()">✕ Clear</button>
+            <button class="btn btn-export btn-sm" onclick="downloadFilteredData()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Export CSV
             </button>
           </div>
         </div>
 
         <!-- Stats -->
-        <div class="stats">
-          <div class="stat c-blue">
-            <div class="stat-icon">📋</div>
-            <div class="stat-v" id="s-total">—</div>
-            <div class="stat-l">Total Showing</div>
+        <div class="stats-grid">
+          <div class="stat-card sc-blue">
+            <div class="sc-glow"></div>
+            <div class="sc-icon">📋</div>
+            <div class="sc-val" id="s-total">—</div>
+            <div class="sc-label">Total Showing</div>
           </div>
-          <div class="stat c-green">
-            <div class="stat-icon">📞</div>
-            <div class="stat-v" id="s-conn">—</div>
-            <div class="stat-l">Connected</div>
+          <div class="stat-card sc-green">
+            <div class="sc-glow"></div>
+            <div class="sc-icon">📞</div>
+            <div class="sc-val" id="s-conn">—</div>
+            <div class="sc-label">Connected</div>
           </div>
-          <div class="stat c-yellow">
-            <div class="stat-icon">🗓️</div>
-            <div class="stat-v" id="s-ptp">—</div>
-            <div class="stat-l">PTP Created</div>
+          <div class="stat-card sc-amber">
+            <div class="sc-glow"></div>
+            <div class="sc-icon">🗓️</div>
+            <div class="sc-val" id="s-ptp">—</div>
+            <div class="sc-label">PTP Created</div>
           </div>
-          <div class="stat c-violet">
-            <div class="stat-icon">✅</div>
-            <div class="stat-v" id="s-dialled">—</div>
-            <div class="stat-l">Dialled</div>
+          <div class="stat-card sc-purple">
+            <div class="sc-glow"></div>
+            <div class="sc-icon">✅</div>
+            <div class="sc-val" id="s-dialled">—</div>
+            <div class="sc-label">Dialled Today</div>
           </div>
         </div>
 
@@ -312,24 +215,39 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
               Student Records
             </div>
-            <div style="display:flex;align-items:center;gap:10px">
-              <div class="tw-meta" id="tw-meta">Loading…</div>
-              <button class="btn btn-download btn-sm" onclick="downloadFilteredData()" style="padding:4px 10px;font-size:11px">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Export
-              </button>
+            <div class="tw-right">
+              <span class="tw-meta" id="tw-meta">Loading…</span>
+              <button class="btn btn-export btn-sm" onclick="downloadFilteredData()">Export</button>
             </div>
           </div>
           <div class="tbl-outer">
             <table>
               <thead>
                 <tr>
-                  <th>Reg No</th><th>Student Name</th><th>Center</th><th>Region</th>
-                  <th>Payment</th><th>Fees Amt</th><th>Fees Paid</th>
-                  <th>1st EMI</th><th>2nd EMI</th><th>3rd EMI</th><th>4th EMI</th><th>Total Paid</th>
-                  <th>Form</th><th>Attendance</th><th>Last Punch</th><th>PTP</th>
-                  <th>Connected</th><th>Dialled</th><th>Yesterday</th><th>Today</th>
-                  <th>Due Date</th><th></th>
+                  <th>Reg No</th>
+                  <th>Student Name</th>
+                  <th>Center</th>
+                  <th>Region</th>
+                  <th>Payment</th>
+                  <th>Fees Amt</th>
+                  <th>Fees Paid</th>
+                  <th>Form</th>
+                  <th>Due Date</th>
+                  <th>1st EMI</th>
+                  <th>2nd EMI</th>
+                  <th>3rd EMI</th>
+                  <th>4th EMI</th>
+                  <th>Total Paid</th>
+                  <th>Attend %</th>
+                  <th>Last Punch</th>
+                  <th>Last Dialled</th>
+                  <th>Last Connected</th>
+                  <th>PTP</th>
+                  <th>Connected</th>
+                  <th>Dialled</th>
+                  <th>Yesterday</th>
+                  <th>Today</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody id="tbl-body"></tbody>
@@ -338,25 +256,18 @@
         </div>
       </div>
 
-      <!-- ══ AUDIT LOG PAGE ══ -->
+      <!-- ══ AUDIT ══ -->
       <div id="page-audit" style="display:none">
         <div class="page-head">
-          <div>
-            <div class="page-h">🕐 Audit Log</div>
-            <div class="page-s">Complete record of all changes made to the tracker</div>
-          </div>
-          <select class="fs" id="audit-filter-user" onchange="renderAudit()" style="min-width:200px">
-            <option value="">All Users</option>
-          </select>
+          <div><div class="page-h">🕐 Audit Log</div><div class="page-s">Complete record of all changes</div></div>
+          <select class="fs" id="audit-filter-user" onchange="renderAudit()" style="min-width:200px"><option value="">All Users</option></select>
         </div>
         <div id="audit-list"></div>
       </div>
 
-      <!-- ══ MY TEAM PAGE ══ -->
+      <!-- ══ MY TEAM ══ -->
       <div id="page-members" style="display:none">
-        <div class="page-head">
-          <div><div class="page-h">👥 My Team</div><div class="page-s">Agents assigned under your management</div></div>
-        </div>
+        <div class="page-head"><div><div class="page-h">👥 My Team</div><div class="page-s">Agents under your management</div></div></div>
         <div class="s-card">
           <div class="s-card-t">Team Members</div>
           <div id="team-members-list"></div>
@@ -367,102 +278,100 @@
         </div>
       </div>
 
-      <!-- ══ ACCESS REQUESTS PAGE ══ -->
+      <!-- ══ ACCESS REQUESTS ══ -->
       <div id="page-requests" style="display:none">
-        <div class="page-head">
-          <div><div class="page-h">📬 Access Requests</div><div class="page-s">Approve or decline pending access requests</div></div>
-        </div>
+        <div class="page-head"><div><div class="page-h">📬 Access Requests</div><div class="page-s">Approve or decline pending requests</div></div></div>
         <div id="requests-list"></div>
       </div>
 
-      <!-- ══ SETTINGS PAGE ══ -->
+      <!-- ══ SETTINGS ══ -->
       <div id="page-settings" style="display:none">
-        <div class="page-head">
-          <div><div class="page-h">⚙️ Settings</div><div class="page-s">User management and system configuration</div></div>
-        </div>
+        <div class="page-head"><div><div class="page-h">⚙️ Settings</div><div class="page-s">User management and configuration</div></div></div>
         <div class="settings-grid">
           <div class="s-card">
             <div class="s-card-t">👥 All Users</div>
             <div id="users-list"></div>
             <div class="add-row">
               <input class="add-input" id="new-email" placeholder="user@company.com" type="email"/>
-              <select class="add-select" id="new-role">
-                <option value="agent">Agent</option>
-                <option value="manager">Manager</option>
-                <option value="admin">Admin</option>
-              </select>
+              <select class="add-select" id="new-role"><option value="agent">Agent</option><option value="manager">Manager</option><option value="admin">Admin</option></select>
               <button class="btn btn-success btn-sm" onclick="addUser()">+ Add</button>
             </div>
           </div>
           <div class="s-card">
             <div class="s-card-t">🔧 System Info</div>
-            <div style="font-size:12px;color:var(--ink2);line-height:2.2">
-              <div><span style="color:var(--ink3)">Client ID:</span> <code style="color:var(--blue);font-size:11px" id="info-client-id">—</code></div>
-              <div><span style="color:var(--ink3)">Main Sheet:</span> <code style="color:var(--blue);font-size:11px" id="info-sheet-id">—</code></div>
+            <div style="font-size:12px;color:var(--ink2);line-height:2.4">
+              <div><span style="color:var(--ink3)">Client ID:</span> <code style="color:var(--accent)" id="info-client-id">—</code></div>
+              <div><span style="color:var(--ink3)">Main Sheet:</span> <code style="color:var(--accent)" id="info-sheet-id">—</code></div>
             </div>
-            <div style="margin-top:16px;padding:12px;background:var(--s2);border-radius:8px;font-size:12px;color:var(--ink3);line-height:1.9">
-              <b style="color:var(--ink2)">📁 Sheet Architecture:</b><br/>
-              <span style="color:var(--blue)">Sheet A</span> → <code>Main Tracker</code> (student data)<br/>
-              <span style="color:var(--violet)">Sheet B</span> → <code>Audit Log</code> · <code>Users</code> · <code>Access Requests</code>
+            <div style="margin-top:14px;padding:12px;background:var(--s2);border-radius:10px;font-size:11.5px;color:var(--ink3);line-height:2">
+              <b style="color:var(--ink2)">📁 Sheet Architecture</b><br/>
+              Sheet A → <code>Main Tracker</code> (student data)<br/>
+              Sheet B → <code>Audit Log · Users · Requests</code>
             </div>
           </div>
         </div>
       </div>
 
-    </div><!-- /content -->
-  </div><!-- /main -->
-</div><!-- /app -->
+    </div>
+  </div>
+</div>
 
 <!-- EDIT PANEL -->
 <div class="panel-overlay" id="panel-ov" onclick="closePanel()"></div>
 <div class="panel" id="panel">
   <div class="panel-head">
     <div>
-      <div class="panel-name" id="p-name">Student Name</div>
+      <div class="panel-name" id="p-name">Student</div>
       <div class="panel-regno" id="p-regno">#—</div>
     </div>
     <button class="panel-close" onclick="closePanel()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
   <div class="panel-body">
     <div class="p-section">
-      <div class="p-section-t">📋 Student Info <span style="color:var(--ink3);font-size:9px;font-weight:400;margin-left:4px">(READ ONLY)</span></div>
+      <div class="p-section-t">📋 Student Info <span class="ro-tag">READ ONLY</span></div>
       <div class="info-grid" id="p-info"></div>
     </div>
     <div class="p-section">
       <div class="p-section-t">✏️ Editable Fields</div>
-      <div class="ef">
-        <label class="el">PTP Date</label>
-        <input class="es" id="e-ptp" type="date"/>
+      <div class="edit-grid">
+        <div class="ef">
+          <label class="el">PTP Date</label>
+          <input class="es" id="e-ptp" type="date"/>
+        </div>
+        <div class="ef">
+          <label class="el">Connected Status</label>
+          <select class="es" id="e-connected">
+            <option value="">— Select —</option>
+            <option>Connected</option><option>Not Connected</option><option>Busy</option>
+            <option>No Answer</option><option>Switched Off</option><option>Invalid Number</option>
+          </select>
+        </div>
+        <div class="ef">
+          <label class="el">Dialled Status</label>
+          <select class="es" id="e-dialled">
+            <option value="">— Select —</option>
+            <option>Dialled</option><option>Not Dialled</option>
+          </select>
+        </div>
+        <div class="ef">
+          <label class="el">Today's Disposition</label>
+          <select class="es" id="e-today">
+            <option value="">— Select —</option>
+            <option>Interested</option><option>Not Interested</option><option>Follow Up</option>
+            <option>RNR</option><option>Callback Requested</option><option>Enrolled</option>
+            <option>Drop</option><option>Wrong Number</option><option>Future Prospect</option>
+          </select>
+        </div>
+        <div class="ef full-span">
+          <label class="el">Other Remarks</label>
+          <textarea class="et" id="e-remarks" placeholder="Callback time, follow-up details, notes…"></textarea>
+        </div>
       </div>
-      <div class="ef">
-        <label class="el">Connected Status</label>
-        <select class="es" id="e-connected">
-          <option value="">— Select —</option>
-          <option>Connected</option><option>Not Connected</option><option>Busy</option>
-          <option>No Answer</option><option>Switched Off</option><option>Invalid Number</option>
-        </select>
-      </div>
-      <div class="ef">
-        <label class="el">Dialled Status</label>
-        <select class="es" id="e-dialled">
-          <option value="">— Select —</option>
-          <option>Dialled</option><option>Not Dialled</option>
-        </select>
-      </div>
-      <div class="ef">
-        <label class="el">Today's Disposition</label>
-        <select class="es" id="e-today">
-          <option value="">— Select —</option>
-          <option>Interested</option><option>Not Interested</option><option>Follow Up</option>
-          <option>RNR</option><option>Callback Requested</option><option>Enrolled</option>
-          <option>Drop</option><option>Wrong Number</option><option>Future Prospect</option>
-        </select>
-      </div>
-      <div class="ef">
-        <label class="el">Other Remarks</label>
-        <textarea class="et" id="e-remarks" placeholder="Notes, callback time, follow-up details…"></textarea>
+      <div class="auto-date-hint" id="auto-date-hint">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        Last Dialled & Last Connected dates auto-update when you change status to Dialled / Connected
       </div>
     </div>
     <div class="p-section">
@@ -472,7 +381,8 @@
   </div>
   <div class="panel-footer">
     <button class="btn btn-primary" onclick="saveChanges()" style="flex:1" id="save-btn">
-      💾 Save to Sheet
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      Save Changes
     </button>
     <button class="btn btn-ghost" onclick="closePanel()">Cancel</button>
   </div>
@@ -481,7 +391,7 @@
 <!-- LOADER -->
 <div class="loader-ov" id="loader">
   <div class="loader-box">
-    <div class="spinner"></div>
+    <div class="loader-rings"><div></div><div></div><div></div></div>
     <div class="loader-msg" id="loader-msg">Loading…</div>
   </div>
 </div>
